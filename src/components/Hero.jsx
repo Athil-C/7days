@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, MessageCircle, ArrowRight, Sparkles, Heart, Star, Baby, Gift } from 'lucide-react';
-import { SHOP_FULL_NAME, SHOP_TAGLINE, SHOP_ADDRESS, createWhatsAppUrl } from '../data/config';
+import { MapPin, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { SHOP_FULL_NAME, SHOP_ADDRESS, createWhatsAppUrl } from '../data/config';
 
 export default function Hero() {
   return (
@@ -81,34 +81,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Product Collage with Floating Decorative Elements */}
+          {/* Right Product Collage without outer floating badges */}
           <div className="lg:col-span-6 relative mt-4 lg:mt-0">
-            
-            {/* Floating Decorative Emojis & Badges */}
-            <div className="absolute -top-6 -left-3 z-20 animate-float">
-              <div className="w-12 h-12 rounded-2xl bg-white/95 shadow-md flex items-center justify-center text-xl border border-yellow-200">
-                ⭐
-              </div>
-            </div>
-
-            <div className="absolute top-1/4 -right-4 z-20 animate-float-delayed">
-              <div className="w-12 h-12 rounded-2xl bg-white/95 shadow-md flex items-center justify-center text-xl border border-pink-200">
-                🎈
-              </div>
-            </div>
-
-            <div className="absolute -bottom-4 left-6 z-20 animate-float-reverse">
-              <div className="w-12 h-12 rounded-2xl bg-white/95 shadow-md flex items-center justify-center text-xl border border-amber-200">
-                🧸
-              </div>
-            </div>
-
-            <div className="absolute -bottom-2 right-12 z-20 animate-float">
-              <div className="w-11 h-11 rounded-2xl bg-white/95 shadow-md flex items-center justify-center text-lg border border-cyan-200">
-                ✨
-              </div>
-            </div>
-
             {/* Visual Collage Grid */}
             <div className="grid grid-cols-12 gap-3 sm:gap-4 p-2 sm:p-4 rounded-3xl bg-white/60 backdrop-blur-xs border border-white/80 shadow-lg">
               
