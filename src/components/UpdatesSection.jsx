@@ -12,7 +12,14 @@ import {
   X
 } from 'lucide-react';
 import { storeUpdates } from '../data/updates';
-import { SHOP_FULL_NAME, SHOP_PHONE_CALL, SHOP_PHONE_DISPLAY, createWhatsAppUrl } from '../data/config';
+import { 
+  SHOP_FULL_NAME, 
+  SHOP_PHONE_CALL, 
+  SHOP_PHONE_DISPLAY, 
+  SHOP_PHONE_SECONDARY,
+  SHOP_PHONE_SECONDARY_CALL,
+  createWhatsAppUrl 
+} from '../data/config';
 
 export default function UpdatesSection() {
   const [lightboxImage, setLightboxImage] = useState(null);
@@ -59,7 +66,7 @@ export default function UpdatesSection() {
               key={update.id}
               className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
             >
-              {/* Top Meta Bar: Separated Above the Poster (So poster is 100% visible on mobile) */}
+              {/* Top Meta Bar */}
               <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-3 bg-gray-50/90 border-b border-gray-200/80">
                 <div className="flex items-center flex-wrap gap-2">
                   <span className="px-2.5 py-1 rounded-full text-xs font-extrabold text-white bg-red-600 shadow-2xs flex items-center gap-1.5">
@@ -73,12 +80,21 @@ export default function UpdatesSection() {
                     </span>
                   )}
                 </div>
+
+                {/* Direct quick call badge in top bar */}
+                <div className="flex items-center gap-1.5 text-xs font-bold text-gray-700">
+                  <PhoneCall className="w-3.5 h-3.5 text-red-600" />
+                  <span>Call:</span>
+                  <a href={`tel:${SHOP_PHONE_SECONDARY_CALL}`} className="text-red-700 hover:underline">
+                    {SHOP_PHONE_SECONDARY}
+                  </a>
+                </div>
               </div>
 
-              {/* Poster Container - 100% Uncovered & Fully Responsive */}
+              {/* Poster Container with Direct Contact Banner Attached */}
               <div 
                 onClick={() => setLightboxImage(update.bannerImage)}
-                className="relative w-full bg-neutral-900/5 cursor-pointer overflow-hidden border-b border-gray-200/80 flex items-center justify-center p-1 sm:p-2"
+                className="relative w-full bg-neutral-900/5 cursor-pointer overflow-hidden border-b border-gray-200/80 flex flex-col items-center justify-center p-1 sm:p-2"
               >
                 <img
                   src={update.bannerImage}
@@ -86,6 +102,37 @@ export default function UpdatesSection() {
                   className="w-full h-auto object-contain max-h-[460px] rounded-lg"
                   loading="eager"
                 />
+
+                {/* Prominent Direct Phone Bar Attached to Poster */}
+                <div className="w-full mt-2 py-2.5 px-3 sm:px-4 bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white rounded-xl flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold">
+                    <PhoneCall className="w-4 h-4 animate-pulse" />
+                    <span>Service & Spare Parts Helpline:</span>
+                  </div>
+                  
+                  <div className="flex items-center flex-wrap gap-2 text-xs sm:text-sm font-extrabold">
+                    <a
+                      href={`tel:${SHOP_PHONE_SECONDARY_CALL}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1.5 bg-white text-red-700 hover:bg-red-50 px-3 py-1 rounded-lg shadow-2xs transition-colors"
+                      title="Call primary service number"
+                    >
+                      <PhoneCall className="w-3.5 h-3.5 text-red-600" />
+                      <span>{SHOP_PHONE_SECONDARY}</span>
+                    </a>
+
+                    <span className="text-white/60">/</span>
+
+                    <a
+                      href={`tel:${SHOP_PHONE_CALL}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 text-white hover:text-white/90 underline px-2 py-1"
+                      title="Call alternate showroom number"
+                    >
+                      <span>{SHOP_PHONE_DISPLAY}</span>
+                    </a>
+                  </div>
+                </div>
               </div>
 
               {/* Card Details & Action Row */}
@@ -129,7 +176,7 @@ export default function UpdatesSection() {
                         <span>Available at Payod Showroom</span>
                       </div>
                       <p className="text-xs text-gray-600 mb-4 leading-relaxed">
-                        Bring your kids' electric vehicles or gear cycles for inspection, or contact our support desk for spare parts pricing.
+                        Bring your kids' electric vehicles or gear cycles for inspection, or call directly for spare parts and service quotes.
                       </p>
                     </div>
 
@@ -145,11 +192,19 @@ export default function UpdatesSection() {
                       </a>
 
                       <a
-                        href={`tel:${SHOP_PHONE_CALL}`}
-                        className="w-full inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-2xs hover:shadow-xs transition-all"
+                        href={`tel:${SHOP_PHONE_SECONDARY_CALL}`}
+                        className="w-full inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-xs hover:shadow transition-all"
                       >
-                        <PhoneCall className="w-4 h-4 text-[#FB8500]" />
-                        <span>Call Service Desk: {SHOP_PHONE_DISPLAY}</span>
+                        <PhoneCall className="w-4 h-4 fill-white" />
+                        <span>Call Service Desk: {SHOP_PHONE_SECONDARY}</span>
+                      </a>
+
+                      <a
+                        href={`tel:${SHOP_PHONE_CALL}`}
+                        className="w-full inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 px-5 py-2 rounded-xl font-semibold text-xs transition-all"
+                      >
+                        <PhoneCall className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Showroom Desk: {SHOP_PHONE_DISPLAY}</span>
                       </a>
                     </div>
                   </div>
@@ -185,13 +240,18 @@ export default function UpdatesSection() {
             <img
               src={lightboxImage}
               alt="Full Size Service Poster"
-              className="w-full h-auto object-contain rounded-xl max-h-[85vh]"
+              className="w-full h-auto object-contain rounded-xl max-h-[80vh]"
             />
 
-            <div className="p-3 text-center">
-              <p className="text-xs text-gray-500 font-medium">
-                7Days Toys & Babyshop • Payod, Mananthavady • Ph: {SHOP_PHONE_DISPLAY}
-              </p>
+            <div className="p-3 text-center flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-gray-700">
+              <span className="text-gray-500">7Days Toys & Babyshop • Payod, Mananthavady</span>
+              <a href={`tel:${SHOP_PHONE_SECONDARY_CALL}`} className="text-red-600 hover:underline">
+                📞 {SHOP_PHONE_SECONDARY}
+              </a>
+              <span className="text-gray-300">•</span>
+              <a href={`tel:${SHOP_PHONE_CALL}`} className="text-gray-800 hover:underline">
+                📞 {SHOP_PHONE_DISPLAY}
+              </a>
             </div>
           </div>
         </div>
