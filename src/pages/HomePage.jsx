@@ -1,6 +1,7 @@
 import React from 'react';
 import Hero from '../components/Hero';
 import TrustStrip from '../components/TrustStrip';
+import UpdatesSection from '../components/UpdatesSection';
 import CategoriesSection from '../components/CategoriesSection';
 import FeaturedProducts from '../components/FeaturedProducts';
 import Why7Days from '../components/Why7Days';
@@ -18,7 +19,10 @@ export default function HomePage() {
       {/* 2. Trust Strip */}
       <TrustStrip />
 
-      {/* 3. Categories Section */}
+      {/* 3. Latest Store Updates & Announcements */}
+      <UpdatesSection />
+
+      {/* 4. Categories Section */}
       <CategoriesSection />
 
       {/* 4. Featured Products (Little Favorites) */}
