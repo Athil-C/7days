@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Heart } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 import { SHOP_INSTAGRAM_URL } from '../data/config';
 
@@ -48,10 +48,10 @@ export default function InstagramSection() {
             <span>@7days_toys</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
-            See What's New
+            Follow 7Days Toys on Instagram
           </h2>
           <p className="text-[#546E7A] text-sm sm:text-base mt-2">
-            Follow 7Days on Instagram for new arrivals, store reels, and updates.
+            See new arrivals, store reels, and toy updates from our Payod shop.
           </p>
         </div>
 
@@ -67,9 +67,12 @@ export default function InstagramSection() {
             >
               <img
                 src={post.image}
-                alt="7Days Toys Instagram Post"
+                alt={post.caption}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
+                decoding="async"
+                width="200"
+                height="200"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 text-white">
                 <InstagramIcon className="w-5 h-5 text-white mb-1.5" />

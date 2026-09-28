@@ -24,10 +24,10 @@ export default function LocationSection() {
             <span>Store Location</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
-            Come Say Hello 👋
+            Visit 7Days Toys &amp; Babyshop in Mananthavady
           </h2>
           <p className="text-[#546E7A] text-sm sm:text-base mt-2">
-            Visit our neighborhood store in Payod, Mananthavady.
+            Come say hello 👋 — Visit our neighborhood store in Payod, Mananthavady.
           </p>
         </div>
 
@@ -137,9 +137,9 @@ export default function LocationSection() {
                 <MapPin className="w-7 h-7" />
               </div>
               
-              <h4 className="text-base font-extrabold text-[#263238] font-heading">
+              <p className="text-base font-extrabold text-[#263238] font-heading">
                 {SHOP_FULL_NAME}
-              </h4>
+              </p>
               <p className="text-xs text-[#546E7A] mt-1 font-medium">
                 Payod, Mananthavady, Wayanad
               </p>

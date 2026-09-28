@@ -20,10 +20,10 @@ export default function FeaturedProducts() {
               <span>Handpicked For You</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
-              Little Favorites
+              Featured Products
             </h2>
             <p className="text-[#546E7A] text-sm sm:text-base mt-2 max-w-xl">
-              Some of the things our little customers love.
+              Little favorites — handpicked toys and baby products our little customers love.
             </p>
           </div>
 

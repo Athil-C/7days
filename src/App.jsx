@@ -7,8 +7,10 @@ import ScrollToTop from './components/ScrollToTop';
 
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
+import CategoriesPage from './pages/CategoriesPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
   return (
@@ -23,11 +25,11 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
-          <Route path="/categories" element={<ProductsPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          {/* Fallback to Home */}
-          <Route path="*" element={<HomePage />} />
+          {/* Proper 404 Not Found Page */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
 

@@ -5,8 +5,6 @@ import {
   PhoneCall, 
   Wrench, 
   CheckCircle2, 
-  Sparkles, 
-  ArrowRight,
   ShieldCheck,
   Calendar,
   X
@@ -142,9 +140,9 @@ export default function UpdatesSection() {
                   {/* Left Column: Titles & Description */}
                   <div className="lg:col-span-7">
                     {update.titleMalayalam && (
-                      <h4 className="text-base sm:text-xl font-bold text-red-700 leading-snug mb-2 font-heading">
+                      <p className="text-base sm:text-xl font-bold text-red-700 leading-snug mb-2 font-heading">
                         {update.titleMalayalam}
-                      </h4>
+                      </p>
                     )}
 
                     <h3 className="text-xl sm:text-2xl font-extrabold text-[#263238] leading-tight mb-3 font-heading">
@@ -239,7 +237,7 @@ export default function UpdatesSection() {
 
             <img
               src={lightboxImage}
-              alt="Full Size Service Poster"
+              alt="7Days Toys & Babyshop store notice poster"
               className="w-full h-auto object-contain rounded-xl max-h-[80vh]"
             />
 

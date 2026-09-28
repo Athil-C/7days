@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MessageCircle, Menu, X, Sparkles, MapPin } from 'lucide-react';
-import { InstagramIcon, WhatsAppIcon } from './Icons';
+import { MessageCircle, Menu, X, MapPin } from 'lucide-react';
+import { InstagramIcon } from './Icons';
 import { SHOP_NAME, SHOP_SUBTITLE, SHOP_INSTAGRAM_URL, createWhatsAppUrl, SHOP_ADDRESS } from '../data/config';
 
 export default function Navbar() {
@@ -22,16 +22,18 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => {
+  // Close mobile menu on route change during render
+  const [prevPath, setPrevPath] = useState(location.pathname);
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname);
     setMobileMenuOpen(false);
-  }, [location.pathname]);
+  }
 
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Updates', path: '/#updates' },
     { name: 'Products', path: '/products' },
-    { name: 'Categories', path: '/#categories' },
+    { name: 'Categories', path: '/categories' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
@@ -39,7 +41,7 @@ export default function Navbar() {
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     if (path.startsWith('/#')) return false;
-    return location.pathname.startsWith(path);
+    return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   };
 
   return (
@@ -56,13 +58,15 @@ export default function Navbar() {
           <Link
             to="/"
             className="group flex items-center gap-2.5 sm:gap-3 text-left focus:outline-none"
-            aria-label="7Days Toys and Babyshop Home"
+            aria-label="7Days Toys & Babyshop Home"
           >
             <div className="relative w-11 h-11 sm:w-12 sm:h-12 group-hover:scale-105 transition-transform duration-300 flex-shrink-0 drop-shadow-sm">
               <img
                 src="/7days-logo.png"
-                alt="7Days Mananthavady Official Logo"
+                alt="7Days Toys & Babyshop Logo"
                 className="w-full h-full object-contain"
+                width="48"
+                height="48"
               />
             </div>
             <div className="flex flex-col">
@@ -76,7 +80,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1 lg:gap-2">
             {navLinks.map((link) => {
               const active = isActive(link.path);
               return (

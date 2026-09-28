@@ -2,15 +2,18 @@ import React, { useState } from 'react';
 import { MessageCircle, Sparkles } from 'lucide-react';
 import { 
   SHOP_FULL_NAME, 
-  SHOP_ADDRESS, 
-  SHOP_PHONE_DISPLAY, 
-  SHOP_PHONE_CALL, 
-  SHOP_INSTAGRAM_URL, 
   createWhatsAppUrl 
 } from '../data/config';
 import LocationSection from '../components/LocationSection';
+import { usePageSEO } from '../hooks/usePageSEO';
 
 export default function ContactPage() {
+  usePageSEO({
+    title: 'Contact 7Days Toys & Babyshop | Mananthavady',
+    description: "Contact 7Days Toys & Babyshop in Payod, Mananthavady, Wayanad. Store address, phone numbers, map directions, and WhatsApp inquiry.",
+    canonicalPath: '/contact'
+  });
+
   const [customTopic, setCustomTopic] = useState('');
   const [customChildAge, setCustomChildAge] = useState('');
   const [customNotes, setCustomNotes] = useState('');
@@ -31,18 +34,21 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="py-10 sm:py-16">
+    <main className="py-10 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A994E]/15 text-[#6A994E] text-xs font-bold uppercase tracking-wider mb-2.5">
             <MessageCircle className="w-3.5 h-3.5" />
-            <span>Contact & Visit</span>
+            <span>Contact &amp; Visit</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-3">
-            We'd Love to Hear from You
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-2">
+            Contact {SHOP_FULL_NAME}
           </h1>
+          <p className="text-base sm:text-lg font-bold text-[#FB8500] mb-3">
+            We'd Love to Hear from You
+          </p>
           <p className="text-[#546E7A] text-sm sm:text-base leading-relaxed">
             Have questions about a toy, baby essential, or gift availability? Get in touch with our team or visit our store in Payod, Mananthavady.
           </p>
@@ -128,6 +134,6 @@ export default function ContactPage() {
         </div>
 
       </div>
-    </div>
+    </main>
   );
 }

@@ -27,12 +27,14 @@ export default function Footer() {
           
           {/* Brand Info */}
           <div className="lg:col-span-4">
-            <Link to="/" className="inline-flex items-center gap-3 mb-4 group">
+            <Link to="/" className="inline-flex items-center gap-3 mb-4 group" aria-label="7Days Toys & Babyshop Home">
               <div className="w-12 h-12 flex-shrink-0 group-hover:scale-105 transition-transform duration-300 drop-shadow-md">
                 <img
                   src="/7days-logo.png"
-                  alt="7Days Mananthavady Official Logo"
+                  alt="7Days Toys & Babyshop Logo"
                   className="w-full h-full object-contain"
+                  width="48"
+                  height="48"
                 />
               </div>
               <div className="flex flex-col">
@@ -97,22 +99,25 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="lg:col-span-3">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-[#FFB703] mb-4">
+          <nav aria-label="Footer Quick Links" className="lg:col-span-3">
+            <p className="text-sm font-bold uppercase tracking-wider text-[#FFB703] mb-4">
               Quick Links
-            </h4>
+            </p>
             <ul className="space-y-2.5 text-sm text-gray-300">
               <li>
                 <Link to="/" className="hover:text-white transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/products" className="hover:text-white transition-colors">Products</Link>
+                <Link to="/products" className="hover:text-white transition-colors">Explore Products</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
+                <Link to="/categories" className="hover:text-white transition-colors">Toy &amp; Baby Categories</Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-white transition-colors">Contact & Location</Link>
+                <Link to="/about" className="hover:text-white transition-colors">About 7Days</Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-white transition-colors">Contact &amp; Location</Link>
               </li>
               <li>
                 <a
@@ -125,37 +130,37 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Categories */}
-          <div className="lg:col-span-2">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-[#FFB703] mb-4">
+          <nav aria-label="Footer Store Aisles" className="lg:col-span-2">
+            <p className="text-sm font-bold uppercase tracking-wider text-[#FFB703] mb-4">
               Store Aisles
-            </h4>
+            </p>
             <ul className="space-y-2.5 text-sm text-gray-300">
               <li>
-                <Link to="/products?category=Toys" className="hover:text-white transition-colors">Toys & Games</Link>
+                <Link to="/products?category=Toys" className="hover:text-white transition-colors">Toys &amp; Games</Link>
               </li>
               <li>
-                <Link to="/products?category=Outdoors" className="hover:text-white transition-colors">Outdoors & Cycles</Link>
+                <Link to="/products?category=Outdoors" className="hover:text-white transition-colors">Outdoors &amp; Cycles</Link>
               </li>
               <li>
-                <Link to="/products?category=Baby" className="hover:text-white transition-colors">Baby Care & Trikes</Link>
+                <Link to="/products?category=Baby" className="hover:text-white transition-colors">Baby Care &amp; Trikes</Link>
               </li>
               <li>
-                <Link to="/products?category=Education" className="hover:text-white transition-colors">Study & School</Link>
+                <Link to="/products?category=Education" className="hover:text-white transition-colors">Study &amp; School</Link>
               </li>
               <li>
                 <Link to="/products?category=Music" className="hover:text-white transition-colors">Musical Toys</Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Location & Contact Info */}
           <div className="lg:col-span-3">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-[#FFB703] mb-4">
-              Store & Phone
-            </h4>
+            <p className="text-sm font-bold uppercase tracking-wider text-[#FFB703] mb-4">
+              Store &amp; Phone
+            </p>
             <div className="space-y-3 text-sm text-gray-300">
               <p className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#FB8500] shrink-0 mt-1" />

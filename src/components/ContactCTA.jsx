@@ -19,12 +19,12 @@ export default function ContactCTA() {
               <span>We're Happy to Help</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-heading tracking-tight mb-4 leading-tight">
-              Looking for Something Specific?
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-heading tracking-tight mb-3 leading-tight">
+              Contact 7Days Toys &amp; Babyshop
             </h2>
 
             <p className="text-white/90 text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed">
-              Send us a message and ask about a product, availability, or anything you need.
+              Looking for something specific? Send us a message to ask about products, availability, or store visits.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

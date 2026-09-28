@@ -1,32 +1,32 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, Sparkles, MessageCircle, X, RefreshCw } from 'lucide-react';
 import { products, PRODUCT_CATEGORIES } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { createWhatsAppUrl, SHOP_FULL_NAME } from '../data/config';
+import { usePageSEO } from '../hooks/usePageSEO';
 
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'All';
-
-  const [selectedCategory, setSelectedCategory] = useState(
-    PRODUCT_CATEGORIES.includes(initialCategory) ? initialCategory : 'All'
-  );
+  const categoryFromUrl = searchParams.get('category');
+  const selectedCategory = categoryFromUrl && PRODUCT_CATEGORIES.includes(categoryFromUrl) ? categoryFromUrl : 'All';
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Synchronize when URL search param changes
-  useEffect(() => {
-    const cat = searchParams.get('category');
-    if (cat && PRODUCT_CATEGORIES.includes(cat)) {
-      setSelectedCategory(cat);
-    }
-  }, [searchParams]);
+  const pageTitle = selectedCategory === 'All' 
+    ? 'Products | 7Days Toys & Babyshop' 
+    : `${selectedCategory} Products | 7Days Toys & Babyshop`;
+
+  usePageSEO({
+    title: pageTitle,
+    description: "Browse toys, cycles, baby trikes, study tables, and gifts at 7Days Toys & Babyshop in Payod, Mananthavady, Wayanad. Check in-store availability.",
+    canonicalPath: '/products'
+  });
 
   const handleCategoryChange = (cat) => {
-    setSelectedCategory(cat);
     if (cat === 'All') {
-      searchParams.delete('category');
-      setSearchParams(searchParams);
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('category');
+      setSearchParams(nextParams);
     } else {
       setSearchParams({ category: cat });
     }
@@ -53,13 +53,12 @@ export default function ProductsPage() {
   }, [selectedCategory, searchQuery]);
 
   const clearFilters = () => {
-    setSelectedCategory('All');
     setSearchQuery('');
     setSearchParams({});
   };
 
   return (
-    <div className="py-10 sm:py-16">
+    <main className="py-10 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Header */}
@@ -69,10 +68,10 @@ export default function ProductsPage() {
             <span>Our Catalog</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-3">
-            Explore Toys & Baby Essentials
+            {selectedCategory === 'All' ? 'Products | 7Days Toys & Babyshop' : `${selectedCategory} - 7Days Toys & Babyshop`}
           </h1>
           <p className="text-[#546E7A] text-sm sm:text-base leading-relaxed">
-            Browse our handpicked toys, baby care items, school accessories, and heartwarming gifts. Ask us anytime on WhatsApp for availability!
+            Browse our handpicked toys, baby care items, school accessories, and heartwarming gifts in Payod, Mananthavady. Ask us anytime on WhatsApp for availability!
           </p>
         </div>
 
@@ -194,6 +193,6 @@ export default function ProductsPage() {
         </div>
 
       </div>
-    </div>
+    </main>
   );
 }

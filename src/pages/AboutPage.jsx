@@ -1,12 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MapPin, Sparkles, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react';
-import { SHOP_FULL_NAME, SHOP_ADDRESS, SHOP_INSTAGRAM_URL, createWhatsAppUrl } from '../data/config';
+import { Heart, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react';
+import { SHOP_FULL_NAME, createWhatsAppUrl } from '../data/config';
 import Why7Days from '../components/Why7Days';
+import { usePageSEO } from '../hooks/usePageSEO';
 
 export default function AboutPage() {
+  usePageSEO({
+    title: 'About 7Days Toys & Babyshop | Mananthavady',
+    description: "Learn about 7Days Toys & Babyshop in Payod, Mananthavady, Wayanad. A local destination dedicated to quality toys, baby essentials, and family smiles.",
+    canonicalPath: '/about'
+  });
+
   return (
-    <div className="py-10 sm:py-16">
+    <main className="py-10 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Hero Header */}
@@ -15,9 +22,12 @@ export default function AboutPage() {
             <Heart className="w-3.5 h-3.5 fill-[#FB8500]" />
             <span>Our Story</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-4">
-            Made for Little Moments.
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-2">
+            About {SHOP_FULL_NAME}
           </h1>
+          <p className="text-base sm:text-lg font-bold text-[#FB8500] mb-3">
+            Made for Little Moments.
+          </p>
           <p className="text-[#546E7A] text-sm sm:text-base leading-relaxed">
             Welcome to {SHOP_FULL_NAME}, your neighborhood children's and baby boutique in Payod, Mananthavady, Wayanad.
           </p>
@@ -75,18 +85,24 @@ export default function AboutPage() {
             <div className="rounded-3xl overflow-hidden card-shadow aspect-[4/5] bg-amber-50">
               <img
                 src="/store/store-grand-opening.png"
-                alt="7Days Toys & Babyshop Grand Opening Showroom"
+                alt="7Days Toys & Babyshop showroom in Payod, Mananthavady"
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
+                width="300"
+                height="400"
               />
             </div>
             <div className="space-y-4">
               <div className="rounded-3xl overflow-hidden card-shadow aspect-square bg-sky-50">
                 <img
                   src="/products/lime-green-sports-bike.jpg"
-                  alt="Kids Sports Bicycles at 7Days"
+                  alt="Kids sports bicycle at 7Days Toys & Babyshop"
                   className="w-full h-full object-cover"
                   loading="lazy"
+                  decoding="async"
+                  width="300"
+                  height="300"
                 />
               </div>
               <div className="p-5 rounded-3xl bg-gradient-to-tr from-[#FFB703] to-[#FB8500] text-white text-center">
@@ -101,6 +117,6 @@ export default function AboutPage() {
         <Why7Days />
 
       </div>
-    </div>
+    </main>
   );
 }

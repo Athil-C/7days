@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePageSEO } from '../hooks/usePageSEO';
 import Hero from '../components/Hero';
 import TrustStrip from '../components/TrustStrip';
 import UpdatesSection from '../components/UpdatesSection';
@@ -11,6 +12,12 @@ import LocationSection from '../components/LocationSection';
 import ContactCTA from '../components/ContactCTA';
 
 export default function HomePage() {
+  usePageSEO({
+    title: '7Days Toys & Babyshop | Toys & Baby Essentials in Mananthavady',
+    description: "7Days Toys & Babyshop in Payod, Mananthavady, Wayanad — toys, baby essentials, gifts and kids' products.",
+    canonicalPath: '/'
+  });
+
   return (
     <main>
       {/* 1. Hero Section */}

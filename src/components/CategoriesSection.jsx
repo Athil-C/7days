@@ -16,16 +16,16 @@ export default function CategoriesSection() {
               <span>Explore by Category</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
-              Find Something Wonderful
+              Shop Toys &amp; Baby Essentials
             </h2>
             <p className="text-[#546E7A] text-sm sm:text-base mt-2 max-w-xl">
-              Everything little ones love, all in one place.
+              Find something wonderful — everything little ones love, all in one place.
             </p>
           </div>
 
           <div className="mt-4 md:mt-0">
             <Link
-              to="/products"
+              to="/categories"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-[#FB8500] hover:text-[#d46f00] group"
             >
               <span>View All Categories</span>

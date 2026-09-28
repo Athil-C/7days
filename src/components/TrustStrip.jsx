@@ -1,5 +1,4 @@
 import React from 'react';
-import { Smile, Gift, Baby, MapPin } from 'lucide-react';
 
 export default function TrustStrip() {
   const trustItems = [
@@ -46,9 +45,9 @@ export default function TrustStrip() {
                 <span>{item.emoji}</span>
               </div>
               <div className="overflow-hidden">
-                <h4 className="text-sm sm:text-base font-bold text-[#263238] font-heading leading-tight truncate">
+                <p className="text-sm sm:text-base font-bold text-[#263238] font-heading leading-tight truncate">
                   {item.title}
-                </h4>
+                </p>
                 <p className="text-xs text-[#546E7A] truncate mt-0.5">
                   {item.subtitle}
                 </p>

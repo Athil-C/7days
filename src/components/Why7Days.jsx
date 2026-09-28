@@ -44,10 +44,10 @@ export default function Why7Days() {
             <span>The 7Days Difference</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
-            Why Families Choose 7Days
+            Why Choose 7Days Toys &amp; Babyshop?
           </h2>
           <p className="text-[#546E7A] text-sm sm:text-base mt-2.5">
-            Thoughtfully built for parents, gifts seekers, and joyful kids in Wayanad.
+            Thoughtfully built for parents, gift seekers, and joyful kids in Wayanad.
           </p>
         </div>
 

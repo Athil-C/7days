@@ -28,17 +28,22 @@ export default function Hero() {
               <Sparkles className="w-3.5 h-3.5 text-[#FFB703]" />
             </div>
 
-            {/* Large Heading */}
+            {/* Large Heading with Business Name + Slogan */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#263238] leading-[1.1] tracking-tight font-heading mb-4">
-              Little Things. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FB8500] via-[#FFB703] to-[#FB8500]">
-                Big Smiles.
+              <span className="block text-2xl sm:text-3xl lg:text-4xl text-[#263238] font-bold mb-1.5 tracking-tight">
+                7Days Toys &amp; Babyshop
+              </span>
+              <span>
+                Little Things. <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FB8500] via-[#FFB703] to-[#FB8500]">
+                  Big Smiles.
+                </span>
               </span>
             </h1>
 
             {/* Supporting Text */}
             <p className="text-base sm:text-lg text-[#546E7A] leading-relaxed max-w-xl mb-4 font-normal">
-              Discover toys, baby essentials, gifts and more at <span className="font-semibold text-[#263238]">{SHOP_FULL_NAME}</span>.
+              Discover toys, baby essentials, gifts and kids' products at <span className="font-semibold text-[#263238]">{SHOP_FULL_NAME}</span> in Payod, Mananthavady, Wayanad.
             </p>
 
             {/* Location Text */}
@@ -90,9 +95,12 @@ export default function Hero() {
               <div className="col-span-7 relative rounded-2xl overflow-hidden shadow-sm group aspect-[4/5] bg-white">
                 <img
                   src="/products/kids-sport-bicycle.jpg"
-                  alt="Kids Sport Bicycle at 7Days Toys"
+                  alt="Kids sport bicycle at 7Days Toys & Babyshop"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="eager"
+                  fetchPriority="high"
+                  width="400"
+                  height="500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 <div className="absolute bottom-3 left-3 right-3 text-white">
@@ -112,9 +120,11 @@ export default function Hero() {
                 <div className="relative rounded-2xl overflow-hidden shadow-sm group aspect-[1/1] bg-white">
                   <img
                     src="/products/rc-stunt-car.jpg"
-                    alt="RC Monster Truck at 7Days"
+                    alt="RC monster truck at 7Days Toys & Babyshop"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
+                    width="250"
+                    height="250"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                   <div className="absolute bottom-2 left-2 right-2 text-white">
@@ -128,9 +138,11 @@ export default function Hero() {
                 <div className="relative rounded-2xl overflow-hidden shadow-sm group aspect-[1/1] bg-white">
                   <img
                     src="/products/panda-magic-swing-car.jpg"
-                    alt="Panda Magic Swing Car at 7Days"
+                    alt="Panda magic swing car at 7Days Toys & Babyshop"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
+                    width="250"
+                    height="250"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                   <div className="absolute bottom-2 left-2 right-2 text-white">
@@ -146,7 +158,14 @@ export default function Hero() {
                 
                 <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#FFB703]/20 shadow-xs">
                   <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
-                    <img src="/products/kids-toy-drone.jpg" alt="Toy Drone" className="w-full h-full object-cover" />
+                    <img 
+                      src="/products/kids-toy-drone.jpg" 
+                      alt="Kids toy drone" 
+                      className="w-full h-full object-cover" 
+                      loading="lazy"
+                      width="40"
+                      height="40"
+                    />
                   </div>
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-[#263238] truncate">Kids Toy Drones</p>
@@ -156,7 +175,14 @@ export default function Hero() {
 
                 <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#219EBC]/20 shadow-xs">
                   <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
-                    <img src="/products/baby-canopy-tricycle.jpg" alt="Baby Tricycle" className="w-full h-full object-cover" />
+                    <img 
+                      src="/products/baby-canopy-tricycle.jpg" 
+                      alt="Baby tricycle" 
+                      className="w-full h-full object-cover" 
+                      loading="lazy"
+                      width="40"
+                      height="40"
+                    />
                   </div>
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-[#263238] truncate">Baby Tricycles</p>

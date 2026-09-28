@@ -15,7 +15,7 @@ const CATEGORY_COLORS = {
 };
 
 export default function ProductCard({ product }) {
-  const { id, name, category, description, price, image, badge } = product;
+  const { name, category, description, price, image, badge } = product;
   const inquiryUrl = getProductInquiryUrl(name);
   const categoryStyle = CATEGORY_COLORS[category] || 'bg-slate-50 text-slate-900 border-slate-200/70';
 
@@ -29,6 +29,9 @@ export default function ProductCard({ product }) {
           alt={name}
           className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
+          decoding="async"
+          width="300"
+          height="300"
         />
 
         {/* Category & Badge Pills */}

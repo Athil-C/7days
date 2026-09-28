@@ -15,9 +15,12 @@ export default function AboutSection() {
             <div className="relative rounded-3xl overflow-hidden card-shadow border-4 border-white aspect-[4/3] sm:aspect-[16/11]">
               <img
                 src="/store/store-front-cycles.png"
-                alt="7Days Toys & Babyshop Store Showcase in Payod"
+                alt="7Days Toys & Babyshop storefront in Payod, Mananthavady"
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
+                width="600"
+                height="450"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
               
@@ -47,9 +50,12 @@ export default function AboutSection() {
               <span>ABOUT 7DAYS</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#263238] font-heading tracking-tight leading-tight mb-5">
-              Made for Little Moments.
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#263238] font-heading tracking-tight leading-tight mb-2">
+              About 7Days Toys &amp; Babyshop
             </h2>
+            <p className="text-sm sm:text-base font-semibold text-[#FB8500] mb-4">
+              Made for Little Moments.
+            </p>
 
             <div className="space-y-4 text-sm sm:text-base text-[#546E7A] leading-relaxed">
               <p>
@@ -62,18 +68,18 @@ export default function AboutSection() {
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
-                to="/contact"
+                to="/about"
                 className="inline-flex items-center gap-2 bg-[#263238] hover:bg-[#37474F] text-white px-7 py-3.5 rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all duration-200"
               >
-                <span>Visit Our Store</span>
+                <span>Learn About 7Days</span>
                 <ArrowRight className="w-4 h-4 text-[#FFB703]" />
               </Link>
 
               <Link
-                to="/products"
+                to="/contact"
                 className="inline-flex items-center gap-2 text-sm font-bold text-[#FB8500] hover:text-[#d46f00] px-4 py-2"
               >
-                <span>Browse Catalog</span>
+                <span>Visit Our Store</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
