@@ -13,8 +13,8 @@ import ContactCTA from '../components/ContactCTA';
 
 export default function HomePage() {
   usePageSEO({
-    title: '7Days Toys & Babyshop | Toys & Baby Essentials in Mananthavady',
-    description: "7Days Toys & Babyshop in Payod, Mananthavady, Wayanad — toys, baby essentials, gifts and kids' products.",
+    title: '7Days Toys & Babyshop | Toys & Baby Products in Mananthavady, Wayanad',
+    description: "Discover toys, baby products, essentials, and kids' gifts at 7Days Toys & Babyshop in Payod, Mananthavady, Wayanad. Visit our store or chat with us on WhatsApp!",
     canonicalPath: '/'
   });
 
