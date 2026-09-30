@@ -2,11 +2,16 @@ import React from 'react';
 import { usePageSEO } from '../hooks/usePageSEO';
 import Hero from '../components/Hero';
 import TrustStrip from '../components/TrustStrip';
-import UpdatesSection from '../components/UpdatesSection';
+import SmartShopping from '../components/SmartShopping';
+import AgeShop from '../components/AgeShop';
 import CategoriesSection from '../components/CategoriesSection';
+import GiftFinder from '../components/GiftFinder';
 import FeaturedProducts from '../components/FeaturedProducts';
+import StoreGallery from '../components/StoreGallery';
+import CareServices from '../components/CareServices';
+import UpdatesSection from '../components/UpdatesSection';
 import Why7Days from '../components/Why7Days';
-import AboutSection from '../components/AboutSection';
+import ParentsFAQ from '../components/ParentsFAQ';
 import InstagramSection from '../components/InstagramSection';
 import LocationSection from '../components/LocationSection';
 import ContactCTA from '../components/ContactCTA';
@@ -26,28 +31,43 @@ export default function HomePage() {
       {/* 2. Trust Strip */}
       <TrustStrip />
 
-      {/* 3. Latest Store Updates & Announcements */}
-      <UpdatesSection />
+      {/* 3. 7Days Smart Shopping Hub */}
+      <SmartShopping />
 
-      {/* 4. Categories Section */}
+      {/* 4. Shop by Age */}
+      <AgeShop />
+
+      {/* 5. Shop by Category (Preserved existing categories structure) */}
       <CategoriesSection />
 
-      {/* 4. Featured Products (Little Favorites) */}
+      {/* 6. Birthday & Gift Finder */}
+      <GiftFinder />
+
+      {/* 7. Featured Products */}
       <FeaturedProducts />
 
-      {/* 5. Why 7Days Section */}
+      {/* 8. Real 7Days Store Gallery */}
+      <StoreGallery />
+
+      {/* 9. 7Days Care & Service (Verified repairs, spares & diagnostics) */}
+      <CareServices />
+
+      {/* 10. Store Updates & Announcements */}
+      <UpdatesSection />
+
+      {/* 11. Why 7Days */}
       <Why7Days />
 
-      {/* 6. About Section */}
-      <AboutSection />
+      {/* 12. Parents Ask Us (FAQ) */}
+      <ParentsFAQ />
 
-      {/* 7. Instagram Section */}
+      {/* 13. Instagram Community Section */}
       <InstagramSection />
 
-      {/* 8. Location Section */}
+      {/* 14. Visit Our Store (Location, Map, Directions) */}
       <LocationSection />
 
-      {/* 9. Contact CTA */}
+      {/* 15. Final WhatsApp CTA */}
       <ContactCTA />
     </main>
   );

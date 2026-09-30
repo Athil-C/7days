@@ -46,16 +46,29 @@ export const SHOP_ADDRESS = {
  * @returns {string} WhatsApp URL
  */
 export function createWhatsAppUrl(message = "") {
+  const cleanNumber = SHOP_WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
   const encoded = encodeURIComponent(message || `Hi ${SHOP_FULL_NAME}, I'd like to inquire about your store products!`);
-  return `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encoded}`;
+  return `https://wa.me/${cleanNumber}?text=${encoded}`;
 }
 
 /**
  * Generates dynamic WhatsApp message for a specific product inquiry
- * @param {string} productName - Name of the product
+ * Strictly omits price if null/undefined.
+ * @param {string|object} product - Product name or Product object
  * @returns {string} WhatsApp URL
  */
-export function getProductInquiryUrl(productName) {
-  const message = `Hi ${SHOP_FULL_NAME}, I'm interested in ${productName}. Is it available?`;
+export function getProductInquiryUrl(product) {
+  if (typeof product === 'string') {
+    const message = `Hi ${SHOP_FULL_NAME},\n\nI'm interested in:\n\nProduct: ${product}\n\nCould you please confirm availability and share more details?\n\nThank you.`;
+    return createWhatsAppUrl(message);
+  }
+
+  const name = product?.name || 'this item';
+  const category = product?.category ? `Category: ${product.category}\n` : '';
+  const hasPrice = product?.price !== null && product?.price !== undefined && !Number.isNaN(product.price);
+  const priceLine = hasPrice ? `Price: ₹${product.price}\n\n` : '\n';
+
+  const message = `Hi ${SHOP_FULL_NAME},\n\nI'm interested in:\n\nProduct: ${name}\n${category}${priceLine}Could you please confirm availability and share more details?\n\nThank you.`;
   return createWhatsAppUrl(message);
 }
+

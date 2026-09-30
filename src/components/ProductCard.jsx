@@ -1,6 +1,7 @@
 import React from 'react';
-import { MessageCircle, Sparkles } from 'lucide-react';
+import { MessageCircle, Sparkles, Video } from 'lucide-react';
 import { getProductInquiryUrl } from '../data/config';
+import { isProductVideoEligible, generateWhatsAppProductInquiry } from '../utils/shoppingEngine';
 
 // Category color mappings matching the brand design system
 const CATEGORY_COLORS = {
@@ -14,10 +15,17 @@ const CATEGORY_COLORS = {
   School: 'bg-teal-50 text-teal-900 border-teal-200/70'
 };
 
-export default function ProductCard({ product }) {
-  const { name, category, description, price, image, badge } = product;
-  const inquiryUrl = getProductInquiryUrl(name);
+export default function ProductCard({ product, showVideoAction = true, giftContext = null }) {
+  const { id, name, category, description, price, image, badge } = product;
+  const inquiryUrl = giftContext 
+    ? generateWhatsAppProductInquiry({ product, inquiryType: 'gift', giftContext })
+    : getProductInquiryUrl(product);
+
+  const videoUrl = generateWhatsAppProductInquiry({ product, inquiryType: 'video' });
   const categoryStyle = CATEGORY_COLORS[category] || 'bg-slate-50 text-slate-900 border-slate-200/70';
+  const hasVideoOption = showVideoAction && isProductVideoEligible(id);
+
+  const hasPrice = typeof price === 'number' && price !== null && !Number.isNaN(price);
 
   return (
     <div className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden card-shadow card-hover border border-black/5 flex flex-col justify-between transition-all duration-300">
@@ -47,11 +55,11 @@ export default function ProductCard({ product }) {
           )}
         </div>
 
-        {/* In-Store Availability Status */}
+        {/* Check In-Store Availability Status */}
         <div className="absolute bottom-2.5 right-2.5 z-10 pointer-events-none">
-          <span className="text-[10px] font-semibold bg-emerald-600/90 backdrop-blur-xs text-white px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-            In Store
+          <span className="text-[10px] font-semibold bg-[#263238]/85 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-md shadow-xs flex items-center gap-1 border border-white/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FFB703] animate-pulse"></span>
+            Check availability
           </span>
         </div>
       </div>
@@ -69,26 +77,48 @@ export default function ProductCard({ product }) {
           )}
         </div>
 
-        {/* Price and WhatsApp Inquiry Action */}
-        <div className="mt-4 pt-3.5 border-t border-black/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div className="flex flex-col">
-            <span className="text-[10px] text-[#546E7A] uppercase tracking-wider font-semibold">
-              Price
-            </span>
-            <span className="text-xs sm:text-sm font-bold text-[#263238]">
-              {price !== null && price !== undefined ? `₹${price}` : "Contact for Price"}
-            </span>
-          </div>
+        {/* Action area */}
+        <div className="mt-4 pt-3.5 border-t border-black/5 flex flex-col gap-2.5">
+          {(hasPrice || hasVideoOption) && (
+            <div className={`flex items-center ${hasPrice ? 'justify-between' : 'justify-end'}`}>
+              {hasPrice && (
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-[#546E7A] uppercase tracking-wider font-semibold">
+                    Price
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-[#263238]">
+                    ₹{price}
+                  </span>
+                </div>
+              )}
 
+              {/* Video Request CTA (for eligible motion / vehicles / cycles) */}
+              {hasVideoOption && (
+                <a
+                  href={videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#219EBC] hover:text-[#18758d] bg-sky-50 hover:bg-sky-100/70 border border-sky-200/60 px-2.5 py-1 rounded-full transition-colors"
+                  title={`Request a live video of ${name}`}
+                  aria-label={`Ask for a video of ${name} on WhatsApp`}
+                >
+                  <Video className="w-3 h-3 text-[#219EBC]" />
+                  <span>Ask for Video</span>
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Primary WhatsApp Inquiry CTA */}
           <a
             href={inquiryUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white px-3.5 py-2 rounded-full text-xs font-bold shadow-xs hover:shadow transition-all duration-200 active:scale-95"
-            aria-label={`Inquire about ${name} on WhatsApp`}
+            className="w-full inline-flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white px-3.5 py-2.5 rounded-full text-xs font-bold shadow-xs hover:shadow transition-all duration-200 active:scale-95"
+            aria-label={`Ask about ${name} on WhatsApp`}
           >
             <MessageCircle className="w-3.5 h-3.5 fill-white" />
-            <span>Ask on WhatsApp</span>
+            <span>Ask about this product</span>
           </a>
         </div>
 

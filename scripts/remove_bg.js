@@ -29,7 +29,7 @@ async function processLogo() {
   for (let y = height - 1; y > height / 2; y--) {
     // Look for gold rim (gold has r > 120, g > 90)
     const idx = (y * width + Math.floor(width/2)) * info.channels;
-    const r = data[idx], g = data[idx+1], b = data[idx+2];
+    const r = data[idx], g = data[idx+1], _b = data[idx+2];
     if (r > 100 && g > 70) { bottomY = y; break; }
   }
 
@@ -43,7 +43,7 @@ async function processLogo() {
   let rightX = width - 1;
   for (let x = width - 1; x > width / 2; x--) {
     const idx = (Math.floor(height/2) * width + x) * info.channels;
-    const r = data[idx], g = data[idx+1], b = data[idx+2];
+    const r = data[idx], g = data[idx+1], _b = data[idx+2];
     if (r > 100 && g > 70) { rightX = x; break; }
   }
 
