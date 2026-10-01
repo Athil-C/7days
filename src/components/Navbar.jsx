@@ -122,16 +122,17 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Mobile Hamburger Toggle */}
+          {/* Mobile Actions & Hamburger Toggle */}
           <div className="flex items-center gap-2 md:hidden">
             <a
-              href={createWhatsAppUrl("Hi 7Days Toys & Babyshop, I'd like to ask about your products!")}
+              href={SHOP_INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-full bg-[#25D366] text-white shadow-xs"
-              aria-label="Chat on WhatsApp"
+              className="p-2 rounded-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white shadow-xs active:scale-95 transition-transform"
+              aria-label="Follow 7Days on Instagram"
+              title="Follow on Instagram"
             >
-              <MessageCircle className="w-4 h-4 fill-white" />
+              <InstagramIcon className="w-4 h-4" />
             </a>
 
             <button
