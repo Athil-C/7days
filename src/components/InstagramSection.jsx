@@ -7,33 +7,33 @@ export default function InstagramSection() {
   const instagramPosts = [
     {
       id: 1,
-      image: "/products/kids-sport-bicycle.jpg",
-      caption: "Kids sport bicycles with training wheels and front baskets! 🚲🌟"
+      image: "/products/baybee/baybee-copster-electric-jeep.jpg",
+      caption: "Battery operated 4x4 electric jeeps with parent remote control! 🚙⚡"
     },
     {
       id: 2,
-      image: "/products/rc-stunt-car.jpg",
-      caption: "High-speed 2.4GHz RC monster racers for thrilling playtime! 🏎️💨"
+      image: "/products/baybee/baybee-velzo-battery-bike.jpg",
+      caption: "Kids sports battery bikes with training wheels & headlamps! 🏍️✨"
     },
     {
       id: 3,
-      image: "/products/kids-toy-drone.jpg",
-      caption: "Kids mini toy drones with 360° propeller safety guards & LED lights! 🚁✨"
+      image: "/products/baybee/baybee-nova-baby-tricycle.jpg",
+      caption: "Canopy baby tricycles with steerable parent push handle! 👶🍼"
     },
     {
       id: 4,
-      image: "/products/baby-canopy-tricycle.jpg",
-      caption: "Canopy baby tricycles with parent steerable push handle bar! 👶🍼"
+      image: "/products/baybee/baybee-magic-twister-swing-car.jpg",
+      caption: "Original magic twist swing cars with light-up PU wheels! 🚗💫"
     },
     {
       id: 5,
-      image: "/products/panda-magic-swing-car.jpg",
-      caption: "Original panda magic swing twister cars in store! 🐼🚗"
+      image: "/products/baybee/baybee-convertible-study-table.jpg",
+      caption: "2-in-1 convertible kids study tables & activity desks! 🎨📚"
     },
     {
       id: 6,
-      image: "/products/kids-activity-table.jpg",
-      caption: "Multi-activity kids study tables & building block desks! 🎨📚"
+      image: "/products/baybee/baybee-2in1-high-chair.jpg",
+      caption: "Convertible baby dining high chairs with 5-point safety harness! 🥣👶"
     },
   ];
 

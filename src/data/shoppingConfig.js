@@ -12,49 +12,49 @@ export const AGE_GROUPS = [
     id: "0-1",
     label: "0–1 Years",
     tagline: "Infant & Sensory",
-    description: "Soothing teethers, rattle rings, and sensory plush friends.",
+    description: "BPA-free silicone teethers, soothing bouncers, and kick piano sensory gyms.",
     icon: "👶",
-    productIds: [27, 28] // Plush teddy & rattle, organic beechwood teether
+    productIds: [25, 31, 32, 33, 34]
   },
   {
     id: "1-3",
     label: "1–3 Years",
     tagline: "First Steps & Discovery",
-    description: "Activity walkers, canopy tricycles, panda swing cars & soft toys.",
+    description: "Musical walkers, canopy tricycles, magic twister cars, high chairs & travel strollers.",
     icon: "🚼",
-    productIds: [24, 25, 26, 27, 28, 12] // Activity walker, canopy trike, panda car, plush, dancing cactus
+    productIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 26, 33]
   },
   {
     id: "3-5",
     label: "3–5 Years",
     tagline: "Curious Preschoolers",
-    description: "Building blocks, kitchen roleplay sets, bowling & mini vehicles.",
+    description: "Rechargeable electric jeeps, sports bikes, study desks, kitchen sets & kick scooters.",
     icon: "🧒",
-    productIds: [4, 5, 8, 9, 10, 13, 22, 26, 29, 30] // Police car, fire truck, blocks, kitchen, doctor, bowling, scooter, panda car, table, bag
+    productIds: [1, 2, 4, 5, 7, 8, 10, 16, 17, 23, 27, 28, 30]
   },
   {
     id: "5-8",
     label: "5–8 Years",
     tagline: "Active Exploration",
-    description: "RC stunt cars, rescue helicopters, fashion dolls, kick scooters & blasters.",
+    description: "Police electric jeeps, adventure bikes, ergonomic study tables, and math learning sets.",
     icon: "🎈",
-    productIds: [1, 3, 6, 7, 8, 9, 10, 11, 13, 16, 17, 19, 21, 22, 29, 30, 31, 32, 33]
+    productIds: [1, 2, 3, 5, 6, 8, 9, 23, 24, 27, 28, 29, 30]
   },
   {
     id: "8-12",
     label: "8–12 Years",
-    tagline: "Sports, Gadgets & Challenges",
-    description: "Kids drones, sports bikes, skateboards, cricket sets & speed puzzles.",
+    tagline: "Sports & Learning",
+    description: "High-end electric adventure bikes, multi-activity study desks, and skate scooters.",
     icon: "⚡",
-    productIds: [1, 2, 6, 11, 14, 15, 16, 17, 18, 19, 20, 23, 31, 32, 33]
+    productIds: [5, 6, 9, 24, 29]
   },
   {
     id: "12+",
     label: "12+ Years",
-    tagline: "Advanced & Hobby",
-    description: "Mountain sports bicycles, double kicktail skateboards & acoustic guitars.",
+    tagline: "Advanced & Study",
+    description: "Multi-activity ergonomic study desks and premium adjustable skate scooters.",
     icon: "🎯",
-    productIds: [2, 14, 15, 16, 17, 18, 19, 20, 23, 32, 33]
+    productIds: [6, 9, 24]
   }
 ];
 
@@ -103,50 +103,53 @@ export const GIFT_OCCASIONS = [
 
 // Occasion to product preference
 export const OCCASION_PRODUCT_MAPPING = {
-  "new-baby": [24, 25, 26, 27, 28],
-  "school": [29, 30, 31, 32, 14],
-  "birthday": [1, 2, 7, 8, 9, 10, 11, 20, 21, 22, 25, 26, 33],
-  "festival": [1, 6, 7, 8, 9, 20, 22, 26],
-  "just-for-fun": [1, 3, 4, 5, 12, 13, 14, 15, 16, 17, 22, 23],
-  "gift": [1, 2, 7, 8, 9, 10, 20, 22, 26, 27, 33]
+  "new-baby": [11, 12, 19, 20, 21, 22, 25, 31, 32, 34],
+  "school": [8, 9, 10, 29, 30],
+  "birthday": [1, 2, 3, 5, 6, 13, 16, 17, 23, 27, 28],
+  "festival": [1, 2, 5, 13, 16, 17, 23],
+  "just-for-fun": [1, 4, 5, 7, 15, 16, 17, 23, 27, 28],
+  "gift": [1, 2, 5, 8, 11, 13, 16, 19, 23, 29, 31, 33]
 };
 
 // 4. Interests / Themes
 export const INTEREST_OPTIONS = [
-  { id: "cars-rc", label: "Cars & RC", icon: "🏎️", category: "Toys", productIds: [1, 2, 3, 4, 5, 6] },
-  { id: "outdoor", label: "Outdoor", icon: "🛴", category: "Outdoors", productIds: [20, 21, 22, 23] },
-  { id: "dolls", label: "Dolls", icon: "👗", category: "Toys", productIds: [7] },
-  { id: "educational", label: "Educational", icon: "🧩", category: "Education", productIds: [8, 14, 29, 32] },
-  { id: "pretend-play", label: "Pretend Play", icon: "🍳", category: "Toys", productIds: [9, 10] },
-  { id: "sports", label: "Sports", icon: "⚽", category: "Outdoors", productIds: [16, 17, 18, 19, 23] },
-  { id: "musical", label: "Musical", icon: "🎸", category: "Music", productIds: [12, 33] },
-  { id: "baby", label: "Baby", icon: "👶", category: "Baby", productIds: [24, 25, 26, 27, 28] },
-  { id: "plush", label: "Plush", icon: "🧸", category: "Baby", productIds: [12, 27] }
+  { id: "cars-rc", label: "Jeeps & Cars", icon: "🚙", category: "Toys", productIds: [1, 2, 3, 4] },
+  { id: "outdoor", label: "Outdoor & Bikes", icon: "🛴", category: "Outdoors", productIds: [5, 6, 7, 13, 14, 15, 16, 17, 23, 24] },
+  { id: "dolls", label: "Baby Dolls & Plush", icon: "🧸", category: "Baby", productIds: [34] },
+  { id: "educational", label: "Study & Montessori", icon: "🧩", category: "Education", productIds: [8, 9, 10, 29, 30] },
+  { id: "pretend-play", label: "Pretend Play", icon: "🍳", category: "Toys", productIds: [27, 28] },
+  { id: "sports", label: "Sports & Scooters", icon: "🛴", category: "Outdoors", productIds: [5, 6, 23, 24, 27] },
+  { id: "musical", label: "Musical Toys", icon: "🎵", category: "Baby", productIds: [1, 19, 32] },
+  { id: "baby", label: "Baby Gear & Care", icon: "👶", category: "Baby", productIds: [11, 12, 13, 14, 19, 20, 21, 22, 25, 26, 31, 32, 33, 34] },
+  { id: "plush", label: "Rockers & Plush", icon: "🦄", category: "Baby", productIds: [26, 34] }
 ];
 
 // 5. Products eligible for video showcase requests
 export const VIDEO_ELIGIBLE_PRODUCT_IDS = new Set([
-  1,  // RC Stunt Truck
-  2,  // Quadcopter Drone
-  3,  // Rescue Helicopter
-  6,  // Die-Cast Luxury Supercar
-  11, // Dart Blaster
-  12, // Dancing Cactus Musical Toy
-  20, // 20" Mountain Sports Bicycle
-  21, // 16" Bicycle with Training Wheels
-  22, // 3-Wheel Light-Up Kick Scooter
-  23, // Canadian Maple Skateboard
-  24, // Baby Activity Walker
-  25, // Baby Canopy Tricycle
-  26, // Panda Magic Swing Twister Car
-  33  // Kids Acoustic Guitar
+  1,  // Copster Electric Jeep
+  2,  // Chase Electric Jeep
+  3,  // SuperCop Police Jeep
+  4,  // SpeedRover Electric Jeep
+  5,  // Velzo Battery Bike
+  6,  // Rover Battery Bike
+  8,  // 2-in-1 Study Table
+  9,  // 5-in-1 Study Table & Chair
+  11, // 2-in-1 High Chair
+  13, // Nova Canopy Tricycle
+  14, // Trico 2-in-1 Canopy Trike
+  16, // Nitro Pro Ride-On Car
+  17, // Diver Magic Twister Swing Car
+  19, // Musical Baby Walker
+  21, // Twin Foldable Stroller
+  23  // Twirlo Light-Up Kick Scooter
 ]);
 
 // 6. Search interpretation synonym groups
 export const SEARCH_SYNONYMS = {
   rc: ["rc", "remote", "stunt", "drone", "truck", "car", "quadcopter"],
   remote: ["rc", "remote", "stunt", "drone", "truck", "car"],
-  car: ["car", "truck", "supercar", "diecast", "police", "stunt", "panda", "swing"],
+  car: ["car", "truck", "supercar", "diecast", "police", "stunt", "panda", "swing", "jeep"],
+  jeep: ["truck", "car", "stunt", "monster", "vehicle", "jeep"],
   bike: ["bicycle", "bike", "cycle", "tricycle", "trike", "sports bike"],
   cycle: ["bicycle", "bike", "cycle", "tricycle", "trike"],
   bicycle: ["bicycle", "bike", "cycle"],
@@ -163,6 +166,11 @@ export const SEARCH_SYNONYMS = {
   guitar: ["guitar", "acoustic", "music", "musical"],
   music: ["guitar", "musical", "dancing cactus", "piano", "acoustic"],
   school: ["backpack", "school bag", "sipper", "water bottle", "study table", "pencils", "art"],
+  table: ["study table", "activity table", "desk", "chair"],
+  chair: ["study table", "chair", "high chair", "seat"],
+  trike: ["tricycle", "trike", "canopy tricycle"],
+  stroller: ["tricycle", "walker", "trike", "stroller"],
+  "ride-on": ["swing car", "twister", "panda", "scooter", "ride-on", "ride on"],
   baby: ["baby", "walker", "tricycle", "teether", "rattle", "teddy", "panda car"],
   puzzle: ["puzzle", "cube", "rubik", "brain"]
 };

@@ -96,9 +96,9 @@ export default function AboutPage() {
             <div className="space-y-4">
               <div className="rounded-3xl overflow-hidden card-shadow aspect-square bg-sky-50">
                 <img
-                  src="/products/lime-green-sports-bike.jpg"
-                  alt="Kids sports bicycle at 7Days Toys & Babyshop"
-                  className="w-full h-full object-cover"
+                  src="/products/baybee/baybee-velzo-battery-bike.jpg"
+                  alt="Kids sports bike at 7Days Toys & Babyshop"
+                  className="w-full h-full object-contain p-2"
                   loading="lazy"
                   decoding="async"
                   width="300"

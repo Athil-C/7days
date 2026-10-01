@@ -91,12 +91,12 @@ export default function Hero() {
             {/* Visual Collage Grid */}
             <div className="grid grid-cols-12 gap-3 sm:gap-4 p-2 sm:p-4 rounded-3xl bg-white/60 backdrop-blur-xs border border-white/80 shadow-lg">
               
-              {/* Main Feature: Kids Sport Bicycle */}
+              {/* Main Feature: Kids Electric Jeep */}
               <div className="col-span-7 relative rounded-2xl overflow-hidden shadow-sm group aspect-[4/5] bg-white">
                 <img
-                  src="/products/kids-sport-bicycle.jpg"
-                  alt="Kids sport bicycle at 7Days Toys & Babyshop"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  src="/products/baybee/baybee-copster-electric-jeep.jpg"
+                  alt="Kids electric jeep at 7Days Toys & Babyshop"
+                  className="w-full h-full object-contain p-2 transition-transform duration-700 group-hover:scale-105"
                   loading="eager"
                   fetchPriority="high"
                   width="400"
@@ -105,23 +105,23 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 <div className="absolute bottom-3 left-3 right-3 text-white">
                   <span className="text-[10px] font-bold uppercase tracking-wider bg-[#FFB703] text-[#263238] px-2 py-0.5 rounded-full inline-block mb-1">
-                    Sport Cycles
+                    Ride-On Jeeps
                   </span>
                   <p className="text-xs sm:text-sm font-bold leading-tight drop-shadow-xs">
-                    Kids Bicycles with Basket
+                    Electric 4x4 Jeeps with Remote
                   </p>
                 </div>
               </div>
 
-              {/* Right Stack: RC Monster Truck & Panda Swing Car */}
+              {/* Right Stack: Battery Bike & Magic Swing Car */}
               <div className="col-span-5 flex flex-col gap-3 sm:gap-4">
                 
-                {/* RC Stunt Car */}
+                {/* Battery Bike */}
                 <div className="relative rounded-2xl overflow-hidden shadow-sm group aspect-[1/1] bg-white">
                   <img
-                    src="/products/rc-stunt-car.jpg"
-                    alt="RC monster truck at 7Days Toys & Babyshop"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    src="/products/baybee/baybee-velzo-battery-bike.jpg"
+                    alt="Battery operated bike at 7Days Toys & Babyshop"
+                    className="w-full h-full object-contain p-1 transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
                     width="250"
                     height="250"
@@ -129,17 +129,17 @@ export default function Hero() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                   <div className="absolute bottom-2 left-2 right-2 text-white">
                     <span className="text-[9px] font-semibold bg-[#FB8500] text-white px-2 py-0.5 rounded-full">
-                      RC Monster Cars
+                      Electric Bikes
                     </span>
                   </div>
                 </div>
 
-                {/* Panda Magic Swing Car */}
+                {/* Magic Swing Car */}
                 <div className="relative rounded-2xl overflow-hidden shadow-sm group aspect-[1/1] bg-white">
                   <img
-                    src="/products/panda-magic-swing-car.jpg"
-                    alt="Panda magic swing car at 7Days Toys & Babyshop"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    src="/products/baybee/baybee-magic-twister-swing-car.jpg"
+                    alt="Magic swing twister car at 7Days Toys & Babyshop"
+                    className="w-full h-full object-contain p-1 transition-transform duration-700 group-hover:scale-105"
                     loading="eager"
                     width="250"
                     height="250"
@@ -147,38 +147,38 @@ export default function Hero() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                   <div className="absolute bottom-2 left-2 right-2 text-white">
                     <span className="text-[9px] font-semibold bg-[#219EBC] text-white px-2 py-0.5 rounded-full">
-                      Panda Swing Cars
+                      Magic Swing Cars
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Bottom Strip: Toy Drones & Baby Tricycles */}
+              {/* Bottom Strip: Study Tables & Baby Tricycles */}
               <div className="col-span-12 grid grid-cols-2 gap-3 sm:gap-4 pt-1">
                 
                 <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#FFB703]/20 shadow-xs">
-                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-amber-50/50">
                     <img 
-                      src="/products/kids-toy-drone.jpg" 
-                      alt="Kids toy drone" 
-                      className="w-full h-full object-cover" 
+                      src="/products/baybee/baybee-convertible-study-table.jpg" 
+                      alt="Kids study table" 
+                      className="w-full h-full object-contain" 
                       loading="lazy"
                       width="40"
                       height="40"
                     />
                   </div>
                   <div className="overflow-hidden">
-                    <p className="text-xs font-bold text-[#263238] truncate">Kids Toy Drones</p>
-                    <p className="text-[10px] text-[#546E7A] truncate">LED Flyer with Remote</p>
+                    <p className="text-xs font-bold text-[#263238] truncate">Study Desks</p>
+                    <p className="text-[10px] text-[#546E7A] truncate">Ergonomic Table & Chair</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-[#219EBC]/20 shadow-xs">
-                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-blue-50/50">
                     <img 
-                      src="/products/baby-canopy-tricycle.jpg" 
+                      src="/products/baybee/baybee-nova-baby-tricycle.jpg" 
                       alt="Baby tricycle" 
-                      className="w-full h-full object-cover" 
+                      className="w-full h-full object-contain" 
                       loading="lazy"
                       width="40"
                       height="40"
@@ -186,7 +186,7 @@ export default function Hero() {
                   </div>
                   <div className="overflow-hidden">
                     <p className="text-xs font-bold text-[#263238] truncate">Baby Tricycles</p>
-                    <p className="text-[10px] text-[#546E7A] truncate">Push Handle & Canopy</p>
+                    <p className="text-[10px] text-[#546E7A] truncate">Parent Push & Canopy</p>
                   </div>
                 </div>
               </div>

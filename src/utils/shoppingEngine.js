@@ -138,33 +138,74 @@ export function parseSearchIntent(rawQuery) {
 /**
  * Smart Search Products
  * Combines full text matching with semantic synonym expansion and intent extraction.
+ * Uses whole-word boundary matching to eliminate false positives (e.g. "car" matching "care", "carpet", "shopping cart").
  */
 export function searchProducts(productsList, rawQuery) {
   if (!rawQuery || !rawQuery.trim()) return productsList;
 
+  const cleanQuery = rawQuery.toLowerCase().trim();
   const intent = parseSearchIntent(rawQuery);
   const terms = intent.expandedTerms;
+  const isVehicleQuery = cleanQuery.includes('car') || cleanQuery.includes('jeep') || cleanQuery.includes('rc') || cleanQuery.includes('remote');
 
-  return productsList.filter(item => {
+  function matchWordOrBoundary(text, term) {
+    if (!text || !term) return false;
+    if (term.length <= 4) {
+      const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const rx = new RegExp(`(^|\\s|[^a-zA-Z0-9])${escaped}($|\\s|[^a-zA-Z0-9])`, 'i');
+      return rx.test(text);
+    }
+    return text.includes(term);
+  }
+
+  const scored = [];
+
+  for (const item of productsList) {
     const name = item.name.toLowerCase();
     const desc = (item.description || '').toLowerCase();
-    const cat = item.category.toLowerCase();
     const badge = (item.badge || '').toLowerCase();
+    const combined = `${name} ${badge}`;
 
-    // Check direct query first
-    const directMatch = name.includes(rawQuery.toLowerCase().trim()) || 
-                        desc.includes(rawQuery.toLowerCase().trim()) ||
-                        cat.includes(rawQuery.toLowerCase().trim()) ||
-                        badge.includes(rawQuery.toLowerCase().trim());
+    // Negative filtering: if searching for cars/jeeps/RC, exclude bath stands, sippers, shopping carts, etc.
+    if (isVehicleQuery && (name.includes('bath') || name.includes('sipper') || name.includes('shopping cart') || name.includes('teether') || name.includes('playpen'))) {
+      continue;
+    }
 
-    if (directMatch) return true;
+    let score = 0;
 
-    // Check token / synonym overlap
-    return terms.some(term => {
-      if (term.length < 2) return false;
-      return name.includes(term) || desc.includes(term) || cat.includes(term) || badge.includes(term);
+    // Exact direct query match
+    if (combined.includes(cleanQuery)) {
+      score += 100;
+    } else if (desc.includes(cleanQuery)) {
+      score += 40;
+    }
+
+    // Token & synonym matching with word boundaries
+    terms.forEach(term => {
+      if (term.length < 2) return;
+      if (matchWordOrBoundary(combined, term)) {
+        score += 25;
+      } else if (matchWordOrBoundary(desc, term)) {
+        score += 8;
+      }
     });
-  });
+
+    // Special booster for remote car / charge car
+    if (isVehicleQuery) {
+      const isCar = matchWordOrBoundary(combined, 'car') || matchWordOrBoundary(combined, 'jeep') || matchWordOrBoundary(combined, 'suv');
+      const isElectric = combined.includes('battery') || combined.includes('electric') || combined.includes('rechargeable') || combined.includes('remote') || desc.includes('remote') || desc.includes('rechargeable');
+      if (isCar && isElectric) {
+        score += 35;
+      }
+    }
+
+    if (score > 0) {
+      scored.push({ item, score });
+    }
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.map(s => s.item);
 }
 
 /**
