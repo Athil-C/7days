@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
@@ -15,6 +16,7 @@ import NotFoundPage from './pages/NotFoundPage';
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FFF9F0] text-[#263238] font-body">
+      <Analytics />
       <ScrollToTop />
       
       {/* Sticky Responsive Header */}
