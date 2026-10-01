@@ -1,0 +1,21 @@
+{
+  "name": "7Days Toys & Babyshop",
+  "short_name": "7Days",
+  "description": "Toys, baby essentials, gifts and kids' products at 7Days Toys & Babyshop in Mananthavady, Wayanad",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF9F0",
+  "theme_color": "#FFF9F0",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

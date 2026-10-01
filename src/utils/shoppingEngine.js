@@ -308,19 +308,19 @@ export function generateWhatsAppProductInquiry({ product, inquiryType = 'general
   let message = '';
 
   if (inquiryType === 'video') {
-    message = `Hi ${SHOP_FULL_NAME},\n\nCould you please send me a short video of this product?\n\nProduct:\n${product.name}\n\nThank you.`;
+    message = `Hi ${SHOP_FULL_NAME},\n\nCould you please send me a short video of this product?\n\nProduct:\n*${product.name}*\n\nThank you.`;
   } else if (inquiryType === 'gift' && giftContext) {
     const ageLabel = giftContext.ageLabel || 'child';
     const occasionLabel = giftContext.occasionLabel || 'gift';
     const budgetLabel = giftContext.budgetLabel ? ` with a budget of ${giftContext.budgetLabel}` : '';
 
-    message = `Hi ${SHOP_FULL_NAME},\n\nI'm looking for a ${occasionLabel.toLowerCase()} gift for a ${ageLabel}${budgetLabel}.\n\nProduct:\n${product.name}\n\nCould you please confirm availability and share more details?\n\nThank you.`;
+    message = `Hi ${SHOP_FULL_NAME},\n\nI'm looking for a ${occasionLabel.toLowerCase()} gift for a ${ageLabel}${budgetLabel}.\n\nProduct:\n*${product.name}*\n\nCould you please confirm availability and share more details?\n\nThank you.`;
   } else {
     // Standard product inquiry
     const hasPrice = product.price !== null && product.price !== undefined && !Number.isNaN(product.price);
-    const priceLine = hasPrice ? `Price: ₹${product.price}\n\n` : '';
+    const priceLine = hasPrice ? `Price: ₹${product.price}\n` : '';
 
-    message = `Hi ${SHOP_FULL_NAME},\n\nI'm interested in:\n\nProduct: ${product.name}\nCategory: ${product.category}\n\n${priceLine}Could you please confirm availability and share more details?\n\nThank you.`;
+    message = `Hi ${SHOP_FULL_NAME},\n\nI'm interested in:\n\nProduct: *${product.name}*\nCategory: ${product.category}\n${priceLine}\nCould you please confirm in-store availability and share details?\n\nThank you.`;
   }
 
   return createWhatsAppUrl(message);

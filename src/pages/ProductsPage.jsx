@@ -11,6 +11,7 @@ import { createWhatsAppUrl, SHOP_FULL_NAME } from '../data/config';
 import { usePageSEO } from '../hooks/usePageSEO';
 
 const QUICK_SEARCH_CHIPS = [
+  'Hero Cycle',
   'RC car',
   'Sports Bike',
   'Baby Walker',

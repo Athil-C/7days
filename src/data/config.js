@@ -66,9 +66,9 @@ export function getProductInquiryUrl(product) {
   const name = product?.name || 'this item';
   const category = product?.category ? `Category: ${product.category}\n` : '';
   const hasPrice = product?.price !== null && product?.price !== undefined && !Number.isNaN(product.price);
-  const priceLine = hasPrice ? `Price: ₹${product.price}\n\n` : '\n';
+  const priceLine = hasPrice ? `Price: ₹${product.price}\n` : '';
 
-  const message = `Hi ${SHOP_FULL_NAME},\n\nI'm interested in:\n\nProduct: ${name}\n${category}${priceLine}Could you please confirm availability and share more details?\n\nThank you.`;
+  const message = `Hi ${SHOP_FULL_NAME},\n\nI'm interested in this product:\n\n*${name}*\n${category}${priceLine}\nCould you please confirm in-store availability and share details?\n\nThank you.`;
   return createWhatsAppUrl(message);
 }
 

@@ -74,6 +74,17 @@ export const SHOWCASE_CATEGORIES = [
     description: "Browse complete catalog"
   },
   {
+    id: "hero-cycles",
+    name: "Hero Cycles",
+    filterKey: "Outdoors",
+    searchQuery: "hero cycle",
+    image: "/products/hero/blast.png",
+    bgColor: "#FFF4ED",
+    activeBg: "#FED7AA",
+    accentColor: "#EA580C",
+    description: "Official Hero Bicycles, Kids Cycles & Mountain Bikes"
+  },
+  {
     id: "bike",
     name: "Bike",
     filterKey: "Outdoors",
@@ -211,6 +222,10 @@ export function isProductInShowcaseCategory(product, showcaseId) {
   const text = `${name} ${badge}`;
 
   switch (showcaseId) {
+    case 'hero-cycles': {
+      return product.badge === 'Hero Cycle' || (/\b(hero)\b/i.test(name) && /\b(cycle|cycles|bicycle|bicycles|bmx)\b/i.test(name));
+    }
+
     case 'battery-jeep': {
       // Must have actual vehicle in title (jeep, car, suv, truck)
       const isVehicleName = /\b(jeep|jeeps|car|cars|suv|suvs|truck|trucks)\b/i.test(name);

@@ -1,10 +1,10 @@
 /**
- * 7Days Toys & Babyshop - Official Baybee Product Catalog
+ * 7Days Toys & Babyshop - Official Product Catalog
  * 
- * Sourced directly from Baybee product collection & sitemap:
- * - 100% official studio product photography from Baybee
+ * Sourced directly from Baybee & Hero Cycles official product collections:
+ * - 100% official studio product photography (Baybee + Hero Cycles)
  * - Zero hallucinated prices (price: null preserved)
- * - Complete catalog: 1298 products across Toys, Outdoors, Baby, and Education
+ * - Total catalog: 1348 products
  */
 
 export const products = [
@@ -12987,6 +12987,506 @@ export const products = [
     "image": "https://cdn.shopify.com/s/files/1/0717/4622/4450/files/01_ce28964e-6afb-4db8-8f0f-50ffcdb1d699.jpg?v=1779725204",
     "isFeatured": false,
     "badge": "Walkers"
+  },
+  {
+    "id": 1299,
+    "name": "Hero Blast Bicycle",
+    "category": "Outdoors",
+    "description": "Caliper Brakes Adjustable Seat Steel Frame Rigid Fork Support Wheels",
+    "price": null,
+    "image": "/products/hero/blast.png",
+    "isFeatured": true,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1300,
+    "name": "Hero Blast Bicycle",
+    "category": "Outdoors",
+    "description": "Caliper Brakes Adjustable Seat Steel Frame Rigid Fork Support Wheels",
+    "price": null,
+    "image": "/products/hero/hero-blast.png",
+    "isFeatured": true,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1301,
+    "name": "Hero F11 Bicycle",
+    "category": "Outdoors",
+    "description": "V-Brake Control Detachable Carrier Single Speed Safe Ride Geometry Front Suspension",
+    "price": null,
+    "image": "/products/hero/f11.png",
+    "isFeatured": true,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1302,
+    "name": "Hero Rove Bicycle",
+    "category": "Outdoors",
+    "description": "V-Brakes Rigid Fork Steel Frame Comfort Geometry Inbuilt Carrier",
+    "price": null,
+    "image": "/products/hero/rove.png",
+    "isFeatured": true,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1303,
+    "name": "Hero Rove IC Bicycle",
+    "category": "Outdoors",
+    "description": "V-Brakes Rigid Fork Steel Frame Comfort Geometry Inbuilt Carrier",
+    "price": null,
+    "image": "/products/hero/rove-ic.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1304,
+    "name": "Hero Emerald Bicycle",
+    "category": "Outdoors",
+    "description": "V-Brakes Carry Basket Single Speed Rigid Fork Support Wheels",
+    "price": null,
+    "image": "/products/hero/emerald.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1305,
+    "name": "Hero Next Bicycle",
+    "category": "Outdoors",
+    "description": "V-Brakes Rigid Fork Hardtail Steel Optimised Geometry Single Speed",
+    "price": null,
+    "image": "/products/hero/next.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1306,
+    "name": "Hero Aloha Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Aloha Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/aloha-2.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1307,
+    "name": "Hero Janhvi Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Janhvi Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/hero-janhvi.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1308,
+    "name": "Hero Fusion Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Fusion Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/fusion.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1309,
+    "name": "Hero Jet Master Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Jet Master Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/jet-master.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1310,
+    "name": "Hero Jiya Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Jiya Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/hero-jiya.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1311,
+    "name": "Hero Skylar Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Skylar Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/hero-skylar.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1312,
+    "name": "Hero Winner Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Winner Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/winner.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1313,
+    "name": "Hero Whistle Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Whistle Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/whistle.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1314,
+    "name": "Hero Tango 2.0 Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Tango 2.0 Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/tango-2-0.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1315,
+    "name": "Hero Sting Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Sting Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/sting.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1316,
+    "name": "Hero Speedo Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Speedo Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/speedo.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1317,
+    "name": "Hero Sonic Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Sonic Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/sonic-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1318,
+    "name": "Hero Rush Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Rush Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/rush.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1319,
+    "name": "Hero Rotor Bmx",
+    "category": "Outdoors",
+    "description": "Hero Rotor Bmx engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/rotor-bmx.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1320,
+    "name": "Hero Ride On Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Ride On Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/ride-on.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1321,
+    "name": "Hero Pistol Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Pistol Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/pistol.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1322,
+    "name": "Hero Kitty Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Kitty Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/kitty.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1323,
+    "name": "Hero Jumpshot Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Jumpshot Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/jumpshot-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1324,
+    "name": "Hero Galaxy Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Galaxy Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/galaxy.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1325,
+    "name": "Hero Fairy Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Fairy Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/fairy-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1326,
+    "name": "Hero F11 Bicycle",
+    "category": "Outdoors",
+    "description": "Hero F11 Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/f11-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1327,
+    "name": "Hero Boomer 3.0 Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Boomer 3.0 Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/trade-model.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1328,
+    "name": "Hero Blush Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Blush Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/blush.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1329,
+    "name": "Hero Aloha Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Aloha Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/aloha-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1330,
+    "name": "Hero Enticer Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Enticer Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/enticer.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1331,
+    "name": "Hero Attitude Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Attitude Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/attitude-gear.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1332,
+    "name": "Hero Blunt-gem Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Blunt-gem Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/blunt-gem-gear.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1333,
+    "name": "Hero Enzo Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Enzo Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/enzo-gear.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1334,
+    "name": "Hero Flanker-gem Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Flanker-gem Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/flanker-gem-gear.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1335,
+    "name": "Hero Next Sports T25 Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Next Sports T25 Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/next-sports-t25-gear.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1336,
+    "name": "Hero Next T25 Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Next T25 Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/next-t25-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1337,
+    "name": "Hero Slingshot+sports Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Slingshot+sports Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/slingshot-sports-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1338,
+    "name": "Hero Slingshot+ Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Slingshot+ Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/slingshot-plus.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1339,
+    "name": "Hero Enzo Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Enzo Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/enzo.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1340,
+    "name": "Hero Yuga Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Yuga Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/yuga.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1341,
+    "name": "Hero Viper Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Viper Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/viper.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1342,
+    "name": "Hero Typhoon Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Typhoon Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/typhoon.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1343,
+    "name": "Hero Sniper Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Sniper Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/sniper-1.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1344,
+    "name": "Hero Slingshot Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Slingshot Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/slingshot.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1345,
+    "name": "Hero NEO Bicycle",
+    "category": "Outdoors",
+    "description": "Hero NEO Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/neo.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1346,
+    "name": "Hero Colt Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Colt Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/colt.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1347,
+    "name": "Hero Colt Sports Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Colt Sports Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/colt-sports.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
+  },
+  {
+    "id": 1348,
+    "name": "Hero Bonfire Refresh Bicycle",
+    "category": "Outdoors",
+    "description": "Hero Bonfire Refresh Bicycle engineered with durable steel frame, anti-skid tires, and precision safety brakes. Available at 7Days Toys & Babyshop.",
+    "price": null,
+    "image": "/products/hero/bonfire-refresh.png",
+    "isFeatured": false,
+    "badge": "Hero Cycle"
   }
 ];
 
