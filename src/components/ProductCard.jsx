@@ -55,6 +55,23 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
           )}
         </div>
 
+        {/* 7Days Corner Logo Badge */}
+        <div 
+          className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 z-10 pointer-events-none"
+          aria-hidden="true"
+        >
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 p-0.5 shadow-xs border border-black/10 backdrop-blur-xs flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+            <img
+              src="/7days-logo.png"
+              alt="7Days"
+              className="w-full h-full object-contain rounded-full"
+              loading="lazy"
+              width="32"
+              height="32"
+            />
+          </div>
+        </div>
+
         {/* Check In-Store Availability Status */}
         <div className="absolute bottom-2.5 right-2.5 z-10 pointer-events-none">
           <span className="text-[10px] font-semibold bg-[#263238]/85 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-md shadow-xs flex items-center gap-1 border border-white/10">

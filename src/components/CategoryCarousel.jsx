@@ -18,11 +18,15 @@ export default function CategoryCarousel({
   title = "Shop by Category",
   subtitle = "Explore our handpicked collection of toys, cycles, baby essentials & gifts",
   showHeading = true,
-  actionButton = null
+  actionButton = null,
+  autoScroll = true,
+  autoScrollInterval = 3000
 }) {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const pauseTimerRef = useRef(null);
 
   // Check scroll positions to toggle arrow states
   const updateScrollButtons = () => {
@@ -46,10 +50,51 @@ export default function CategoryCarousel({
     }
   }, []);
 
+  // Automatic horizontal scroll animation loop
+  useEffect(() => {
+    if (!autoScroll || isPaused) return;
+
+    const interval = setInterval(() => {
+      if (!scrollRef.current) return;
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      const maxScroll = scrollWidth - clientWidth;
+
+      // If at or near the end, smoothly loop back to start
+      if (scrollLeft >= maxScroll - 20) {
+        scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        // Scroll forward by one card step (responsive width)
+        const step = clientWidth < 640 ? 190 : 250;
+        scrollRef.current.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, autoScrollInterval);
+
+    return () => clearInterval(interval);
+  }, [autoScroll, isPaused, autoScrollInterval]);
+
+  // Clean up pause timer on unmount
+  useEffect(() => {
+    return () => {
+      if (pauseTimerRef.current) {
+        clearTimeout(pauseTimerRef.current);
+      }
+    };
+  }, []);
+
+  const pauseAutoScrollTemporarily = (duration = 4500) => {
+    setIsPaused(true);
+    if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
+    pauseTimerRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, duration);
+  };
+
   const handleScroll = (direction) => {
     if (scrollRef.current) {
-      const offset = direction === 'left' ? -280 : 280;
+      const step = scrollRef.current.clientWidth < 640 ? 200 : 280;
+      const offset = direction === 'left' ? -step : step;
       scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+      pauseAutoScrollTemporarily(4500);
     }
   };
 
@@ -62,6 +107,7 @@ export default function CategoryCarousel({
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Explore by Category</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse ml-1" title="Auto-scrolling active" />
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
               {title}
@@ -82,7 +128,13 @@ export default function CategoryCarousel({
       )}
 
       {/* Carousel Container with Floating Navigation Arrows */}
-      <div className="relative group">
+      <div 
+        className="relative group"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={() => setIsPaused(true)}
+        onTouchEnd={() => pauseAutoScrollTemporarily(3500)}
+      >
         
         {/* Left Scroll Arrow */}
         <button

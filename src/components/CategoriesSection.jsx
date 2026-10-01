@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Sparkles, MessageCircle, ExternalLink } from 'lucide-react';
+import { ArrowRight, MessageCircle } from 'lucide-react';
 import CategoryCarousel from './CategoryCarousel';
 import { SHOWCASE_CATEGORIES } from '../data/categories';
 import { createWhatsAppUrl, SHOP_FULL_NAME } from '../data/config';
