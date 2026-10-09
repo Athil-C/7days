@@ -204,7 +204,10 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4">
           <p>
             © {currentYear} {SHOP_FULL_NAME}. All rights reserved.
-
+            <span className="mx-2">•</span>
+            <Link to="/admin" className="hover:text-[#FFB703] transition-colors underline decoration-dotted">
+              Admin Portal
+            </Link>
           </p>
           <p className="flex items-center gap-1">
             Made with <Heart className="w-3.5 h-3.5 text-[#FB8500] fill-[#FB8500]" /> for families in Wayanad
