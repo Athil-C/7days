@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SHOWCASE_CATEGORIES } from '../data/categories';
 
 /**
@@ -105,7 +105,6 @@ export default function CategoryCarousel({
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 px-4 sm:px-0">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
               <span>Explore by Category</span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse ml-1" title="Auto-scrolling active" />
             </div>

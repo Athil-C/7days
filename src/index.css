@@ -21,6 +21,8 @@
     font-family: var(--font-body);
     background-color: #FFF9F0;
     color: #263238;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1,
@@ -30,83 +32,33 @@
   h5,
   h6 {
     font-family: var(--font-heading);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
 }
 
-/* Custom micro-animations */
-@keyframes floatGentle {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-8px) rotate(2deg);
-  }
-}
-
-@keyframes floatReverse {
-
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(8px) rotate(-2deg);
-  }
-}
-
-@keyframes softPulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(1.04);
-    opacity: 0.9;
-  }
-}
-
-.animate-float {
-  animation: floatGentle 5s ease-in-out infinite;
-}
-
-.animate-float-reverse {
-  animation: floatReverse 6s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: floatGentle 5.5s ease-in-out infinite 1.5s;
-}
-
-.animate-soft-pulse {
-  animation: softPulse 3s ease-in-out infinite;
-}
-
-/* Glass and card utilities */
+/* Refined structural utilities for human-directed editorial feel */
 .glass-nav {
-  background: rgba(255, 249, 240, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 249, 240, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
+/* Subtle, grounded surface elevation (replaces exaggerated AI bubble shadow) */
 .card-shadow {
-  box-shadow: 0 10px 30px -10px rgba(38, 50, 56, 0.07), 0 4px 12px -2px rgba(38, 50, 56, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(38, 50, 56, 0.04), 0 1px 2px -1px rgba(38, 50, 56, 0.03);
 }
 
 .card-hover {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 35px -12px rgba(251, 133, 0, 0.15), 0 8px 16px -4px rgba(38, 50, 56, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Editorial hairline rule */
+.hairline {
+  border-color: rgba(38, 50, 56, 0.08);
 }
 
 /* Custom scrollbar for horizontal categories */
@@ -117,4 +69,9 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@keyframes autoSlideProgress {
+  from { width: 0%; }
+  to { width: 100%; }
 }

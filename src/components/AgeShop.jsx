@@ -1,18 +1,33 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, ArrowRight, Sparkles, LayoutGrid, SlidersHorizontal } from 'lucide-react';
-import { AGE_GROUPS } from '../data/shoppingConfig';
+import { Users, ArrowRight, LayoutGrid, SlidersHorizontal } from 'lucide-react';
+import { AGE_GROUPS as DEFAULT_AGE_GROUPS } from '../data/shoppingConfig';
+import { getCustomAgeBrackets } from '../services/homepageSectionsService';
 import { products } from '../data/products';
 import { filterProductsByAge } from '../utils/shoppingEngine';
 import ProductCard from './ProductCard';
 
 export default function AgeShop() {
-  const [selectedAge, setSelectedAge] = useState(AGE_GROUPS[1].id); // default to 1-3 years
+  const [ageGroups, setAgeGroups] = useState(() => {
+    const custom = getCustomAgeBrackets();
+    return custom && custom.length > 0 ? custom : DEFAULT_AGE_GROUPS;
+  });
+
+  useEffect(() => {
+    const handleSync = () => {
+      const custom = getCustomAgeBrackets();
+      if (custom && custom.length > 0) setAgeGroups(custom);
+    };
+    window.addEventListener('7days_homepage_sections_updated', handleSync);
+    return () => window.removeEventListener('7days_homepage_sections_updated', handleSync);
+  }, []);
+
+  const [selectedAge, setSelectedAge] = useState(() => (ageGroups[1]?.id || ageGroups[0]?.id || '1-3'));
   const [displayCount, setDisplayCount] = useState(4);
-  const [viewMode, setViewMode] = useState('pills'); // 'pills' (compact, visible products) | 'cards'
+  const [viewMode, setViewMode] = useState('pills');
   const resultsRef = useRef(null);
 
-  const currentAgeGroup = AGE_GROUPS.find(g => g.id === selectedAge) || AGE_GROUPS[0];
+  const currentAgeGroup = ageGroups.find(g => g.id === selectedAge) || ageGroups[0] || DEFAULT_AGE_GROUPS[0];
   const allMatchedProducts = filterProductsByAge(products, selectedAge);
   const visibleProducts = allMatchedProducts.slice(0, displayCount);
 
@@ -98,7 +113,7 @@ export default function AgeShop() {
         {viewMode === 'pills' && (
           <div className="mb-5 sm:mb-6">
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-              {AGE_GROUPS.map((group) => {
+              {ageGroups.map((group) => {
                 const isActive = selectedAge === group.id;
                 const count = filterProductsByAge(products, group.id).length;
                 return (
@@ -133,7 +148,7 @@ export default function AgeShop() {
         {/* ======================================================== */}
         {viewMode === 'cards' && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 mb-6">
-            {AGE_GROUPS.map((group) => {
+            {ageGroups.map((group) => {
               const isActive = selectedAge === group.id;
               const count = filterProductsByAge(products, group.id).length;
               return (
@@ -177,7 +192,7 @@ export default function AgeShop() {
         >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-[#219EBC]/15 text-[#219EBC] flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4" />
+              <Users className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">

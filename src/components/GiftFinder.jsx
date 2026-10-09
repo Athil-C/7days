@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { Gift, RotateCcw, ArrowRight, ArrowLeft, Check, Sparkles, MessageCircle, SlidersHorizontal, ListOrdered } from 'lucide-react';
-import { 
-  AGE_GROUPS, 
-  BUDGET_TIERS, 
-  GIFT_OCCASIONS, 
-  INTEREST_OPTIONS 
+import { Gift, RotateCcw, ArrowRight, ArrowLeft, Check, MessageCircle, SlidersHorizontal, ListOrdered } from 'lucide-react';
+import {
+  AGE_GROUPS,
+  BUDGET_TIERS,
+  GIFT_OCCASIONS,
+  INTEREST_OPTIONS
 } from '../data/shoppingConfig';
 import { getRecommendedProducts } from '../utils/shoppingEngine';
 import ProductCard from './ProductCard';
@@ -62,13 +62,13 @@ export default function GiftFinder() {
   return (
     <section id="gift-finder" className="py-12 sm:py-20 bg-gradient-to-b from-amber-50/50 to-white/70 border-b border-black/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Title & View Mode Switcher */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-10">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FB8500]/15 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
               <Gift className="w-3.5 h-3.5 fill-[#FB8500]" />
-              <span>Interactive Assistant</span>
+              <span>Gift Guide</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
               Birthday &amp; Gift Finder
@@ -84,11 +84,10 @@ export default function GiftFinder() {
               <button
                 onClick={() => setFilterMode('instant')}
                 type="button"
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                  filterMode === 'instant'
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${filterMode === 'instant'
                     ? 'bg-[#FB8500] text-white shadow-2xs'
                     : 'text-[#546E7A] hover:text-[#263238]'
-                }`}
+                  }`}
                 title="Instant real-time filtering with visible products"
               >
                 <SlidersHorizontal className="w-3 h-3" />
@@ -97,11 +96,10 @@ export default function GiftFinder() {
               <button
                 onClick={() => setFilterMode('wizard')}
                 type="button"
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                  filterMode === 'wizard'
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${filterMode === 'wizard'
                     ? 'bg-[#FB8500] text-white shadow-2xs'
                     : 'text-[#546E7A] hover:text-[#263238]'
-                }`}
+                  }`}
                 title="Guided 4-step wizard"
               >
                 <ListOrdered className="w-3 h-3" />
@@ -127,7 +125,7 @@ export default function GiftFinder() {
         {/* ======================================================== */}
         {filterMode === 'instant' && (
           <div className="bg-white rounded-3xl p-4 sm:p-6 card-shadow border border-black/5 mb-6 space-y-3 sm:space-y-4">
-            
+
             {/* Row 1: Age */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <span className="text-[11px] font-extrabold text-[#546E7A] uppercase tracking-wider min-w-[70px] shrink-0">
@@ -141,13 +139,11 @@ export default function GiftFinder() {
                       key={age.id}
                       onClick={() => handlePillSelect(setSelectedAge, age.id)}
                       type="button"
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${
-                        isActive
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${isActive
                           ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-xs scale-102 ring-2 ring-[#FB8500]/20'
                           : 'bg-[#FFF9F0] text-[#263238] border-black/5 hover:border-black/15'
-                      }`}
+                        }`}
                     >
-                      <span>{age.icon}</span>
                       <span>{age.label}</span>
                     </button>
                   );
@@ -168,11 +164,10 @@ export default function GiftFinder() {
                       key={occ.id}
                       onClick={() => handlePillSelect(setSelectedOccasion, occ.id)}
                       type="button"
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${
-                        isActive
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${isActive
                           ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-xs scale-102 ring-2 ring-[#FB8500]/20'
                           : 'bg-[#FFF9F0] text-[#263238] border-black/5 hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span>{occ.icon}</span>
                       <span>{occ.label}</span>
@@ -195,11 +190,10 @@ export default function GiftFinder() {
                       key={int.id}
                       onClick={() => handlePillSelect(setSelectedInterest, int.id)}
                       type="button"
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${
-                        isActive
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${isActive
                           ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-xs scale-102 ring-2 ring-[#FB8500]/20'
                           : 'bg-[#FFF9F0] text-[#263238] border-black/5 hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span>{int.icon}</span>
                       <span>{int.label}</span>
@@ -222,11 +216,10 @@ export default function GiftFinder() {
                       key={b.id}
                       onClick={() => handlePillSelect(setSelectedBudget, b.id)}
                       type="button"
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${
-                        isActive
+                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${isActive
                           ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-xs scale-102 ring-2 ring-[#FB8500]/20'
                           : 'bg-[#FFF9F0] text-[#263238] border-black/5 hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span>{b.label}</span>
                     </button>
@@ -243,7 +236,7 @@ export default function GiftFinder() {
         {/* ======================================================== */}
         {filterMode === 'wizard' && (
           <div className="max-w-3xl mx-auto bg-white rounded-3xl p-5 sm:p-7 card-shadow border border-black/5 mb-6">
-            
+
             {/* Step Progress Tracker */}
             <div className="grid grid-cols-4 gap-2 text-center mb-6">
               {[
@@ -262,13 +255,12 @@ export default function GiftFinder() {
                     className="flex flex-col items-center group cursor-pointer focus:outline-none"
                   >
                     <div
-                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs mb-1 transition-all ${
-                        isCurrent
+                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs mb-1 transition-all ${isCurrent
                           ? 'bg-[#FB8500] text-white ring-4 ring-[#FB8500]/20 shadow-xs scale-105'
                           : isPast
-                          ? 'bg-[#6A994E] text-white'
-                          : 'bg-black/5 text-[#546E7A] group-hover:bg-black/10'
-                      }`}
+                            ? 'bg-[#6A994E] text-white'
+                            : 'bg-black/5 text-[#546E7A] group-hover:bg-black/10'
+                        }`}
                     >
                       {isPast ? <Check className="w-3.5 h-3.5" /> : s.step}
                     </div>
@@ -292,11 +284,10 @@ export default function GiftFinder() {
                       key={age.id}
                       onClick={() => setSelectedAge(age.id)}
                       type="button"
-                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                        selectedAge === age.id
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${selectedAge === age.id
                           ? 'border-[#FB8500] bg-amber-50/70 text-[#263238] shadow-xs ring-2 ring-[#FB8500]/20'
                           : 'border-black/5 bg-[#FFF9F0] text-[#263238] hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span className="text-xl mb-0.5">{age.icon}</span>
                       <span className="text-xs sm:text-sm font-extrabold font-heading">{age.label}</span>
@@ -319,11 +310,10 @@ export default function GiftFinder() {
                       key={occ.id}
                       onClick={() => setSelectedOccasion(occ.id)}
                       type="button"
-                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                        selectedOccasion === occ.id
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${selectedOccasion === occ.id
                           ? 'border-[#FB8500] bg-amber-50/70 text-[#263238] shadow-xs ring-2 ring-[#FB8500]/20'
                           : 'border-black/5 bg-[#FFF9F0] text-[#263238] hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span className="text-xl mb-0.5">{occ.icon}</span>
                       <span className="text-xs sm:text-sm font-extrabold font-heading">{occ.label}</span>
@@ -345,11 +335,10 @@ export default function GiftFinder() {
                       key={int.id}
                       onClick={() => setSelectedInterest(int.id)}
                       type="button"
-                      className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
-                        selectedInterest === int.id
+                      className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${selectedInterest === int.id
                           ? 'border-[#FB8500] bg-amber-50/70 text-[#263238] shadow-xs ring-2 ring-[#FB8500]/20'
                           : 'border-black/5 bg-[#FFF9F0] text-[#263238] hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span className="text-xl shrink-0">{int.icon}</span>
                       <div>
@@ -374,11 +363,10 @@ export default function GiftFinder() {
                       key={b.id}
                       onClick={() => setSelectedBudget(b.id)}
                       type="button"
-                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
-                        selectedBudget === b.id
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${selectedBudget === b.id
                           ? 'border-[#FB8500] bg-amber-50/70 text-[#263238] shadow-xs ring-2 ring-[#FB8500]/20'
                           : 'border-black/5 bg-[#FFF9F0] text-[#263238] hover:border-black/15'
-                      }`}
+                        }`}
                     >
                       <span className="text-sm font-extrabold font-heading text-[#FB8500]">{b.label}</span>
                       <p className="text-[11px] text-[#546E7A] mt-0.5">{b.description}</p>
@@ -443,7 +431,7 @@ export default function GiftFinder() {
         >
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#FB8500]" />
+              <Gift className="w-4 h-4 text-[#FB8500]" />
               <h3 className="text-sm sm:text-base font-extrabold text-[#263238] font-heading">
                 Here are your personalized gift ideas ({recommendations.length} items)
               </h3>
@@ -467,10 +455,10 @@ export default function GiftFinder() {
         {/* Matched Product Cards with smooth re-render */}
         <div key={`${selectedAge}-${selectedOccasion}-${selectedInterest}-${selectedBudget}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-fadeIn">
           {recommendations.slice(0, 4).map(product => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              giftContext={giftContext} 
+            <ProductCard
+              key={product.id}
+              product={product}
+              giftContext={giftContext}
             />
           ))}
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Sparkles, Smile, MapPin, Layers } from 'lucide-react';
+import { CheckCircle2, Smile, MapPin, Layers } from 'lucide-react';
 
 export default function Why7Days() {
   const features = [
@@ -40,7 +40,6 @@ export default function Why7Days() {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#263238] text-xs font-bold uppercase tracking-wider mb-2.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#FB8500]" />
             <span>The 7Days Difference</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">

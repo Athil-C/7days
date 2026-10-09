@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart } from 'lucide-react';
-import { products } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 import ProductCard from './ProductCard';
 
 export default function FeaturedProducts() {
+  const { products } = useProducts();
   // Show featured products or top 8 products
   const featuredList = products.filter(p => p.isFeatured).slice(0, 8);
 

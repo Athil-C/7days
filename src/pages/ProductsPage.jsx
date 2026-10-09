@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Sparkles, MessageCircle, X, RefreshCw, Coins, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
-import { products, PRODUCT_CATEGORIES } from '../data/products';
+import { Search, MessageCircle, X, RefreshCw, Coins, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { PRODUCT_CATEGORIES } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 import { SHOWCASE_CATEGORIES, isProductInShowcaseCategory } from '../data/categories';
 import { BUDGET_TIERS } from '../data/shoppingConfig';
 import { searchProducts, filterProductsByBudget, parseSearchIntent } from '../utils/shoppingEngine';
@@ -36,6 +37,7 @@ function generatePaginationPages(currentPage, totalPages) {
 }
 
 export default function ProductsPage() {
+  const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
   const catIdFromUrl = searchParams.get('catId');
@@ -134,7 +136,7 @@ export default function ProductsPage() {
     }
 
     return result;
-  }, [searchQuery, activeShowcase, selectedCategory, selectedBudget, detectedIntent.budget]);
+  }, [products, searchQuery, activeShowcase, selectedCategory, selectedBudget, detectedIntent.budget]);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -186,7 +188,6 @@ export default function ProductsPage() {
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2.5">
-            <Sparkles className="w-3.5 h-3.5" />
             <span>Our Catalog</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-3">

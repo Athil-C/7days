@@ -13,7 +13,7 @@ export const AGE_GROUPS = [
     label: "0–1 Years",
     tagline: "Infant & Sensory",
     description: "BPA-free silicone teethers, soothing bouncers, and kick piano sensory gyms.",
-    icon: "👶",
+    icon: "",
     productIds: [25, 31, 32, 33, 34]
   },
   {
@@ -21,7 +21,7 @@ export const AGE_GROUPS = [
     label: "1–3 Years",
     tagline: "First Steps & Discovery",
     description: "Musical walkers, canopy tricycles, magic twister cars, high chairs & travel strollers.",
-    icon: "🚼",
+    icon: "",
     productIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 26, 33]
   },
   {
@@ -29,7 +29,7 @@ export const AGE_GROUPS = [
     label: "3–5 Years",
     tagline: "Curious Preschoolers",
     description: "Rechargeable electric jeeps, sports bikes, study desks, kitchen sets & kick scooters.",
-    icon: "🧒",
+    icon: "",
     productIds: [1, 2, 4, 5, 7, 8, 10, 16, 17, 23, 27, 28, 30]
   },
   {
@@ -37,7 +37,7 @@ export const AGE_GROUPS = [
     label: "5–8 Years",
     tagline: "Active Exploration",
     description: "Police electric jeeps, adventure bikes, ergonomic study tables, and math learning sets.",
-    icon: "🎈",
+    icon: "",
     productIds: [1, 2, 3, 5, 6, 8, 9, 23, 24, 27, 28, 29, 30]
   },
   {
@@ -45,7 +45,7 @@ export const AGE_GROUPS = [
     label: "8–12 Years",
     tagline: "Sports & Learning",
     description: "High-end electric adventure bikes, multi-activity study desks, and skate scooters.",
-    icon: "⚡",
+    icon: "",
     productIds: [5, 6, 9, 24, 29]
   },
   {
@@ -53,7 +53,7 @@ export const AGE_GROUPS = [
     label: "12+ Years",
     tagline: "Advanced & Study",
     description: "Multi-activity ergonomic study desks and premium adjustable skate scooters.",
-    icon: "🎯",
+    icon: "",
     productIds: [6, 9, 24]
   }
 ];
@@ -93,12 +93,12 @@ export const BUDGET_TIERS = [
 
 // 3. Gift Occasions
 export const GIFT_OCCASIONS = [
-  { id: "birthday", label: "Birthday", icon: "🎂" },
-  { id: "new-baby", label: "New Baby", icon: "🍼" },
-  { id: "school", label: "School", icon: "🎒" },
-  { id: "festival", label: "Festival", icon: "✨" },
-  { id: "just-for-fun", label: "Just for Fun", icon: "🎉" },
-  { id: "gift", label: "General Gift", icon: "🎁" }
+  { id: "birthday", label: "Birthday", icon: "" },
+  { id: "new-baby", label: "New Baby", icon: "" },
+  { id: "school", label: "School", icon: "" },
+  { id: "festival", label: "Festival", icon: "" },
+  { id: "just-for-fun", label: "Just for Fun", icon: "" },
+  { id: "gift", label: "General Gift", icon: "" }
 ];
 
 // Occasion to product preference
@@ -113,15 +113,15 @@ export const OCCASION_PRODUCT_MAPPING = {
 
 // 4. Interests / Themes
 export const INTEREST_OPTIONS = [
-  { id: "cars-rc", label: "Jeeps & Cars", icon: "🚙", category: "Toys", productIds: [1, 2, 3, 4] },
-  { id: "outdoor", label: "Outdoor & Bikes", icon: "🛴", category: "Outdoors", productIds: [5, 6, 7, 13, 14, 15, 16, 17, 23, 24] },
-  { id: "dolls", label: "Baby Dolls & Plush", icon: "🧸", category: "Baby", productIds: [34] },
-  { id: "educational", label: "Study & Montessori", icon: "🧩", category: "Education", productIds: [8, 9, 10, 29, 30] },
-  { id: "pretend-play", label: "Pretend Play", icon: "🍳", category: "Toys", productIds: [27, 28] },
-  { id: "sports", label: "Sports & Scooters", icon: "🛴", category: "Outdoors", productIds: [5, 6, 23, 24, 27] },
-  { id: "musical", label: "Musical Toys", icon: "🎵", category: "Baby", productIds: [1, 19, 32] },
-  { id: "baby", label: "Baby Gear & Care", icon: "👶", category: "Baby", productIds: [11, 12, 13, 14, 19, 20, 21, 22, 25, 26, 31, 32, 33, 34] },
-  { id: "plush", label: "Rockers & Plush", icon: "🦄", category: "Baby", productIds: [26, 34] }
+  { id: "cars-rc", label: "Jeeps & Cars", icon: "", category: "Toys", productIds: [1, 2, 3, 4] },
+  { id: "outdoor", label: "Outdoor & Bikes", icon: "", category: "Outdoors", productIds: [5, 6, 7, 13, 14, 15, 16, 17, 23, 24] },
+  { id: "dolls", label: "Baby Dolls & Plush", icon: "", category: "Baby", productIds: [34] },
+  { id: "educational", label: "Study & Montessori", icon: "", category: "Education", productIds: [8, 9, 10, 29, 30] },
+  { id: "pretend-play", label: "Pretend Play", icon: "", category: "Toys", productIds: [27, 28] },
+  { id: "sports", label: "Sports & Scooters", icon: "", category: "Outdoors", productIds: [5, 6, 23, 24, 27] },
+  { id: "musical", label: "Musical Toys", icon: "", category: "Baby", productIds: [1, 19, 32] },
+  { id: "baby", label: "Baby Gear & Care", icon: "", category: "Baby", productIds: [11, 12, 13, 14, 19, 20, 21, 22, 25, 26, 31, 32, 33, 34] },
+  { id: "plush", label: "Rockers & Plush", icon: "", category: "Baby", productIds: [26, 34] }
 ];
 
 // 5. Products eligible for video showcase requests

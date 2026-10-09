@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import { Camera, MapPin, ArrowRight } from 'lucide-react';
 import { SHOP_FULL_NAME, SHOP_ADDRESS } from '../data/config';
 
 export default function StoreGallery() {
@@ -65,7 +65,6 @@ export default function StoreGallery() {
             
             <div className="absolute top-4 left-4">
               <span className="text-[11px] font-extrabold bg-[#FB8500] text-white px-3 py-1 rounded-full shadow-xs tracking-wide uppercase inline-flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
                 Featured Display
               </span>
             </div>

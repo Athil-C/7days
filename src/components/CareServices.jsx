@@ -1,42 +1,26 @@
 import React from 'react';
-import { Wrench, BatteryCharging, Bike, Cpu, MessageCircle, Phone, Sparkles } from 'lucide-react';
+import { Wrench, BatteryCharging, Bike, Cpu, MessageCircle, Phone } from 'lucide-react';
 import { createWhatsAppUrl, SHOP_PHONE_CALL, SHOP_PHONE_DISPLAY, SHOP_FULL_NAME } from '../data/config';
 
+import { getCustomCareServices } from '../services/homepageSectionsService';
+
+const ICON_MAP = {
+  Cpu,
+  Bike,
+  BatteryCharging,
+  Wrench
+};
+
 export default function CareServices() {
-  const verifiedServices = [
-    {
-      icon: Cpu,
-      title: 'Kids EV & Ride-on Servicing',
-      description: 'Complete maintenance, diagnostics, and repairs for children\'s electric cars and rechargeable bikes.',
-      tag: 'Electric Vehicles',
-      accent: 'text-[#FB8500]',
-      bg: 'bg-[#FB8500]/15'
-    },
-    {
-      icon: Bike,
-      title: 'Gear Cycle Service & Tuning',
-      description: 'Professional brake tuning, chain adjustment, gear alignment, and safety inspections for all kids bikes.',
-      tag: 'Bicycles',
-      accent: 'text-[#219EBC]',
-      bg: 'bg-[#219EBC]/15'
-    },
-    {
-      icon: BatteryCharging,
-      title: 'Spare Parts & Battery Replacement',
-      description: 'Authentic 6V/12V ride-on batteries, remote controllers, chargers, pedal switches, and replacement wheels.',
-      tag: 'Spare Parts',
-      accent: 'text-[#6A994E]',
-      bg: 'bg-[#6A994E]/15'
-    },
-    {
-      icon: Wrench,
-      title: 'In-Store Quick Diagnostics',
-      description: 'Bring your vehicle directly to our Payod showroom for hands-on evaluation and expert troubleshooting.',
-      tag: 'At Showroom',
-      accent: 'text-purple-600',
-      bg: 'bg-purple-100'
-    }
-  ];
+  const [services, setServices] = React.useState(getCustomCareServices());
+
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setServices(getCustomCareServices());
+    };
+    window.addEventListener('7days_homepage_sections_updated', handleUpdate);
+    return () => window.removeEventListener('7days_homepage_sections_updated', handleUpdate);
+  }, []);
 
   const serviceWhatsAppUrl = createWhatsAppUrl(
     `Hi ${SHOP_FULL_NAME}, I would like to inquire about Electric Car/Bike/Gear Cycle Service and Spare Parts.`
@@ -62,8 +46,8 @@ export default function CareServices() {
 
         {/* 4 Verified Service Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
-          {verifiedServices.map((svc, idx) => {
-            const Icon = svc.icon;
+          {services.map((svc, idx) => {
+            const Icon = (svc.iconKey && ICON_MAP[svc.iconKey]) || ICON_MAP.Wrench;
             return (
               <div
                 key={idx}
@@ -89,7 +73,6 @@ export default function CareServices() {
 
                 <div className="mt-5 pt-3 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-[#546E7A]">
                   <span>Available in Payod</span>
-                  <Sparkles className="w-3.5 h-3.5 text-[#FB8500]" />
                 </div>
               </div>
             );

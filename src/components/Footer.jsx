@@ -2,17 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, MapPin, Heart, Phone } from 'lucide-react';
 import { InstagramIcon } from './Icons';
-import { 
-  SHOP_NAME, 
-  SHOP_SUBTITLE, 
-  SHOP_FULL_NAME, 
-  SHOP_ADDRESS, 
-  SHOP_INSTAGRAM_URL, 
+import {
+  SHOP_NAME,
+  SHOP_SUBTITLE,
+  SHOP_FULL_NAME,
+  SHOP_ADDRESS,
+  SHOP_INSTAGRAM_URL,
   SHOP_PHONE_DISPLAY,
   SHOP_PHONE_CALL,
   SHOP_PHONE_SECONDARY,
   SHOP_PHONE_SECONDARY_CALL,
-  createWhatsAppUrl 
+  createWhatsAppUrl
 } from '../data/config';
 
 export default function Footer() {
@@ -21,10 +21,10 @@ export default function Footer() {
   return (
     <footer className="bg-[#263238] text-white pt-16 pb-12 border-t border-black/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Main Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
-          
+
           {/* Brand Info */}
           <div className="lg:col-span-4">
             <Link to="/" className="inline-flex items-center gap-3 mb-4 group" aria-label="7Days Toys & Babyshop Home">
@@ -202,7 +202,10 @@ export default function Footer() {
 
         {/* Bottom Copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4">
-          <p>© {currentYear} {SHOP_FULL_NAME}. All rights reserved.</p>
+          <p>
+            © {currentYear} {SHOP_FULL_NAME}. All rights reserved.
+
+          </p>
           <p className="flex items-center gap-1">
             Made with <Heart className="w-3.5 h-3.5 text-[#FB8500] fill-[#FB8500]" /> for families in Wayanad
           </p>

@@ -1,41 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 import { SHOP_INSTAGRAM_URL } from '../data/config';
+import { getCustomInstagramFeed } from '../services/homepageSectionsService';
 
 export default function InstagramSection() {
-  const instagramPosts = [
-    {
-      id: 1,
-      image: "/products/baybee/baybee-copster-electric-jeep.jpg",
-      caption: "Battery operated 4x4 electric jeeps with parent remote control! 🚙⚡"
-    },
-    {
-      id: 2,
-      image: "/products/baybee/baybee-velzo-battery-bike.jpg",
-      caption: "Kids sports battery bikes with training wheels & headlamps! 🏍️✨"
-    },
-    {
-      id: 3,
-      image: "/products/baybee/baybee-nova-baby-tricycle.jpg",
-      caption: "Canopy baby tricycles with steerable parent push handle! 👶🍼"
-    },
-    {
-      id: 4,
-      image: "/products/baybee/baybee-magic-twister-swing-car.jpg",
-      caption: "Original magic twist swing cars with light-up PU wheels! 🚗💫"
-    },
-    {
-      id: 5,
-      image: "/products/baybee/baybee-convertible-study-table.jpg",
-      caption: "2-in-1 convertible kids study tables & activity desks! 🎨📚"
-    },
-    {
-      id: 6,
-      image: "/products/baybee/baybee-2in1-high-chair.jpg",
-      caption: "Convertible baby dining high chairs with 5-point safety harness! 🥣👶"
-    },
-  ];
+  const [feed, setFeed] = useState(getCustomInstagramFeed());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setFeed(getCustomInstagramFeed());
+    };
+    window.addEventListener('7days_homepage_sections_updated', handleUpdate);
+    return () => window.removeEventListener('7days_homepage_sections_updated', handleUpdate);
+  }, []);
+
+  const instagramPosts = feed?.posts || [];
+  const handle = feed?.handle || '@7days_toys';
+  const targetUrl = feed?.url || SHOP_INSTAGRAM_URL;
+  const heading = feed?.heading || 'Follow 7Days Toys on Instagram';
+  const subtitle = feed?.subtitle || 'See new arrivals, store reels, and toy updates from our Payod shop.';
 
   return (
     <section className="py-14 sm:py-20">
@@ -45,13 +29,13 @@ export default function InstagramSection() {
         <div className="text-center max-w-xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E1306C]/10 text-[#E1306C] text-xs font-bold uppercase tracking-wider mb-2.5">
             <InstagramIcon className="w-3.5 h-3.5" />
-            <span>@7days_toys</span>
+            <span>{handle}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
-            Follow 7Days Toys on Instagram
+            {heading}
           </h2>
           <p className="text-[#546E7A] text-sm sm:text-base mt-2">
-            See new arrivals, store reels, and toy updates from our Payod shop.
+            {subtitle}
           </p>
         </div>
 
@@ -60,7 +44,7 @@ export default function InstagramSection() {
           {instagramPosts.map((post) => (
             <a
               key={post.id}
-              href={SHOP_INSTAGRAM_URL}
+              href={targetUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative aspect-square rounded-2xl overflow-hidden bg-white shadow-xs focus:outline-none block border border-black/5"
@@ -87,13 +71,13 @@ export default function InstagramSection() {
         {/* Follow CTA Button */}
         <div className="text-center">
           <a
-            href={SHOP_INSTAGRAM_URL}
+            href={targetUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 bg-gradient-to-r from-[#E1306C] to-[#FD1D1D] hover:opacity-95 text-white px-7 py-3 rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all duration-200"
           >
             <InstagramIcon className="w-4 h-4" />
-            <span>Follow @7days_toys</span>
+            <span>Follow {handle}</span>
             <ExternalLink className="w-3.5 h-3.5 opacity-80" />
           </a>
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { MessageCircle, Sparkles, Video } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MessageCircle, Video } from 'lucide-react';
 import { getProductInquiryUrl } from '../data/config';
 import { isProductVideoEligible, generateWhatsAppProductInquiry } from '../utils/shoppingEngine';
 
@@ -30,8 +31,11 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
   return (
     <div className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden card-shadow card-hover border border-black/5 flex flex-col justify-between transition-all duration-300">
       
-      {/* Product Image Stage: Isolated on clean white background, centered object-contain */}
-      <div className="relative aspect-square overflow-hidden bg-white p-5 sm:p-6 flex items-center justify-center border-b border-black/5">
+      {/* Product Image Stage: Clicking navigates to detailed Product Page */}
+      <Link
+        to={`/product/${id}`}
+        className="relative aspect-square overflow-hidden bg-white p-5 sm:p-6 flex items-center justify-center border-b border-black/5 cursor-pointer block"
+      >
         <img
           src={image}
           alt={name}
@@ -48,8 +52,7 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
             {category}
           </span>
           {badge && (
-            <span className="text-[9px] sm:text-[10px] font-bold bg-[#FB8500] text-white px-2 py-0.5 rounded-full shadow-xs tracking-wider uppercase inline-flex items-center gap-1">
-              <Sparkles className="w-2.5 h-2.5" />
+            <span className="text-[9px] sm:text-[10px] font-bold bg-[#FB8500] text-white px-2.5 py-0.5 rounded-full shadow-xs tracking-wider uppercase">
               {badge}
             </span>
           )}
@@ -76,17 +79,19 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
         <div className="absolute bottom-2.5 right-2.5 z-10 pointer-events-none">
           <span className="text-[10px] font-semibold bg-[#263238]/85 backdrop-blur-xs text-white px-2.5 py-0.5 rounded-md shadow-xs flex items-center gap-1 border border-white/10">
             <span className="w-1.5 h-1.5 rounded-full bg-[#FFB703] animate-pulse"></span>
-            Check availability
+            View Details
           </span>
         </div>
-      </div>
+      </Link>
 
       {/* Product Details */}
       <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between bg-white">
         <div>
-          <h3 className="text-sm sm:text-base font-bold text-[#263238] font-heading group-hover:text-[#FB8500] transition-colors leading-snug line-clamp-2">
-            {name}
-          </h3>
+          <Link to={`/product/${id}`}>
+            <h3 className="text-sm sm:text-base font-bold text-[#263238] font-heading group-hover:text-[#FB8500] transition-colors leading-snug line-clamp-2 cursor-pointer">
+              {name}
+            </h3>
+          </Link>
           {description && (
             <p className="text-xs text-[#546E7A] mt-1.5 line-clamp-2 leading-relaxed">
               {description}

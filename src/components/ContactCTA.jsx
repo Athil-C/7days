@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageCircle, Phone, Sparkles } from 'lucide-react';
+import { MessageCircle, Phone } from 'lucide-react';
 import { SHOP_FULL_NAME, SHOP_PHONE_CALL, SHOP_PHONE_DISPLAY, createWhatsAppUrl } from '../data/config';
 
 export default function ContactCTA() {
@@ -15,7 +15,6 @@ export default function ContactCTA() {
 
           <div className="relative z-10 max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-xs text-white text-xs font-bold uppercase tracking-wider mb-4">
-              <Sparkles className="w-3.5 h-3.5" />
               <span>We're Happy to Help</span>
             </div>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Sparkles } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { 
   SHOP_FULL_NAME, 
   createWhatsAppUrl 
@@ -63,8 +63,7 @@ export default function ContactPage() {
         <div className="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-3xl card-shadow border border-black/5">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#FB8500] bg-[#FB8500]/10 px-3 py-1 rounded-full mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Fast WhatsApp Assistant</span>
+              <span>Direct WhatsApp Desk</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#263238] font-heading">
               Looking for Product Recommendations?

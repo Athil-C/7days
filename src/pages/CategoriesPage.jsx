@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, MessageCircle } from 'lucide-react';
+import { ArrowRight, MessageCircle } from 'lucide-react';
 import { categoriesData } from '../data/categories';
 import { SHOP_FULL_NAME, createWhatsAppUrl } from '../data/config';
 import { usePageSEO } from '../hooks/usePageSEO';
@@ -19,7 +19,6 @@ export default function CategoriesPage() {
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2.5">
-            <Sparkles className="w-3.5 h-3.5" />
             <span>Store Aisles &amp; Departments</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold text-[#263238] font-heading tracking-tight mb-3">

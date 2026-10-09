@@ -48,7 +48,7 @@ export const SHOP_ADDRESS = {
 export function createWhatsAppUrl(message = "") {
   const cleanNumber = SHOP_WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
   const encoded = encodeURIComponent(message || `Hi ${SHOP_FULL_NAME}, I'd like to inquire about your store products!`);
-  return `https://wa.me/${cleanNumber}?text=${encoded}`;
+  return `https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encoded}`;
 }
 
 /**

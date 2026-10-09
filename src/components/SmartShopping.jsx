@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Gift, Users, Coins, Search, Video, MessageCircle, Sparkles } from 'lucide-react';
+import { Gift, Users, Coins, Search, Video, MessageCircle } from 'lucide-react';
 import { createWhatsAppUrl, SHOP_FULL_NAME } from '../data/config';
 
 export default function SmartShopping({ onSelectFinder }) {
@@ -12,7 +12,7 @@ export default function SmartShopping({ onSelectFinder }) {
       icon: Gift,
       title: 'Find a Gift',
       badge: 'Interactive',
-      description: 'Step-by-step assistant for birthdays, milestones & celebrations.',
+      description: 'Step-by-step guide for birthdays, milestones & celebrations.',
       actionType: 'scroll',
       targetId: 'gift-finder',
       bgClass: 'bg-amber-50 hover:bg-amber-100/70 border-amber-200/80',
@@ -47,8 +47,8 @@ export default function SmartShopping({ onSelectFinder }) {
       id: 'search',
       icon: Search,
       title: 'Find a Product',
-      badge: 'Smart Search',
-      description: 'Search naturally for RC cars, cycles, dolls, walkers or backpacks.',
+      badge: 'Quick Search',
+      description: 'Search directly for RC cars, cycles, dolls, walkers or backpacks.',
       actionType: 'link',
       href: '/products',
       bgClass: 'bg-orange-50 hover:bg-orange-100/70 border-orange-200/80',
@@ -105,8 +105,7 @@ export default function SmartShopping({ onSelectFinder }) {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#263238] text-xs font-bold uppercase tracking-wider mb-2.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#FB8500]" />
-            <span>Smart Shopping Assistant</span>
+            <span>Store Shopping Guide</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
             7Days Smart Shopping

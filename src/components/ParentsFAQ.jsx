@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, ChevronDown, ChevronUp, MessageCircle, Sparkles } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp, MessageCircle } from 'lucide-react';
 import { createWhatsAppUrl, SHOP_FULL_NAME, SHOP_ADDRESS } from '../data/config';
 
 export default function ParentsFAQ() {
@@ -91,7 +91,6 @@ export default function ParentsFAQ() {
         <div className="text-center p-6 rounded-3xl bg-[#FFF9F0] border border-[#FFB703]/30 card-shadow flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left">
             <p className="text-sm font-bold text-[#263238] font-heading flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#FB8500]" />
               Still have a question?
             </p>
             <p className="text-xs text-[#546E7A] mt-0.5">
