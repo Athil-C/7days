@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SHOP_FULL_NAME, SHOP_SUBTITLE } from '../../data/config';
-import { Lock, Mail, ArrowRight, ShieldCheck, Store, AlertCircle } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Store, AlertCircle } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -10,7 +10,7 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const { signIn, isConfigured } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/admin';
@@ -31,17 +31,6 @@ export default function AdminLoginPage() {
       setErrorMsg(err.message || 'Unexpected login error');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleQuickDemoLogin = async () => {
-    setEmail('admin@7days.com');
-    setPassword('admin123');
-    setLoading(true);
-    const { error } = await signIn('admin@7days.com', 'admin123');
-    setLoading(false);
-    if (!error) {
-      navigate('/admin', { replace: true });
     }
   };
 
@@ -66,31 +55,6 @@ export default function AdminLoginPage() {
             Sign in to manage catalog products, photos, and descriptions
           </p>
         </div>
-
-        {/* Demo banner if Supabase keys not added yet */}
-        {!isConfigured && (
-          <div className="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-            <div className="flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-amber-800">
-                  Preview / Demo Mode Active
-                </p>
-                <p className="mt-0.5 text-amber-700 leading-relaxed">
-                  Supabase keys are not set in your <code className="bg-amber-100 px-1 py-0.5 rounded font-mono">.env</code> file yet. You can sign in using any test credentials or click the quick demo button below to test all admin functions immediately!
-                </p>
-                <button
-                  type="button"
-                  onClick={handleQuickDemoLogin}
-                  className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors cursor-pointer"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  Quick Demo Login (1-Click)
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         <div className="mt-6 bg-white py-8 px-6 shadow-xl shadow-gray-200/50 rounded-2xl border border-gray-100 sm:px-10">
           {errorMsg && (
