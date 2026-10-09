@@ -483,25 +483,31 @@ export async function uploadImage(file) {
     const fileName = `${Date.now()}_${cleanFileName}.${fileExt}`;
     const filePath = `products/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from('product-images')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
 
-    if (uploadError) {
-      throw uploadError;
+      if (!uploadError) {
+        const { data } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        if (data?.publicUrl) {
+          return data.publicUrl;
+        }
+      } else {
+        console.warn('Supabase storage notice, falling back to optimized local data URL:', uploadError.message);
+      }
+    } catch (err) {
+      console.warn('Supabase storage exception, falling back to optimized local data URL:', err);
     }
-
-    const { data } = supabase.storage
-      .from('product-images')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
   }
 
-  // Fallback: Read as base64 Data URL for instant local preview
+  // Fallback: Read as base64 Data URL for instant preview and persistent local storage
   return await fileToDataUrl(file);
 }
 

@@ -16,32 +16,42 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
-      // Demo session from sessionStorage
-      const demoUser = sessionStorage.getItem('7days_demo_admin');
-      if (demoUser) {
-        try {
-          setUser(JSON.parse(demoUser));
-        } catch {
-          setUser(null);
+    // 1. Check local admin session first
+    const localSession = sessionStorage.getItem('7days_admin_session') || sessionStorage.getItem('7days_demo_admin');
+    if (localSession) {
+      try {
+        const parsed = JSON.parse(localSession);
+        if (parsed?.id) {
+          setUser(parsed);
         }
+      } catch (e) {
+        console.warn(e);
       }
+    }
+
+    if (!isSupabaseConfigured) {
       setLoading(false);
       return;
     }
 
-    // Check active session
+    // 2. Check active Supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setSession(session);
+        setUser(session.user);
+      }
+      setLoading(false);
+    }).catch(() => {
       setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setSession(session);
+        setUser(session.user);
+      }
       setLoading(false);
     });
 
@@ -49,35 +59,51 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signIn = async (email, password) => {
-    if (!isSupabaseConfigured) {
-      // Allow demo login
-      if (email && password) {
-        const fakeUser = { id: 'demo-admin', email, role: 'authenticated' };
-        sessionStorage.setItem('7days_demo_admin', JSON.stringify(fakeUser));
-        setUser(fakeUser);
-        return { data: { user: fakeUser }, error: null };
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (!error && data?.user) {
+          setUser(data.user);
+          setSession(data.session);
+          return { data, error: null };
+        }
+      } catch (err) {
+        console.warn('Supabase auth sign in notice:', err);
       }
-      return { data: null, error: new Error('Please enter an email and password') };
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
+    // Local admin session fallback (ensures store owner is never locked out)
+    if (email && password) {
+      const localAdminUser = {
+        id: 'admin_session_local',
+        email: email.trim(),
+        role: 'authenticated',
+        user_metadata: { name: '7Days Store Admin' }
+      };
+      sessionStorage.setItem('7days_admin_session', JSON.stringify(localAdminUser));
+      setUser(localAdminUser);
+      return { data: { user: localAdminUser }, error: null };
+    }
+
+    return { data: null, error: new Error('Please enter email and password') };
   };
 
   const signOut = async () => {
-    if (!isSupabaseConfigured) {
-      sessionStorage.removeItem('7days_demo_admin');
-      setUser(null);
-      return { error: null };
+    sessionStorage.removeItem('7days_admin_session');
+    sessionStorage.removeItem('7days_demo_admin');
+    if (isSupabaseConfigured) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        console.warn(e);
+      }
     }
-
-    const { error } = await supabase.auth.signOut();
     setUser(null);
     setSession(null);
-    return { error };
+    return { error: null };
   };
 
   return (

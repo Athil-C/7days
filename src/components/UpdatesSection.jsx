@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { 
-  Bell, 
-  MessageCircle, 
-  PhoneCall, 
-  Wrench, 
-  CheckCircle2, 
+import {
+  Bell,
+  MessageCircle,
+  PhoneCall,
+  Wrench,
+  CheckCircle2,
   ShieldCheck,
   Calendar,
   ChevronLeft,
@@ -14,13 +14,13 @@ import {
   Pause
 } from 'lucide-react';
 import { useUpdates } from '../hooks/useUpdates';
-import { 
-  SHOP_FULL_NAME, 
-  SHOP_PHONE_CALL, 
-  SHOP_PHONE_DISPLAY, 
+import {
+  SHOP_FULL_NAME,
+  SHOP_PHONE_CALL,
+  SHOP_PHONE_DISPLAY,
   SHOP_PHONE_SECONDARY,
   SHOP_PHONE_SECONDARY_CALL,
-  createWhatsAppUrl 
+  createWhatsAppUrl
 } from '../data/config';
 
 const AUTO_SLIDE_INTERVAL_MS = 4500;
@@ -92,7 +92,7 @@ export default function UpdatesSection() {
   return (
     <section id="updates" className="py-14 sm:py-20 bg-white border-y border-black/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Editorial Section Header with Carousel Navigation */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-12 pb-6 border-b border-black/10">
           <div>
@@ -100,11 +100,11 @@ export default function UpdatesSection() {
               <Bell className="w-3.5 h-3.5" />
               <span>Store Announcements &amp; Notices</span>
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">
               What's New at {SHOP_FULL_NAME}
             </h2>
-            
+
             <p className="text-[#546E7A] text-xs sm:text-base mt-1.5 max-w-2xl font-normal">
               Latest service expansions, spare parts availability, and verified announcements from our Payod store.
             </p>
@@ -154,7 +154,7 @@ export default function UpdatesSection() {
         </div>
 
         {/* Carousel Slide Showcase */}
-        <div 
+        <div
           className="relative overflow-hidden rounded-2xl group shadow-sm border border-black/10"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -207,7 +207,7 @@ export default function UpdatesSection() {
             </div>
 
             {/* Poster Section with Lightbox Click */}
-            <div 
+            <div
               onClick={() => setLightboxImage(activeUpdate.bannerImage)}
               className="relative w-full bg-white/70 cursor-pointer overflow-hidden border-b border-black/10 flex flex-col items-center justify-center p-2 sm:p-4 group"
               title="Click to view full banner"
@@ -225,7 +225,7 @@ export default function UpdatesSection() {
                   <PhoneCall className="w-3.5 h-3.5 text-[#FB8500]" />
                   <span>Service &amp; Spares Helpline:</span>
                 </div>
-                
+
                 <div className="flex items-center flex-wrap gap-3 font-semibold">
                   <a
                     href={`tel:${SHOP_PHONE_SECONDARY_CALL}`}
@@ -253,7 +253,7 @@ export default function UpdatesSection() {
             {/* Content Details & Action Grid */}
             <div className="p-5 sm:p-8 lg:p-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
+
                 {/* Left Column: Titles & Description */}
                 <div className="lg:col-span-7">
                   <h3 className="text-xl sm:text-2xl font-extrabold text-[#263238] leading-tight mb-3 font-heading">
@@ -328,9 +328,8 @@ export default function UpdatesSection() {
                   <button
                     key={i}
                     onClick={() => setCurrentIndex(i)}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${
-                      currentIndex === i ? 'w-6 bg-[#FB8500]' : 'w-2 bg-black/15 hover:bg-black/30'
-                    }`}
+                    className={`h-2 rounded-full transition-all cursor-pointer ${currentIndex === i ? 'w-6 bg-[#FB8500]' : 'w-2 bg-black/15 hover:bg-black/30'
+                      }`}
                     aria-label={`Go to announcement ${i + 1}`}
                   />
                 ))}
@@ -344,12 +343,12 @@ export default function UpdatesSection() {
 
       {/* Full-Screen Poster Lightbox Modal */}
       {lightboxImage && (
-        <div 
+        <div
           onClick={() => setLightboxImage(null)}
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-3 sm:p-6 cursor-pointer"
         >
-          <div 
-            onClick={(e) => e.stopPropagation()} 
+          <div
+            onClick={(e) => e.stopPropagation()}
             className="relative max-w-5xl w-full bg-white rounded-xl p-3 sm:p-4 overflow-hidden cursor-default"
           >
             <button

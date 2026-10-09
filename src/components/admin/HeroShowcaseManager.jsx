@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Upload, 
-  Search, 
-  Check, 
-  RotateCcw, 
-  ExternalLink, 
+import {
+  Upload,
+  Search,
+  Check,
+  RotateCcw,
+  ExternalLink,
   Image as ImageIcon,
   X,
   Sparkles,
@@ -24,14 +24,14 @@ import {
 import { InstagramIcon } from '../Icons';
 import { useHeroShowcase } from '../../hooks/useHeroShowcase';
 import { uploadImage, updateProduct } from '../../services/productService';
-import { 
-  getCustomAgeBrackets, 
-  saveCustomAgeBrackets, 
-  getCustomCareServices, 
-  saveCustomCareServices, 
-  getCustomInstagramFeed, 
-  saveCustomInstagramFeed, 
-  getCustomStoreLocation, 
+import {
+  getCustomAgeBrackets,
+  saveCustomAgeBrackets,
+  getCustomCareServices,
+  saveCustomCareServices,
+  getCustomInstagramFeed,
+  saveCustomInstagramFeed,
+  getCustomStoreLocation,
   saveCustomStoreLocation,
   DEFAULT_AGE_BRACKETS,
   DEFAULT_CARE_SERVICES,
@@ -48,11 +48,11 @@ const CARE_ICON_MAP = {
   Wrench
 };
 
-export default function HeroShowcaseManager({ 
-  products = [], 
-  updatesList = [], 
-  setActiveTab, 
-  showNotice 
+export default function HeroShowcaseManager({
+  products = [],
+  updatesList = [],
+  setActiveTab,
+  showNotice
 }) {
   // =========================================================
   // 1. SECTION 1 STATE: HERO SHOWCASE (3 SLOTS)
@@ -77,7 +77,7 @@ export default function HeroShowcaseManager({
   const activeSlot = localSlots[selectedSlotIndex] || localSlots[0];
 
   const filteredPickerProducts = products.filter((p) => {
-    const matchesSearch = !pickerSearch || 
+    const matchesSearch = !pickerSearch ||
       p.name.toLowerCase().includes(pickerSearch.toLowerCase()) ||
       p.category.toLowerCase().includes(pickerSearch.toLowerCase());
     const matchesCat = pickerCategory === 'All' || p.category === pickerCategory;
@@ -678,16 +678,14 @@ export default function HeroShowcaseManager({
                 {/* Slot 1: Main Feature (7 cols) */}
                 <div
                   onClick={() => setSelectedSlotIndex(0)}
-                  className={`col-span-7 relative rounded-xl overflow-hidden bg-[#FAF8F5] border aspect-[4/5] flex flex-col justify-between p-2.5 transition-all cursor-pointer ${
-                    selectedSlotIndex === 0
+                  className={`col-span-7 relative rounded-xl overflow-hidden bg-[#FAF8F5] border aspect-[4/5] flex flex-col justify-between p-2.5 transition-all cursor-pointer ${selectedSlotIndex === 0
                       ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
                       : 'border-black/10 hover:border-black/30'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between z-10">
-                    <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ${
-                      selectedSlotIndex === 0 ? 'bg-[#FB8500] text-white' : 'bg-gray-100 text-gray-700'
-                    }`}>
+                    <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ${selectedSlotIndex === 0 ? 'bg-[#FB8500] text-white' : 'bg-gray-100 text-gray-700'
+                      }`}>
                       Slot 1: Main Feature
                     </span>
                     {slot1?.tag && (
@@ -729,11 +727,10 @@ export default function HeroShowcaseManager({
                   {/* Slot 2 */}
                   <div
                     onClick={() => setSelectedSlotIndex(1)}
-                    className={`relative rounded-xl overflow-hidden bg-[#FAF8F5] border p-2 flex flex-col justify-between transition-all cursor-pointer ${
-                      selectedSlotIndex === 1
+                    className={`relative rounded-xl overflow-hidden bg-[#FAF8F5] border p-2 flex flex-col justify-between transition-all cursor-pointer ${selectedSlotIndex === 1
                         ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
                         : 'border-black/10 hover:border-black/30'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between text-[8px] font-bold uppercase mb-1">
                       <span className="text-gray-500">Slot 2</span>
@@ -756,11 +753,10 @@ export default function HeroShowcaseManager({
                   {/* Slot 3 */}
                   <div
                     onClick={() => setSelectedSlotIndex(2)}
-                    className={`relative rounded-xl overflow-hidden bg-[#FAF8F5] border p-2 flex flex-col justify-between transition-all cursor-pointer ${
-                      selectedSlotIndex === 2
+                    className={`relative rounded-xl overflow-hidden bg-[#FAF8F5] border p-2 flex flex-col justify-between transition-all cursor-pointer ${selectedSlotIndex === 2
                         ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
                         : 'border-black/10 hover:border-black/30'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between text-[8px] font-bold uppercase mb-1">
                       <span className="text-gray-500">Slot 3</span>
@@ -800,11 +796,10 @@ export default function HeroShowcaseManager({
                     key={s.slot}
                     type="button"
                     onClick={() => setSelectedSlotIndex(idx)}
-                    className={`p-2.5 rounded-xl text-left border transition cursor-pointer ${
-                      selectedSlotIndex === idx
+                    className={`p-2.5 rounded-xl text-left border transition cursor-pointer ${selectedSlotIndex === idx
                         ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-sm'
                         : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                    }`}
+                      }`}
                   >
                     <span className="text-[9px] font-bold uppercase tracking-wider block opacity-80">
                       Slot {s.slot}
@@ -990,11 +985,10 @@ export default function HeroShowcaseManager({
                   <div
                     key={bracket.id || idx}
                     onClick={() => setSelectedAgeIndex(idx)}
-                    className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${
-                      isSelected
+                    className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${isSelected
                         ? 'ring-3 ring-[#219EBC] border-[#219EBC] shadow-md'
                         : 'border-black/10 hover:border-black/30'
-                    }`}
+                      }`}
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -1040,11 +1034,10 @@ export default function HeroShowcaseManager({
                     key={bracket.id || idx}
                     type="button"
                     onClick={() => setSelectedAgeIndex(idx)}
-                    className={`p-2 rounded-xl text-center border transition cursor-pointer ${
-                      selectedAgeIndex === idx
+                    className={`p-2 rounded-xl text-center border transition cursor-pointer ${selectedAgeIndex === idx
                         ? 'bg-[#219EBC] text-white border-[#219EBC] shadow-sm'
                         : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                    }`}
+                      }`}
                   >
                     <span className="text-base block">{bracket.icon}</span>
                     <span className="text-[10px] font-bold truncate block mt-0.5">{bracket.label}</span>
@@ -1291,11 +1284,10 @@ export default function HeroShowcaseManager({
                       type="button"
                       disabled={isToggling}
                       onClick={() => handleToggleFeatured(prod)}
-                      className={`px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0 flex items-center gap-1 ${
-                        isFeatured
+                      className={`px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0 flex items-center gap-1 ${isFeatured
                           ? 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
                           : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700'
-                      }`}
+                        }`}
                     >
                       {isToggling ? (
                         <div className="w-3 h-3 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
@@ -1430,11 +1422,10 @@ export default function HeroShowcaseManager({
                   {localUpdates.map((upd, idx) => (
                     <div
                       key={upd.id}
-                      className={`p-2 rounded-xl border text-left shrink-0 max-w-[210px] transition flex items-center justify-between gap-1.5 ${
-                        selectedUpdateIndex === idx && isEditingExistingUpdate
+                      className={`p-2 rounded-xl border text-left shrink-0 max-w-[210px] transition flex items-center justify-between gap-1.5 ${selectedUpdateIndex === idx && isEditingExistingUpdate
                           ? 'bg-red-50 border-red-300 ring-2 ring-red-200'
                           : 'bg-white border-gray-200 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       <button
                         type="button"
@@ -1669,11 +1660,10 @@ export default function HeroShowcaseManager({
                   <div
                     key={svc.id || idx}
                     onClick={() => setSelectedCareIndex(idx)}
-                    className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${
-                      isSelected
+                    className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${isSelected
                         ? 'ring-3 ring-[#6A994E] border-[#6A994E] shadow-md'
                         : 'border-black/10 hover:border-black/30'
-                    }`}
+                      }`}
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -1717,11 +1707,10 @@ export default function HeroShowcaseManager({
                     key={svc.id || idx}
                     type="button"
                     onClick={() => setSelectedCareIndex(idx)}
-                    className={`p-2 rounded-xl text-left border transition cursor-pointer ${
-                      selectedCareIndex === idx
+                    className={`p-2 rounded-xl text-left border transition cursor-pointer ${selectedCareIndex === idx
                         ? 'bg-[#6A994E] text-white border-[#6A994E] shadow-sm'
                         : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                    }`}
+                      }`}
                   >
                     <span className="text-[9px] font-bold uppercase tracking-wider block opacity-80">
                       Service {idx + 1}
@@ -1876,11 +1865,10 @@ export default function HeroShowcaseManager({
                   <div
                     key={post.id || idx}
                     onClick={() => setSelectedInstaSlot(idx)}
-                    className={`aspect-square rounded-xl overflow-hidden bg-white border relative group transition-all cursor-pointer ${
-                      isSelected
+                    className={`aspect-square rounded-xl overflow-hidden bg-white border relative group transition-all cursor-pointer ${isSelected
                         ? 'ring-3 ring-pink-500 border-pink-500 shadow-md'
                         : 'border-black/10 hover:border-black/30'
-                    }`}
+                      }`}
                   >
                     <img
                       src={post.image}
@@ -1960,11 +1948,10 @@ export default function HeroShowcaseManager({
                     key={idx}
                     type="button"
                     onClick={() => setSelectedInstaSlot(idx)}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                      selectedInstaSlot === idx
+                    className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${selectedInstaSlot === idx
                         ? 'bg-pink-500 text-white shadow-xs'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
+                      }`}
                   >
                     #{idx + 1}
                   </button>
@@ -2284,11 +2271,10 @@ export default function HeroShowcaseManager({
                     key={cat}
                     type="button"
                     onClick={() => setPickerCategory(cat)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition cursor-pointer ${
-                      pickerCategory === cat
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition cursor-pointer ${pickerCategory === cat
                         ? 'bg-[#263238] text-white'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
+                      }`}
                   >
                     {cat}
                   </button>

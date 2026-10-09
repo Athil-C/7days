@@ -1,49 +1,69 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { storeUpdates as staticUpdates } from '../data/updates';
 import { uploadImage } from './productService';
 
 const UPDATES_STORAGE_KEY = '7days_store_updates_master_v2';
 const LEGACY_STORAGE_KEY = '7days_custom_updates_v1';
+const DELETED_UPDATES_KEY = '7days_deleted_updates_v1';
+
+function isDemoUpdate(item) {
+  if (!item) return true;
+  const idStr = String(item.id || '');
+  // Only purge the legacy mock seed IDs (1, 2, 3 or upd_init_)
+  if (idStr === '1' || idStr === '2' || idStr === '3' || idStr.startsWith('upd_init_')) {
+    return true;
+  }
+  return false;
+}
+
+// Track deleted update IDs so deleted notices never resurrect
+function getDeletedUpdateIds() {
+  try {
+    const raw = localStorage.getItem(DELETED_UPDATES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveDeletedUpdateId(id) {
+  try {
+    const current = getDeletedUpdateIds();
+    const strId = String(id);
+    if (!current.includes(strId)) {
+      localStorage.setItem(DELETED_UPDATES_KEY, JSON.stringify([...current, strId]));
+    }
+  } catch (err) {
+    console.error('Error saving deleted update id:', err);
+  }
+}
 
 /**
  * Get the full persistent list of announcements from localStorage
  */
 function getStoredUpdates() {
   try {
+    // Purge legacy storage
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+
     const raw = localStorage.getItem(UPDATES_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+      if (Array.isArray(parsed)) {
+        // Filter out any demo data
+        const cleaned = parsed.filter((item) => !isDemoUpdate(item));
+        if (cleaned.length !== parsed.length) {
+          localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(cleaned));
+        }
+        return cleaned;
       }
     }
 
-    // Check legacy storage
-    const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
-    if (legacyRaw) {
-      const legacyParsed = JSON.parse(legacyRaw);
-      if (Array.isArray(legacyParsed) && legacyParsed.length > 0) {
-        // Merge legacy custom items with static items
-        const merged = [...legacyParsed, ...staticUpdates];
-        localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(merged));
-        return merged;
-      }
-    }
-
-    // Default initialization: Clone default showroom updates
-    const initialList = staticUpdates.map((item, idx) => ({
-      ...item,
-      id: String(item.id || `upd_init_${idx + 1}`),
-      source: 'showroom',
-    }));
-    localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(initialList));
-    return initialList;
+    // Default initialization is empty list (no demo data)
+    localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify([]));
+    return [];
   } catch (err) {
-    console.warn('Error reading stored updates, using static fallback:', err);
-    return staticUpdates.map((item, idx) => ({
-      ...item,
-      id: String(item.id || `upd_init_${idx + 1}`),
-    }));
+    console.warn('Error reading stored updates:', err);
+    return [];
   }
 }
 
@@ -52,14 +72,15 @@ function getStoredUpdates() {
  */
 function saveStoredUpdates(list) {
   try {
-    localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(list));
+    const cleaned = (list || []).filter((item) => !isDemoUpdate(item));
+    localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(cleaned));
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_updates_updated'));
     }
   } catch (err) {
     console.warn('Storage quota warning saving updates, trimming older items:', err);
     try {
-      const trimmed = list.slice(0, 10);
+      const trimmed = (list || []).filter((item) => !isDemoUpdate(item)).slice(0, 15);
       localStorage.setItem(UPDATES_STORAGE_KEY, JSON.stringify(trimmed));
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('7days_updates_updated'));
@@ -92,9 +113,12 @@ function mapDbUpdate(item) {
 }
 
 /**
- * Fetch all updates (Supabase or local persistent store)
+ * Fetch all updates (Combines Supabase and Local Storage safely with deduplication)
  */
 export async function getUpdates() {
+  const localItems = getStoredUpdates();
+  const deletedIds = new Set(getDeletedUpdateIds());
+
   if (isSupabaseConfigured) {
     try {
       const { data, error } = await supabase
@@ -102,9 +126,20 @@ export async function getUpdates() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
-        return data.map(mapDbUpdate);
+      if (!error && Array.isArray(data)) {
+        const dbList = data
+          .map(mapDbUpdate)
+          .filter((u) => !isDemoUpdate(u) && !deletedIds.has(String(u.id)));
+
+        // Merge DB list with local items (avoiding duplicates)
+        const dbIds = new Set(dbList.map((u) => String(u.id)));
+        const uniqueLocal = localItems.filter(
+          (u) => !dbIds.has(String(u.id)) && !deletedIds.has(String(u.id))
+        );
+
+        return [...dbList, ...uniqueLocal];
       }
+
       if (error) {
         console.warn('Supabase updates fetch notice:', error.message);
       }
@@ -113,7 +148,7 @@ export async function getUpdates() {
     }
   }
 
-  return getStoredUpdates();
+  return localItems.filter((u) => !deletedIds.has(String(u.id)));
 }
 
 /**
@@ -139,7 +174,7 @@ export async function addUpdate(params) {
   let finalBannerUrl = bannerImageUrl || bannerImage;
   if (bannerFile) {
     try {
-      finalBannerUrl = await uploadImage(bannerFile, 'updates');
+      finalBannerUrl = await uploadImage(bannerFile);
     } catch (err) {
       console.warn('Banner upload notice:', err);
     }
@@ -201,9 +236,11 @@ export async function addUpdate(params) {
         const current = getStoredUpdates();
         saveStoredUpdates([mapped, ...current]);
         return mapped;
+      } else if (error) {
+        console.warn('Supabase insert notice, saving locally:', error.message);
       }
     } catch (err) {
-      console.warn('Supabase insert notice, saving locally:', err);
+      console.warn('Supabase insert exception, saving locally:', err);
     }
   }
 
@@ -223,7 +260,7 @@ export async function updateUpdate(id, updates, newBannerFile = null) {
   let finalBannerUrl = updates.bannerImage || updates.bannerImageUrl;
   if (newBannerFile) {
     try {
-      finalBannerUrl = await uploadImage(newBannerFile, 'updates');
+      finalBannerUrl = await uploadImage(newBannerFile);
     } catch (err) {
       console.warn('Banner upload notice on edit:', err);
     }
@@ -261,7 +298,7 @@ export async function updateUpdate(id, updates, newBannerFile = null) {
       if (!error && data) {
         const mapped = mapDbUpdate(data);
         const current = getStoredUpdates();
-        const updatedList = current.map((u) => String(u.id) === String(id) ? mapped : u);
+        const updatedList = current.map((u) => (String(u.id) === String(id) ? mapped : u));
         saveStoredUpdates(updatedList);
         return mapped;
       }
@@ -288,7 +325,6 @@ export async function updateUpdate(id, updates, newBannerFile = null) {
   });
 
   if (!found) {
-    // If not found in current list, insert as new
     const fresh = {
       id: String(id),
       ...updates,
@@ -307,8 +343,11 @@ export async function updateUpdate(id, updates, newBannerFile = null) {
  * Delete a store update by ID
  */
 export async function deleteUpdate(id, bannerImageUrl = null) {
+  const strId = String(id);
+  saveDeletedUpdateId(strId);
+
   // Supabase delete if applicable
-  if (isSupabaseConfigured && typeof id === 'string' && !id.startsWith('upd_') && !id.startsWith('local_')) {
+  if (isSupabaseConfigured && !strId.startsWith('upd_') && !strId.startsWith('local_')) {
     try {
       await supabase.from('updates').delete().eq('id', id);
     } catch (err) {
@@ -318,7 +357,7 @@ export async function deleteUpdate(id, bannerImageUrl = null) {
 
   // Local storage delete
   const current = getStoredUpdates();
-  const filtered = current.filter((u) => String(u.id) !== String(id));
+  const filtered = current.filter((u) => String(u.id) !== strId);
   saveStoredUpdates(filtered);
   return true;
 }

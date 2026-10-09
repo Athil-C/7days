@@ -111,6 +111,9 @@ export default function Footer() {
                 <Link to="/products" className="hover:text-white transition-colors">Explore Products</Link>
               </li>
               <li>
+                <Link to="/updates" className="hover:text-white transition-colors">Store Updates &amp; Notices</Link>
+              </li>
+              <li>
                 <Link to="/categories" className="hover:text-white transition-colors">Toy &amp; Baby Categories</Link>
               </li>
               <li>

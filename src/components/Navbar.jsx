@@ -31,7 +31,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Updates', path: '/#updates' },
+    { name: 'Updates', path: '/updates' },
     { name: 'Products', path: '/products' },
     { name: 'Categories', path: '/categories' },
     { name: 'About', path: '/about' },
@@ -40,7 +40,6 @@ export default function Navbar() {
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
-    if (path.startsWith('/#')) return false;
     return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   };
 
