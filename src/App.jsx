@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
@@ -16,6 +16,11 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 
+// Server synchronizers
+import { syncDailySalesFromServer } from './services/dailySalesService';
+import { syncStaffFromServer, syncAttendanceFromServer } from './services/attendanceService';
+import { syncHomepageSectionsFromSupabase } from './services/homepageSectionsService';
+
 // Admin Portal
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/admin/ProtectedRoute';
@@ -26,6 +31,14 @@ export default function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const [isLoading, setIsLoading] = useState(true);
+
+  // Proactively fetch latest authoritative state from Supabase on every reload across all pages
+  useEffect(() => {
+    syncDailySalesFromServer();
+    syncStaffFromServer();
+    syncAttendanceFromServer();
+    syncHomepageSectionsFromSupabase();
+  }, []);
 
   return (
     <AuthProvider>

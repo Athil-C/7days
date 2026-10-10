@@ -6,7 +6,7 @@ const HERO_STORAGE_KEY = '7days_hero_showcase_v1';
 /**
  * Get hero showcase items from LocalStorage
  */
-function getLocalHeroShowcase() {
+export function getLocalHeroShowcase() {
   try {
     const raw = localStorage.getItem(HERO_STORAGE_KEY);
     if (!raw) return null;
@@ -24,11 +24,11 @@ function getLocalHeroShowcase() {
 /**
  * Save hero showcase items to LocalStorage
  */
-function saveLocalHeroShowcase(slots) {
+function saveLocalHeroShowcase(slots, shouldBroadcast = true) {
   try {
     localStorage.setItem(HERO_STORAGE_KEY, JSON.stringify(slots));
-    // Broadcast change so open components update immediately
-    if (typeof window !== 'undefined') {
+    // Broadcast change ONLY on explicit saves/updates, never during background fetch
+    if (shouldBroadcast && typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_hero_updated'));
     }
   } catch (err) {
@@ -58,8 +58,8 @@ export async function getHeroShowcase() {
           image: item.image,
           productId: item.product_id || null,
         }));
-        // Sync local storage mirror
-        saveLocalHeroShowcase(mapped);
+        // Sync local storage mirror silently without triggering infinite event loop
+        saveLocalHeroShowcase(mapped, false);
         return mapped;
       }
     } catch (err) {
@@ -74,7 +74,7 @@ export async function getHeroShowcase() {
   }
 
   // 3. Fall back to default static items
-  saveLocalHeroShowcase(initialHeroShowcase);
+  saveLocalHeroShowcase(initialHeroShowcase, false);
   return initialHeroShowcase;
 }
 

@@ -39,25 +39,73 @@ export function clearDeletedStaffId(id) {
   } catch {}
 }
 
-// Initial sync from Supabase if configured
-if (typeof window !== 'undefined' && isSupabaseConfigured) {
-  // Sync staff members (excluding any legacy demo records or deleted staff)
-  supabase
-    .from('staff_members')
-    .select('*')
-    .then(async ({ data, error }) => {
-      if (!error && Array.isArray(data)) {
-        const deletedStaff = getDeletedStaffIds();
-        for (const s of data) {
-          if (s && (deletedStaff.has(String(s.id)) || ['staff_1', 'staff_2', 'staff_3'].includes(s.id))) {
-            await supabase.from('staff_members').delete().eq('id', s.id).catch(() => {});
-          }
+/**
+ * Proactively fetches all staff members from Supabase and overwrites localStorage
+ * with fresh authoritative server data on every page load/reload.
+ */
+export async function syncStaffFromServer() {
+  if (!isSupabaseConfigured) return getStaffList();
+  try {
+    const { data, error } = await supabase.from('staff_members').select('*');
+    if (!error && Array.isArray(data)) {
+      const deletedStaff = getDeletedStaffIds();
+      for (const s of data) {
+        if (s && (deletedStaff.has(String(s.id)) || ['staff_1', 'staff_2', 'staff_3'].includes(s.id))) {
+          await supabase.from('staff_members').delete().eq('id', s.id).catch(() => {});
         }
-        const cleaned = data.filter((s) => s && !['staff_1', 'staff_2', 'staff_3'].includes(s.id) && !deletedStaff.has(String(s.id)));
-        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(cleaned));
+      }
+      const cleaned = data.filter((s) => s && !['staff_1', 'staff_2', 'staff_3'].includes(s.id) && !deletedStaff.has(String(s.id)));
+      localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(cleaned));
+      if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('7days_staff_updated'));
       }
-    });
+      return cleaned;
+    }
+  } catch (err) {
+    console.warn('Failed to sync staff from server:', err);
+  }
+  return getStaffList();
+}
+
+/**
+ * Proactively fetches full attendance ledger from Supabase and overwrites localStorage
+ * with fresh authoritative server data on every page load/reload.
+ */
+export async function syncAttendanceFromServer() {
+  if (!isSupabaseConfigured) return getStoredAttendance();
+  try {
+    const { data, error } = await supabase.from('staff_attendance').select('*');
+    if (!error && Array.isArray(data)) {
+      const freshLedger = {};
+      data.forEach((row) => {
+        if (row.month_key && row.ledger_data) {
+          freshLedger[row.month_key] = row.ledger_data;
+        }
+      });
+      // Remove demo staff keys from merged ledger
+      Object.keys(freshLedger).forEach((mKey) => {
+        if (freshLedger[mKey] && typeof freshLedger[mKey] === 'object') {
+          ['staff_1', 'staff_2', 'staff_3'].forEach((dId) => {
+            delete freshLedger[mKey][dId];
+          });
+        }
+      });
+      localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(freshLedger));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('7days_attendance_updated'));
+      }
+      return freshLedger;
+    }
+  } catch (err) {
+    console.warn('Failed to sync attendance from server:', err);
+  }
+  return getStoredAttendance();
+}
+
+// Initial sync from Supabase if configured
+if (typeof window !== 'undefined' && isSupabaseConfigured) {
+  syncStaffFromServer();
+  syncAttendanceFromServer();
 
   // Clean demo staff from Supabase database if present
   try {
@@ -68,32 +116,31 @@ if (typeof window !== 'undefined' && isSupabaseConfigured) {
       .then(() => {});
   } catch {}
 
-  // Sync attendance ledger
-  supabase
-    .from('staff_attendance')
-    .select('*')
-    .then(({ data, error }) => {
-      if (!error && Array.isArray(data) && data.length > 0) {
-        const raw = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
-        const local = raw ? JSON.parse(raw) : {};
-        const merged = { ...local };
-        data.forEach((row) => {
-          if (row.month_key && row.ledger_data) {
-            merged[row.month_key] = row.ledger_data;
+  // Realtime subscription for cross-tab, cross-device instant synchronization
+  try {
+    supabase
+      .channel('staff_attendance_realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'staff_attendance' },
+        (payload) => {
+          try {
+            const raw = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+            const ledger = raw ? JSON.parse(raw) : {};
+            if (payload.new && payload.new.month_key && payload.new.ledger_data) {
+              ledger[payload.new.month_key] = payload.new.ledger_data;
+              localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(ledger));
+              window.dispatchEvent(new Event('7days_attendance_updated'));
+            }
+          } catch (e) {
+            console.warn('Realtime attendance sync error:', e);
           }
-        });
-        // Remove demo staff keys from merged ledger
-        Object.keys(merged).forEach((mKey) => {
-          if (merged[mKey] && typeof merged[mKey] === 'object') {
-            ['staff_1', 'staff_2', 'staff_3'].forEach((dId) => {
-              delete merged[mKey][dId];
-            });
-          }
-        });
-        localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(merged));
-        window.dispatchEvent(new Event('7days_attendance_updated'));
-      }
-    });
+        }
+      )
+      .subscribe();
+  } catch (err) {
+    console.warn('Realtime subscribe notice:', err);
+  }
 }
 
 export function getStaffList() {
@@ -267,6 +314,47 @@ export function syncDutyToAttendance(dateStr, dutyMap) {
 
   saveStoredAttendance(ledger, monthKey);
   return ledger[monthKey];
+}
+
+/**
+ * Completely clears / unmarks attendance for a specific date (YYYY-MM-DD).
+ * Clears attendance records for that day from both local storage and Supabase.
+ */
+export async function clearDateAttendance(dateStr) {
+  if (!dateStr) return {};
+  const [yStr, mStr, dStr] = dateStr.split('-');
+  const year = parseInt(yStr, 10);
+  const month = parseInt(mStr, 10);
+  const day = parseInt(dStr, 10);
+  if (isNaN(year) || isNaN(month) || isNaN(day)) return {};
+  const monthKey = `${year}-${String(month).padStart(2, '0')}`;
+
+  const ledger = getStoredAttendance();
+  if (ledger[monthKey] && typeof ledger[monthKey] === 'object') {
+    Object.keys(ledger[monthKey]).forEach((staffId) => {
+      if (ledger[monthKey][staffId] && typeof ledger[monthKey][staffId] === 'object') {
+        delete ledger[monthKey][staffId][day];
+        delete ledger[monthKey][staffId][String(day)];
+      }
+    });
+  }
+
+  saveStoredAttendance(ledger, monthKey);
+
+  // Directly and immediately sync to Supabase
+  if (isSupabaseConfigured && ledger[monthKey]) {
+    try {
+      await supabase.from('staff_attendance').upsert({
+        month_key: monthKey,
+        ledger_data: ledger[monthKey],
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'month_key' });
+    } catch (e) {
+      console.warn('Supabase clearDateAttendance error:', e);
+    }
+  }
+
+  return ledger[monthKey] || {};
 }
 
 /**

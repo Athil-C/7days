@@ -14,7 +14,9 @@ import {
   removeStaffMember,
   getMonthAttendance,
   setStaffAttendance,
-  getDutyStatusForDate
+  getDutyStatusForDate,
+  syncStaffFromServer,
+  syncAttendanceFromServer
 } from '../../services/attendanceService';
 import { recordAdminAction } from '../../services/adminLogService';
 
@@ -77,6 +79,11 @@ export default function StaffAttendanceRegister({
 
   useEffect(() => {
     reloadAttendance();
+
+    // Actively fetch latest staff and attendance from Supabase server on mount/reload
+    Promise.all([syncStaffFromServer(), syncAttendanceFromServer()]).then(() => {
+      reloadAttendance();
+    });
 
     const handleUpdate = () => {
       reloadAttendance();

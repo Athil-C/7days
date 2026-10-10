@@ -6,6 +6,7 @@
  */
 
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { clearDateAttendance } from './attendanceService';
 
 const STORAGE_KEY = '7days_daily_sales_sheets_v1';
 const DELETED_DATES_KEY = '7days_deleted_sales_dates_v1';
@@ -38,49 +39,121 @@ export function clearDeletedSalesDate(dateStr) {
   } catch {}
 }
 
-// Initial sync from Supabase if configured (Protects against resurrecting deleted items/sheets)
-if (typeof window !== 'undefined' && isSupabaseConfigured) {
-  supabase
-    .from('daily_sales_sheets')
-    .select('*')
-    .then(async ({ data, error }) => {
-      if (!error && Array.isArray(data)) {
-        const deletedDates = getDeletedSalesDates();
-        const raw = localStorage.getItem(STORAGE_KEY);
-        const local = raw ? JSON.parse(raw) : {};
-        const merged = { ...local };
-        let hasChanges = false;
+/**
+ * Proactively fetches all daily sales sheets from Supabase and overwrites localStorage
+ * with fresh authoritative server data on every page load/reload.
+ */
+export async function syncDailySalesFromServer() {
+  if (!isSupabaseConfigured) return getStoredSheets();
+  try {
+    const { data, error } = await supabase.from('daily_sales_sheets').select('*');
+    if (!error && Array.isArray(data)) {
+      const deletedDates = getDeletedSalesDates();
+      const freshMap = {};
 
-        for (const row of data) {
-          if (!row.date_str) continue;
+      for (const row of data) {
+        if (!row.date_str) continue;
 
-          // If user deleted this date, remove from Supabase and do NOT restore
-          if (deletedDates.has(row.date_str)) {
-            await supabase.from('daily_sales_sheets').delete().eq('date_str', row.date_str).catch(() => {});
-            if (merged[row.date_str]) {
-              delete merged[row.date_str];
-              hasChanges = true;
-            }
-            continue;
-          }
-
-          // If local already exists, keep local state (prevents bringing back deleted items on refresh)
-          if (local[row.date_str] !== undefined) {
-            continue;
-          }
-
-          if (row.data) {
-            merged[row.date_str] = row.data;
-            hasChanges = true;
-          }
+        // If explicitly deleted by user, purge from Supabase
+        if (deletedDates.has(row.date_str)) {
+          await supabase.from('daily_sales_sheets').delete().eq('date_str', row.date_str).catch(() => {});
+          continue;
         }
 
-        if (hasChanges) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-          window.dispatchEvent(new Event('7days_daily_sales_updated'));
+        if (row.data) {
+          freshMap[row.date_str] = row.data;
         }
       }
-    });
+
+      // Overwrite local cache with authoritative server data
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(freshMap));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('7days_daily_sales_updated'));
+      }
+      return freshMap;
+    }
+  } catch (err) {
+    console.warn('Failed to sync daily sales from server:', err);
+  }
+  return getStoredSheets();
+}
+
+/**
+ * Actively fetches a specific date's daily sales sheet from Supabase server
+ * and updates local cache immediately.
+ */
+export async function fetchDailySalesSheet(dateStr) {
+  if (!dateStr) return getDailySalesSheet(dateStr);
+  if (isSupabaseConfigured) {
+    try {
+      const deletedDates = getDeletedSalesDates();
+      if (deletedDates.has(dateStr)) {
+        await supabase.from('daily_sales_sheets').delete().eq('date_str', dateStr).catch(() => {});
+        const sheets = getStoredSheets();
+        delete sheets[dateStr];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+        return getDailySalesSheet(dateStr);
+      }
+
+      const { data, error } = await supabase
+        .from('daily_sales_sheets')
+        .select('*')
+        .eq('date_str', dateStr)
+        .maybeSingle();
+
+      if (!error) {
+        const sheets = getStoredSheets();
+        if (data && data.data) {
+          sheets[dateStr] = data.data;
+        } else {
+          delete sheets[dateStr];
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+        return getDailySalesSheet(dateStr);
+      }
+    } catch (err) {
+      console.warn('fetchDailySalesSheet error:', err);
+    }
+  }
+  return getDailySalesSheet(dateStr);
+}
+
+// Initial sync from Supabase when app loads
+if (typeof window !== 'undefined' && isSupabaseConfigured) {
+  syncDailySalesFromServer();
+
+  // Realtime subscription for cross-tab, cross-device instant synchronization
+  try {
+    supabase
+      .channel('daily_sales_realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'daily_sales_sheets' },
+        (payload) => {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            const sheets = raw ? JSON.parse(raw) : {};
+            if (payload.eventType === 'DELETE') {
+              const oldDate = payload.old?.date_str;
+              if (oldDate && sheets[oldDate]) {
+                delete sheets[oldDate];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+                window.dispatchEvent(new Event('7days_daily_sales_updated'));
+              }
+            } else if (payload.new && payload.new.date_str) {
+              sheets[payload.new.date_str] = payload.new.data;
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+              window.dispatchEvent(new Event('7days_daily_sales_updated'));
+            }
+          } catch (e) {
+            console.warn('Realtime sync error:', e);
+          }
+        }
+      )
+      .subscribe();
+  } catch (err) {
+    console.warn('Realtime subscribe notice:', err);
+  }
 }
 
 function getStoredSheets() {
@@ -344,6 +417,14 @@ export async function deleteDailySalesRecord(dateStr) {
       console.warn('Supabase delete daily sheet error:', e);
     }
   }
+
+  // Also clear attendance for this date so attendance ledger is un-marked
+  try {
+    await clearDateAttendance(dateStr);
+  } catch (e) {
+    console.warn('clearDateAttendance error:', e);
+  }
+
   return getDailySalesSheet(dateStr);
 }
 

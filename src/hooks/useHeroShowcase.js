@@ -1,12 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
-import { getHeroShowcase, saveHeroShowcase, updateHeroSlot, resetHeroShowcase } from '../services/heroShowcaseService';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { getHeroShowcase, getLocalHeroShowcase, saveHeroShowcase, updateHeroSlot, resetHeroShowcase } from '../services/heroShowcaseService';
 import { initialHeroShowcase } from '../data/heroShowcase';
 
 export function useHeroShowcase() {
-  const [slots, setSlots] = useState(initialHeroShowcase);
-  const [loading, setLoading] = useState(true);
+  const [slots, setSlots] = useState(() => getLocalHeroShowcase() || initialHeroShowcase);
+  const [loading, setLoading] = useState(false);
+  const isFetchingRef = useRef(false);
 
   const loadSlots = useCallback(async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
     try {
       const data = await getHeroShowcase();
       setSlots(data);
@@ -14,6 +17,7 @@ export function useHeroShowcase() {
       console.error('Failed to load hero showcase:', err);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   }, []);
 
@@ -21,7 +25,10 @@ export function useHeroShowcase() {
     loadSlots();
 
     const handleUpdate = () => {
-      loadSlots();
+      const local = getLocalHeroShowcase();
+      if (local) {
+        setSlots(local);
+      }
     };
 
     window.addEventListener('7days_hero_updated', handleUpdate);

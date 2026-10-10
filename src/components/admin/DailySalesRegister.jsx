@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import {
   getDailySalesSheet,
+  fetchDailySalesSheet,
+  syncDailySalesFromServer,
   setDailySalesperson,
   addDailySaleItem,
   deleteDailySaleItem,
@@ -127,27 +129,59 @@ export default function DailySalesRegister({ products = [], showNotice }) {
     };
   }, [selectedDate]);
 
-  // Reload sheet and dutyMap when selectedDate changes
+  // Reload sheet and dutyMap when selectedDate changes or when server sync completes
   useEffect(() => {
-    const loaded = getDailySalesSheet(selectedDate);
-    setSheet(loaded);
+    let isMounted = true;
+
+    // 1. Initial cached render
+    const cached = getDailySalesSheet(selectedDate);
+    setSheet(cached);
     setPastDates(getAllSalesDates());
-    const currentDuty = getDutyStatusForDate(selectedDate);
-    setDutyMap(currentDuty);
-
-    // If dutyMap has active staff, synchronize salesperson display
-    const currentStaff = getStaffList();
-    const activeFromDuty = currentStaff
-      .filter((s) => currentDuty[s.id] === 'Full' || currentDuty[s.id] === 'Half')
-      .map((s) => `${s.name} (${currentDuty[s.id]})`);
-
-    if (activeFromDuty.length > 0) {
-      const formatted = activeFromDuty.join(', ');
-      setSalesperson(formatted);
-      setDailySalesperson(selectedDate, formatted);
-    } else {
-      setSalesperson(loaded.salesperson || '');
+    const initialDuty = getDutyStatusForDate(selectedDate);
+    setDutyMap(initialDuty);
+    if (cached.salesperson) {
+      setSalesperson(cached.salesperson);
     }
+
+    // 2. Actively fetch latest authoritative data directly from Supabase server on mount/reload
+    fetchDailySalesSheet(selectedDate).then((serverSheet) => {
+      if (!isMounted) return;
+      setSheet(serverSheet);
+      setPastDates(getAllSalesDates());
+      const currentDuty = getDutyStatusForDate(selectedDate);
+      setDutyMap(currentDuty);
+
+      const currentStaff = getStaffList();
+      const activeFromDuty = currentStaff
+        .filter((s) => currentDuty[s.id] === 'Full' || currentDuty[s.id] === 'Half')
+        .map((s) => `${s.name} (${currentDuty[s.id]})`);
+
+      if (activeFromDuty.length > 0) {
+        const formatted = activeFromDuty.join(', ');
+        setSalesperson(formatted);
+      } else {
+        setSalesperson(serverSheet.salesperson || '');
+      }
+    });
+
+    // 3. Listen for server/realtime updates across tabs & devices
+    const handleSalesUpdate = () => {
+      if (!isMounted) return;
+      const loaded = getDailySalesSheet(selectedDate);
+      setSheet(loaded);
+      setPastDates(getAllSalesDates());
+      const currentDuty = getDutyStatusForDate(selectedDate);
+      setDutyMap(currentDuty);
+      if (loaded.salesperson) {
+        setSalesperson(loaded.salesperson);
+      }
+    };
+
+    window.addEventListener('7days_daily_sales_updated', handleSalesUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('7days_daily_sales_updated', handleSalesUpdate);
+    };
   }, [selectedDate]);
 
   // Product name autocomplete suggestion
@@ -407,10 +441,13 @@ export default function DailySalesRegister({ products = [], showNotice }) {
 
     try {
       const updated = await deleteDailySalesRecord(selectedDate);
+      setDutyMap({});
+      setSalesperson('');
+      setAttendanceVersion((v) => v + 1);
       setSheet(updated);
       setPastDates(getAllSalesDates());
       setShowDeleteSheetModal(false);
-      showNotice?.('success', `Daily sales register for ${selectedDate} has been permanently deleted & reset.`);
+      showNotice?.('success', `Daily sales register and attendance for ${selectedDate} have been reset & cleared.`);
 
       recordAdminAction({
         action: 'DELETE',
