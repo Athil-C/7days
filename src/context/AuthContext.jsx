@@ -16,41 +16,48 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Check local admin session first
-    const localSession = sessionStorage.getItem('7days_admin_session') || sessionStorage.getItem('7days_demo_admin');
-    if (localSession) {
-      try {
-        const parsed = JSON.parse(localSession);
-        if (parsed?.id) {
-          setUser(parsed);
-        }
-      } catch (e) {
-        console.warn(e);
-      }
-    }
+    // Purge any legacy fake admin tokens from storage
+    try {
+      sessionStorage.removeItem('7days_admin_session');
+      sessionStorage.removeItem('7days_demo_admin');
+    } catch {}
 
     if (!isSupabaseConfigured) {
+      console.warn('Supabase is not configured. Admin authentication requires Supabase.');
       setLoading(false);
       return;
     }
 
-    // 2. Check active Supabase session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setSession(session);
-        setUser(session.user);
-      }
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-    });
+    // 1. Check active Supabase authenticated session
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (session?.user) {
+          setSession(session);
+          setUser(session.user);
+        } else {
+          setSession(null);
+          setUser(null);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn('Supabase getSession notice:', err);
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+      });
 
+    // 2. Listen for auth state changes (login, logout, token refresh)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setSession(session);
         setUser(session.user);
+      } else {
+        setSession(null);
+        setUser(null);
       }
       setLoading(false);
     });
@@ -59,46 +66,54 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signIn = async (email, password) => {
-    if (isSupabaseConfigured) {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (!error && data?.user) {
-          setUser(data.user);
-          setSession(data.session);
-          return { data, error: null };
-        }
-      } catch (err) {
-        console.warn('Supabase auth sign in notice:', err);
-      }
+    const cleanEmail = (email || '').trim();
+    const cleanPassword = password || '';
+
+    if (!cleanEmail || !cleanPassword) {
+      return { data: null, error: new Error('Please enter both email and password.') };
     }
 
-    // Local admin session fallback (ensures store owner is never locked out)
-    if (email && password) {
-      const localAdminUser = {
-        id: 'admin_session_local',
-        email: email.trim(),
-        role: 'authenticated',
-        user_metadata: { name: '7Days Store Admin' }
+    if (!isSupabaseConfigured) {
+      return {
+        data: null,
+        error: new Error('Supabase authentication is not configured in environment variables.')
       };
-      sessionStorage.setItem('7days_admin_session', JSON.stringify(localAdminUser));
-      setUser(localAdminUser);
-      return { data: { user: localAdminUser }, error: null };
     }
 
-    return { data: null, error: new Error('Please enter email and password') };
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: cleanPassword,
+      });
+
+      if (error) {
+        return { data: null, error };
+      }
+
+      if (data?.user) {
+        setUser(data.user);
+        setSession(data.session);
+        return { data, error: null };
+      }
+
+      return { data: null, error: new Error('Authentication failed. No user returned.') };
+    } catch (err) {
+      console.error('Supabase signIn error:', err);
+      return { data: null, error: err };
+    }
   };
 
   const signOut = async () => {
-    sessionStorage.removeItem('7days_admin_session');
-    sessionStorage.removeItem('7days_demo_admin');
+    try {
+      sessionStorage.removeItem('7days_admin_session');
+      sessionStorage.removeItem('7days_demo_admin');
+    } catch {}
+
     if (isSupabaseConfigured) {
       try {
         await supabase.auth.signOut();
       } catch (e) {
-        console.warn(e);
+        console.warn('Supabase signOut error:', e);
       }
     }
     setUser(null);
