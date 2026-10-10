@@ -5,10 +5,33 @@
  * and 1-click WhatsApp dispatch to the store WhatsApp number.
  */
 
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+
 const STORAGE_KEY = '7days_daily_sales_sheets_v1';
 
 // Empty initial sales sheets (starts fresh)
 const DEFAULT_SHEETS = {};
+
+// Initial sync from Supabase if configured
+if (typeof window !== 'undefined' && isSupabaseConfigured) {
+  supabase
+    .from('daily_sales_sheets')
+    .select('*')
+    .then(({ data, error }) => {
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const local = raw ? JSON.parse(raw) : {};
+        const merged = { ...local };
+        data.forEach((row) => {
+          if (row.date_str && row.data) {
+            merged[row.date_str] = row.data;
+          }
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        window.dispatchEvent(new Event('7days_daily_sales_updated'));
+      }
+    });
+}
 
 function getStoredSheets() {
   try {
@@ -34,6 +57,18 @@ function saveStoredSheets(sheets) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_daily_sales_updated'));
+    }
+    // Database sync if Supabase is active
+    if (isSupabaseConfigured && sheets && typeof sheets === 'object') {
+      Object.keys(sheets).forEach(async (dateStr) => {
+        try {
+          await supabase.from('daily_sales_sheets').upsert({
+            date_str: dateStr,
+            data: sheets[dateStr],
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'date_str' });
+        } catch {}
+      });
     }
   } catch (err) {
     console.error('Failed to save daily sales sheet:', err);

@@ -17,6 +17,39 @@ const DEFAULT_STAFF = [
   { id: 'staff_3', name: 'Faisal', role: 'Sales & Service Specialist' }
 ];
 
+// Initial sync from Supabase if configured
+if (typeof window !== 'undefined' && isSupabaseConfigured) {
+  // Sync staff members
+  supabase
+    .from('staff_members')
+    .select('*')
+    .then(({ data, error }) => {
+      if (!error && Array.isArray(data) && data.length > 0) {
+        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(data));
+        window.dispatchEvent(new Event('7days_staff_updated'));
+      }
+    });
+
+  // Sync attendance ledger
+  supabase
+    .from('staff_attendance')
+    .select('*')
+    .then(({ data, error }) => {
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const raw = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+        const local = raw ? JSON.parse(raw) : {};
+        const merged = { ...local };
+        data.forEach((row) => {
+          if (row.month_key && row.ledger_data) {
+            merged[row.month_key] = row.ledger_data;
+          }
+        });
+        localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(merged));
+        window.dispatchEvent(new Event('7days_attendance_updated'));
+      }
+    });
+}
+
 export function getStaffList() {
   try {
     const raw = localStorage.getItem(STAFF_STORAGE_KEY);

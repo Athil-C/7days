@@ -103,3 +103,95 @@ FOR ALL
 TO anon, authenticated
 USING (true)
 WITH CHECK (true);
+
+-- 6. CREATE & FIX DAILY SALES SHEETS TABLE
+CREATE TABLE IF NOT EXISTS public.daily_sales_sheets (
+    date_str TEXT PRIMARY KEY,
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.daily_sales_sheets ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admin Manage Daily Sales Sheets" ON public.daily_sales_sheets;
+
+CREATE POLICY "Admin Manage Daily Sales Sheets"
+ON public.daily_sales_sheets
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- 7. CREATE & FIX ADMIN LOGIN HISTORY ("LOGGED DETAILS")
+CREATE TABLE IF NOT EXISTS public.admin_login_history (
+    id TEXT PRIMARY KEY,
+    email TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'Super Admin',
+    login_timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    formatted_time TEXT,
+    formatted_date TEXT,
+    browser TEXT,
+    os TEXT,
+    device_info TEXT,
+    user_agent TEXT,
+    status TEXT DEFAULT 'Active'
+);
+
+ALTER TABLE public.admin_login_history ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow All Operations on Admin Login History" ON public.admin_login_history;
+
+CREATE POLICY "Allow All Operations on Admin Login History"
+ON public.admin_login_history
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- 8. CREATE & FIX ADMIN ACTIVITY AUDIT LOGS
+CREATE TABLE IF NOT EXISTS public.admin_activity_logs (
+    id TEXT PRIMARY KEY,
+    action TEXT NOT NULL,
+    category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    details TEXT DEFAULT '',
+    email TEXT,
+    role TEXT,
+    browser TEXT,
+    os TEXT,
+    device_info TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    formatted_time TEXT,
+    formatted_date TEXT
+);
+
+ALTER TABLE public.admin_activity_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow All Operations on Admin Activity Logs" ON public.admin_activity_logs;
+
+CREATE POLICY "Allow All Operations on Admin Activity Logs"
+ON public.admin_activity_logs
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- 9. CREATE & FIX CUSTOMERS DIRECTORY TABLE
+CREATE TABLE IF NOT EXISTS public.customers (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    place TEXT DEFAULT '',
+    tag TEXT DEFAULT 'General',
+    notes TEXT DEFAULT '',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow All Operations on Customers" ON public.customers;
+
+CREATE POLICY "Allow All Operations on Customers"
+ON public.customers
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+

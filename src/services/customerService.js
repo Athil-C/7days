@@ -120,7 +120,7 @@ export function getCustomers() {
 }
 
 /**
- * Save all customers to local storage and sync
+ * Save all customers to local storage and sync to Supabase database
  */
 function saveCustomers(list) {
   try {
@@ -128,9 +128,54 @@ function saveCustomers(list) {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_customers_updated'));
     }
+    // Sync to Supabase in background
+    if (isSupabaseConfigured && Array.isArray(list)) {
+      list.forEach(async (c) => {
+        try {
+          await supabase.from('customers').upsert({
+            id: c.id,
+            name: c.name,
+            phone: c.phone,
+            place: c.place || '',
+            tag: c.tag || 'General',
+            notes: c.notes || '',
+            created_at: c.createdAt || new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+        } catch (e) {
+          console.warn('Customer Supabase upsert error:', e);
+        }
+      });
+    }
   } catch (err) {
     console.error('Failed to save customers locally:', err);
   }
+}
+
+// Initial sync from Supabase if configured
+if (typeof window !== 'undefined' && isSupabaseConfigured) {
+  supabase
+    .from('customers')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .then(({ data, error }) => {
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const mapped = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          phone: item.phone,
+          place: item.place || '',
+          tag: item.tag || 'General',
+          notes: item.notes || '',
+          createdAt: item.created_at
+        }));
+        const raw = localStorage.getItem(STORAGE_KEY_CUSTOMERS);
+        const local = raw ? JSON.parse(raw) : [];
+        const merged = [...mapped, ...local.filter((l) => !mapped.some((m) => m.id === l.id))];
+        localStorage.setItem(STORAGE_KEY_CUSTOMERS, JSON.stringify(merged));
+        window.dispatchEvent(new Event('7days_customers_updated'));
+      }
+    });
 }
 
 /**
@@ -178,6 +223,9 @@ export function deleteCustomer(id) {
   const list = getCustomers();
   const updated = list.filter((c) => c.id !== id);
   saveCustomers(updated);
+  if (isSupabaseConfigured) {
+    supabase.from('customers').delete().eq('id', id).then();
+  }
   return updated;
 }
 
