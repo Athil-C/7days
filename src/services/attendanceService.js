@@ -5,6 +5,8 @@
  * by the Daily Sales Sheet "On Duty" entries (Full Day / Half Day).
  */
 
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+
 const STAFF_STORAGE_KEY = '7days_staff_list_v1';
 const ATTENDANCE_STORAGE_KEY = '7days_staff_attendance_ledger_v1';
 
@@ -35,6 +37,18 @@ export function saveStaffList(list) {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_staff_updated'));
     }
+    // Database background sync if Supabase is active
+    if (isSupabaseConfigured && Array.isArray(list)) {
+      list.forEach(async (staff) => {
+        try {
+          await supabase.from('staff_members').upsert({
+            id: staff.id,
+            name: staff.name,
+            role: staff.role
+          });
+        } catch {}
+      });
+    }
   } catch (err) {
     console.error('Failed to save staff list:', err);
   }
@@ -58,6 +72,11 @@ export function removeStaffMember(id) {
   const current = getStaffList();
   const updated = current.filter((s) => s.id !== id);
   saveStaffList(updated);
+  if (isSupabaseConfigured) {
+    try {
+      supabase.from('staff_members').delete().eq('id', id);
+    } catch {}
+  }
   return updated;
 }
 
@@ -81,6 +100,18 @@ function saveStoredAttendance(ledger) {
     localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(ledger));
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_attendance_updated'));
+    }
+    // Database background sync if Supabase is active
+    if (isSupabaseConfigured && ledger && typeof ledger === 'object') {
+      Object.keys(ledger).forEach(async (mKey) => {
+        try {
+          await supabase.from('staff_attendance').upsert({
+            month_key: mKey,
+            ledger_data: ledger[mKey],
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'month_key' });
+        } catch {}
+      });
     }
   } catch (err) {
     console.error('Failed to save attendance ledger:', err);

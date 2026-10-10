@@ -38,67 +38,26 @@ ALTER TABLE public.products ADD COLUMN IF NOT EXISTS about_item TEXT[] DEFAULT '
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
 -- 2. RLS Policies for Products Table
--- Anyone can view products (Public Read)
-CREATE POLICY "Public Read Access"
+CREATE POLICY "Allow All Operations on Products"
 ON public.products
-FOR SELECT
-USING (true);
-
--- Only authenticated users (Admin) can insert products
-CREATE POLICY "Admin Insert Products"
-ON public.products
-FOR INSERT
-TO authenticated
-WITH CHECK (true);
-
--- Only authenticated users (Admin) can update products
-CREATE POLICY "Admin Update Products"
-ON public.products
-FOR UPDATE
-TO authenticated
+FOR ALL
+TO anon, authenticated
 USING (true)
 WITH CHECK (true);
-
--- Only authenticated users (Admin) can delete products
-CREATE POLICY "Admin Delete Products"
-ON public.products
-FOR DELETE
-TO authenticated
-USING (true);
 
 -- 3. Storage Bucket for Product Images
 -- Note: You can also create this manually in Storage -> New Bucket -> 'product-images' (Public)
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('product-images', 'product-images', true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET public = true;
 
 -- 4. Storage Policies
--- Allow public to view product images
-CREATE POLICY "Public Images View"
+CREATE POLICY "Allow All Storage Operations"
 ON storage.objects
-FOR SELECT
-USING (bucket_id = 'product-images');
-
--- Allow authenticated admin to upload images
-CREATE POLICY "Admin Upload Images"
-ON storage.objects
-FOR INSERT
-TO authenticated
+FOR ALL
+TO anon, authenticated
+USING (bucket_id = 'product-images')
 WITH CHECK (bucket_id = 'product-images');
-
--- Allow authenticated admin to update images
-CREATE POLICY "Admin Update Images"
-ON storage.objects
-FOR UPDATE
-TO authenticated
-USING (bucket_id = 'product-images');
-
--- Allow authenticated admin to delete images
-CREATE POLICY "Admin Delete Images"
-ON storage.objects
-FOR DELETE
-TO authenticated
-USING (bucket_id = 'product-images');
 
 -- ==========================================================
 -- 5. Create Updates Table (Store Announcements & News)
@@ -123,31 +82,12 @@ CREATE TABLE IF NOT EXISTS public.updates (
 -- Enable RLS for Updates
 ALTER TABLE public.updates ENABLE ROW LEVEL SECURITY;
 
--- Anyone can view updates
-CREATE POLICY "Public Read Updates"
+CREATE POLICY "Allow All Operations on Updates"
 ON public.updates
-FOR SELECT
-USING (true);
-
--- Authenticated admin can manage updates
-CREATE POLICY "Admin Insert Updates"
-ON public.updates
-FOR INSERT
-TO authenticated
-WITH CHECK (true);
-
-CREATE POLICY "Admin Update Updates"
-ON public.updates
-FOR UPDATE
-TO authenticated
+FOR ALL
+TO anon, authenticated
 USING (true)
 WITH CHECK (true);
-
-CREATE POLICY "Admin Delete Updates"
-ON public.updates
-FOR DELETE
-TO authenticated
-USING (true);
 
 -- ==========================================================
 -- 6. Create Hero Showcase Table ("Little things. Big smiles.")
@@ -179,6 +119,29 @@ USING (true)
 WITH CHECK (true);
 
 -- ==========================================================
+-- 6. Create Hero Showcase Table ("Little things. Big smiles.")
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.hero_showcase (
+    slot INT PRIMARY KEY, -- 1, 2, 3
+    slot_label TEXT NOT NULL,
+    tag TEXT DEFAULT '',
+    title TEXT NOT NULL,
+    subtitle TEXT DEFAULT '',
+    image TEXT NOT NULL,
+    product_id TEXT DEFAULT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.hero_showcase ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow All Operations on Hero Showcase"
+ON public.hero_showcase
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- ==========================================================
 -- 7. Create Finance Transactions Table (Income & Expenses)
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.finance_transactions (
@@ -198,7 +161,7 @@ ALTER TABLE public.finance_transactions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Admin Manage Finance Transactions"
 ON public.finance_transactions
 FOR ALL
-TO authenticated
+TO anon, authenticated
 USING (true)
 WITH CHECK (true);
 
@@ -225,9 +188,62 @@ ALTER TABLE public.finance_purchases ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Admin Manage Finance Purchases"
 ON public.finance_purchases
 FOR ALL
-TO authenticated
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+-- ==========================================================
+-- 9. Create Staff Members Table
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.staff_members (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'Sales Staff',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.staff_members ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admin Manage Staff Members"
+ON public.staff_members
+FOR ALL
+TO anon, authenticated
 USING (true)
 WITH CHECK (true);
 
+-- ==========================================================
+-- 10. Create Staff Attendance Ledger Table
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.staff_attendance (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    month_key TEXT NOT NULL, -- e.g. '2026-10'
+    ledger_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(month_key)
+);
 
+ALTER TABLE public.staff_attendance ENABLE ROW LEVEL SECURITY;
 
+CREATE POLICY "Admin Manage Staff Attendance"
+ON public.staff_attendance
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- ==========================================================
+-- 11. Create Daily Sales Sheets Table
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.daily_sales_sheets (
+    date_str TEXT PRIMARY KEY, -- 'YYYY-MM-DD'
+    data JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.daily_sales_sheets ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admin Manage Daily Sales Sheets"
+ON public.daily_sales_sheets
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);

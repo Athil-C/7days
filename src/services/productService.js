@@ -397,6 +397,7 @@ function mapDbProduct(item) {
  */
 export async function getProducts() {
   const deletedIds = new Set(getDeletedProductIds());
+  let dbList = [];
 
   if (isSupabaseConfigured) {
     try {
@@ -405,12 +406,9 @@ export async function getProducts() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
-        const dbList = data.map(mapDbProduct).filter((p) => !deletedIds.has(String(p.id)));
-        return dbList.map(enrichProductWithDemoData);
-      }
-
-      if (error) {
+      if (!error && Array.isArray(data)) {
+        dbList = data.map(mapDbProduct).filter((p) => !deletedIds.has(String(p.id)));
+      } else if (error) {
         console.warn('Supabase fetch notice:', error.message);
       }
     } catch (err) {
@@ -418,17 +416,27 @@ export async function getProducts() {
     }
   }
 
-  // Fallback: Custom locally added/edited items + Static catalog
+  // Fallback / local custom items
   const custom = getLocalCustomProducts();
-  const customIds = new Set(custom.map((p) => String(p.id)));
+  const dbIds = new Set(dbList.map((p) => String(p.id)));
 
-  // Filter out any static items that were edited or deleted
-  const uneditedStatic = staticCatalog.filter(
-    (p) => !customIds.has(String(p.id)) && !deletedIds.has(String(p.id))
+  // Custom items that are not already present in DB
+  const activeCustom = custom.filter(
+    (p) => !dbIds.has(String(p.id)) && !deletedIds.has(String(p.id))
   );
 
-  const activeCustom = custom.filter((p) => !deletedIds.has(String(p.id)));
-  const allMerged = [...activeCustom, ...uneditedStatic];
+  const allCustomAndDbIds = new Set([
+    ...dbList.map((p) => String(p.id)),
+    ...activeCustom.map((p) => String(p.id)),
+  ]);
+
+  // Keep static products that haven't been deleted or overridden
+  const uneditedStatic = staticCatalog.filter(
+    (p) => !allCustomAndDbIds.has(String(p.id)) && !deletedIds.has(String(p.id))
+  );
+
+  // DB items first (newest uploaded), then active local custom, then full static catalog
+  const allMerged = [...dbList, ...activeCustom, ...uneditedStatic];
 
   return allMerged.map(enrichProductWithDemoData);
 }
