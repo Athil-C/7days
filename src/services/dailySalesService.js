@@ -322,7 +322,7 @@ export function isDailySheetLocked(dateStr) {
 /**
  * Update salesperson / staff name on duty for a specific date
  */
-export async function setDailySalesperson(dateStr, salespersonName) {
+export function setDailySalesperson(dateStr, salespersonName) {
   const sheets = getStoredSheets();
   const day = normalizeDayRecord(sheets[dateStr]);
   if (day.isLocked) return getDailySalesSheet(dateStr);
@@ -451,6 +451,10 @@ export function getAllSalesDates() {
  * Format sales sheet into a clean WhatsApp text message
  */
 export function formatDailySalesWhatsAppMessage(dateStr, sheet) {
+  if (!sheet || typeof sheet !== 'object' || typeof sheet.then === 'function') {
+    return '';
+  }
+
   const formattedDate = new Date(dateStr).toLocaleDateString('en-IN', {
     weekday: 'short',
     day: 'numeric',
@@ -459,41 +463,48 @@ export function formatDailySalesWhatsAppMessage(dateStr, sheet) {
   });
 
   const lines = [
-    ` *7DAYS TOYS & BABYSHOP — DAILY SALES SHEET*`,
-    ` Payod, Mananthavady, Wayanad`,
-    ` *Date:* ${formattedDate}`
+    `🛍️ *7DAYS TOYS & BABYSHOP — DAILY SALES SHEET*`,
+    `📍 Payod, Mananthavady, Wayanad`,
+    `📅 *Date:* ${formattedDate}`
   ];
 
   if (sheet.isLocked) {
-    lines.push(` *STATUS: CONFIRMED & LOCKED EOD CLOSING*`);
+    lines.push(`🔒 *STATUS: CONFIRMED & LOCKED EOD CLOSING*`);
   }
 
   if (sheet.salesperson) {
     const staffList = sheet.salesperson.split(',').map((s) => s.trim()).filter(Boolean);
     const countLabel = staffList.length > 1 ? ` (${staffList.length} Present)` : '';
-    lines.push(`*Staff on Duty${countLabel}:* ${sheet.salesperson}`);
+    lines.push(`👥 *Staff on Duty${countLabel}:* ${sheet.salesperson}`);
   }
 
   lines.push(`──────────────────────────────`);
-  lines.push(` *ITEMS SOLD:*`);
+  lines.push(`📦 *ITEMS SOLD:*`);
 
   if (!sheet.items || sheet.items.length === 0) {
     lines.push(`_No sales recorded for this date._`);
   } else {
     sheet.items.forEach((it, idx) => {
       const mode = it.paymentMethod ? ` (${it.paymentMethod})` : '';
-      lines.push(`${idx + 1}. *${it.itemName}* — ₹${Number(it.amount).toLocaleString('en-IN')}${mode}`);
+      const amountNum = Number(it.amount || 0);
+      lines.push(`${idx + 1}. *${it.itemName || 'Item'}* — ₹${amountNum.toLocaleString('en-IN')}${mode}`);
     });
   }
 
+  const total = Number(sheet.total ?? sheet.totalSales ?? 0);
+  const count = Number(sheet.count ?? sheet.items?.length ?? 0);
+  const cash = Number(sheet.cashTotal ?? 0);
+  const upi = Number(sheet.upiTotal ?? 0);
+  const card = Number(sheet.cardTotal ?? 0);
+
   lines.push(`──────────────────────────────`);
-  lines.push(` *DAY SUMMARY:*`);
-  lines.push(`• Total Items Sold: ${sheet.count}`);
+  lines.push(`📊 *DAY SUMMARY:*`);
+  lines.push(`• Total Items Sold: ${count}`);
   if (sheet.cashTotal !== undefined) {
-    lines.push(`•  Cash Sales: ₹${sheet.cashTotal.toLocaleString('en-IN')}`);
-    lines.push(`•  UPI / Online: ₹${(sheet.upiTotal + sheet.cardTotal).toLocaleString('en-IN')}`);
+    lines.push(`• 💵 Cash Sales: ₹${cash.toLocaleString('en-IN')}`);
+    lines.push(`• 📱 UPI / Online: ₹${(upi + card).toLocaleString('en-IN')}`);
   }
-  lines.push(` *TOTAL DAY COLLECTION: ₹${sheet.total.toLocaleString('en-IN')}*`);
+  lines.push(`💰 *TOTAL DAY COLLECTION: ₹${total.toLocaleString('en-IN')}*`);
   lines.push(`──────────────────────────────`);
   lines.push(`_7Days Toys & Cycles, Payod_`);
 

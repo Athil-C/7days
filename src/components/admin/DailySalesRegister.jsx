@@ -21,7 +21,18 @@ import {
   X,
   Search,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  RefreshCw,
+  CreditCard,
+  QrCode,
+  Banknote,
+  ShoppingBag,
+  TrendingUp,
+  Clock,
+  ArrowLeft,
+  ArrowRight,
+  DollarSign,
+  UserPlus
 } from 'lucide-react';
 import {
   getDailySalesSheet,
@@ -39,6 +50,8 @@ import {
 } from '../../services/dailySalesService';
 import {
   getStaffList,
+  addStaffMember,
+  removeStaffMember,
   getDutyStatusForDate,
   syncDutyToAttendance,
   getWeeklyAttendanceReport,
@@ -54,9 +67,20 @@ import {
 } from '../../services/pdfService';
 import { recordAdminAction } from '../../services/adminLogService';
 
-export default function DailySalesRegister({ products = [], showNotice }) {
+export default function DailySalesRegister({
+  products = [],
+  showNotice,
+  initialDate,
+  onNavigateToPastSales
+}) {
   const todayStr = new Date().toISOString().split('T')[0];
-  const [selectedDate, setSelectedDate] = useState(todayStr);
+  const [selectedDate, setSelectedDate] = useState(initialDate || todayStr);
+
+  useEffect(() => {
+    if (initialDate) {
+      setSelectedDate(initialDate);
+    }
+  }, [initialDate]);
 
   const [sheet, setSheet] = useState(() => getDailySalesSheet(todayStr));
   const [pastDates, setPastDates] = useState(() => getAllSalesDates());
@@ -96,6 +120,73 @@ export default function DailySalesRegister({ products = [], showNotice }) {
   const [staffSearchQuery, setStaffSearchQuery] = useState('');
   const [pastDaysPage, setPastDaysPage] = useState(0);
   const PAST_PER_PAGE = 4;
+  const [isSyncingSales, setIsSyncingSales] = useState(false);
+
+  // User-Friendly Add Staff Modal state
+  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
+  const [newStaffName, setNewStaffName] = useState('');
+  const [newStaffRole, setNewStaffRole] = useState('Sales Staff');
+  const [newStaffOnDutyNow, setNewStaffOnDutyNow] = useState(true);
+
+  // POS Ledger Filter & Search states
+  const [paymentFilter, setPaymentFilter] = useState('All'); // 'All' | 'Cash' | 'UPI' | 'Card'
+  const [salesSearch, setSalesSearch] = useState('');
+
+  // Filtered sales items for today's table
+  const filteredItems = useMemo(() => {
+    let list = sheet?.items || [];
+    if (paymentFilter !== 'All') {
+      list = list.filter((it) => it.paymentMethod === paymentFilter);
+    }
+    if (salesSearch.trim()) {
+      const q = salesSearch.toLowerCase();
+      list = list.filter((it) => it.itemName?.toLowerCase().includes(q));
+    }
+    return list;
+  }, [sheet?.items, paymentFilter, salesSearch]);
+
+  // Date navigation helpers
+  const handlePrevDay = () => {
+    const d = new Date(selectedDate);
+    d.setDate(d.getDate() - 1);
+    setSelectedDate(d.toISOString().split('T')[0]);
+  };
+
+  const handleNextDay = () => {
+    const d = new Date(selectedDate);
+    d.setDate(d.getDate() + 1);
+    setSelectedDate(d.toISOString().split('T')[0]);
+  };
+
+  // Quick preset amount helper
+  const handlePresetAmount = (presetVal) => {
+    setAmount((prev) => {
+      const current = Number(prev) || 0;
+      return String(current + presetVal);
+    });
+  };
+
+  const handleManualSalesSync = async () => {
+    if (isSyncingSales) return;
+    setIsSyncingSales(true);
+    try {
+      await Promise.allSettled([
+        syncDailySalesFromServer(),
+        fetchDailySalesSheet(selectedDate)
+      ]);
+      const freshSheet = getDailySalesSheet(selectedDate);
+      setSheet(freshSheet);
+      setPastDates(getAllSalesDates());
+      const currentDuty = getDutyStatusForDate(selectedDate);
+      setDutyMap(currentDuty);
+      showNotice?.('success', 'Daily Sales synchronized with cloud server!');
+    } catch (err) {
+      console.error('Manual sales sync failed:', err);
+      showNotice?.('error', 'Sync failed: ' + (err?.message || 'Error syncing'));
+    } finally {
+      setIsSyncingSales(false);
+    }
+  };
 
   const itemInputRef = useRef(null);
   const sheetPrintRef = useRef(null);
@@ -244,7 +335,11 @@ export default function DailySalesRegister({ products = [], showNotice }) {
     const newStr = activeStaff.join(', ');
     setSalesperson(newStr);
     const updatedSheet = setDailySalesperson(selectedDate, newStr);
-    setSheet(updatedSheet);
+    if (updatedSheet && typeof updatedSheet.then !== 'function') {
+      setSheet(updatedSheet);
+    } else {
+      setSheet(getDailySalesSheet(selectedDate));
+    }
 
     const staffObj = availableStaff.find((s) => s.id === staffId);
     recordAdminAction({
@@ -255,11 +350,59 @@ export default function DailySalesRegister({ products = [], showNotice }) {
     });
   };
 
+  const handleAddNewStaff = (e) => {
+    e?.preventDefault();
+    if (!newStaffName.trim()) {
+      showNotice?.('error', 'Please enter a staff name');
+      return;
+    }
+    const name = newStaffName.trim();
+    const role = newStaffRole.trim() || 'Sales Staff';
+    const updatedStaffList = addStaffMember(name, role);
+    setAvailableStaff(updatedStaffList);
+
+    const addedMember = updatedStaffList.find(
+      (s) => s.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (addedMember && newStaffOnDutyNow) {
+      handleSetStaffDuty(addedMember.id, 'Full');
+    }
+
+    setNewStaffName('');
+    setNewStaffRole('Sales Staff');
+    setShowAddStaffModal(false);
+    showNotice?.('success', `Staff member "${name}" added successfully!`);
+
+    recordAdminAction({
+      action: 'CREATE',
+      category: 'Attendance',
+      title: `Added Staff: ${name}`,
+      details: `Added new staff member (${role}) to store register`
+    });
+  };
+
+  const handleRemoveStaff = async (staffId, staffName) => {
+    if (sheet.isLocked) {
+      showNotice?.('error', 'This register is locked. Staff list cannot be modified.');
+      return;
+    }
+    if (window.confirm(`Are you sure you want to remove ${staffName} from staff members?`)) {
+      const updated = await removeStaffMember(staffId);
+      setAvailableStaff(updated);
+      showNotice?.('success', `Removed ${staffName} from staff list`);
+    }
+  };
+
   const handleCustomSalespersonTextChange = (text) => {
     if (sheet.isLocked) return;
     setSalesperson(text);
     const updated = setDailySalesperson(selectedDate, text);
-    setSheet(updated);
+    if (updated && typeof updated.then !== 'function') {
+      setSheet(updated);
+    } else {
+      setSheet(getDailySalesSheet(selectedDate));
+    }
   };
 
   const filteredStaff = useMemo(() => {
@@ -463,6 +606,9 @@ export default function DailySalesRegister({ products = [], showNotice }) {
 
   // WhatsApp Message Text with All-Days Monthly Attendance summary
   const whatsAppText = useMemo(() => {
+    if (!sheet || typeof sheet !== 'object' || typeof sheet.then === 'function') {
+      return '';
+    }
     let msg = formatDailySalesWhatsAppMessage(selectedDate, sheet);
     if (includeMonthAttendance && monthAttendanceData && monthAttendanceData.records) {
       msg += `\n──────────────────────────────\n`;
@@ -578,713 +724,913 @@ export default function DailySalesRegister({ products = [], showNotice }) {
   });
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className="space-y-6 pb-20 font-body">
       {/* ========================================================= */}
-      {/* TOP HEADER & ACTION BAR (RETAILOS DASHBOARD STYLE)        */}
+      {/* 1. TOP HEADER & POS CONTROL BAR                          */}
       {/* ========================================================= */}
-      <div className="bg-white p-5 rounded-2xl border border-gray-200/90 shadow-xs space-y-3.5 print:hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-slate-900 text-emerald-400 flex items-center justify-center font-black text-sm shadow-xs shrink-0">
+      <div className="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200/90 shadow-xs space-y-4 print:hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          {/* Brand & Section Title */}
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-900 to-slate-800 text-emerald-400 flex items-center justify-center font-black text-sm shadow-md shrink-0">
               7D
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-black text-gray-900 tracking-tight">
-                Daily Sales Register &amp; Sales History
-              </h1>
-              <span className="text-[11px] text-gray-500 font-medium">
-                Live Sales Entry, Day Closing Sheets &amp; Daily Revenue
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+                  Daily Sales Register
+                </h1>
+                {sheet.isLocked ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                    <Lock className="w-3 h-3 text-amber-700" />
+                    Locked &amp; Finalized
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Open for Sales
+                  </span>
+                )}
+              </div>
+              <span className="text-xs text-gray-500 font-medium block mt-0.5">
+                Fast POS Sales Entry, Real-Time Revenue Collection &amp; Day Closing
               </span>
             </div>
           </div>
 
-          {/* Top Action Buttons */}
+          {/* Date Navigator & Cloud Sync Controls */}
           <div className="flex items-center gap-2 flex-wrap">
+            {/* Live Sync Button */}
+            <button
+              type="button"
+              onClick={handleManualSalesSync}
+              disabled={isSyncingSales}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs transition cursor-pointer disabled:opacity-60 shadow-2xs group"
+              title="Reload latest sales from cloud server"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>{isSyncingSales ? 'Syncing...' : 'Live Sync'}</span>
+              <RefreshCw className={`w-3.5 h-3.5 text-emerald-700 transition-transform ${isSyncingSales ? 'animate-spin' : 'group-hover:rotate-180 duration-500'}`} />
+            </button>
+
+            {/* Date Switcher Pill */}
+            <div className="inline-flex items-center bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-2xs">
+              <button
+                type="button"
+                onClick={handlePrevDay}
+                className="p-1.5 rounded-lg hover:bg-white text-gray-600 transition cursor-pointer"
+                title="Previous Day"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-1.5 px-2">
+                <Calendar className="w-3.5 h-3.5 text-[#FB8500]" />
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="text-xs font-bold text-gray-800 outline-none bg-transparent cursor-pointer"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedDate(todayStr)}
+                className={`text-[11px] font-black px-2.5 py-1 rounded-lg transition cursor-pointer ${
+                  selectedDate === todayStr
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-gray-600 hover:bg-white'
+                }`}
+              >
+                Today
+              </button>
+
+              <button
+                type="button"
+                onClick={handleNextDay}
+                className="p-1.5 rounded-lg hover:bg-white text-gray-600 transition cursor-pointer"
+                title="Next Day"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Action Buttons: WhatsApp / PDF / Copy */}
+            <div className="flex items-center gap-1.5">
+              {sheet.isLocked ? (
+                <>
+                  <button
+                    onClick={handleSendPdfToWhatsApp}
+                    disabled={sheet.items.length === 0 || isGeneratingPdf}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black text-white bg-[#25D366] hover:bg-[#20ba59] shadow-xs transition cursor-pointer disabled:opacity-50"
+                    title="Send closing sheet PDF to WhatsApp"
+                  >
+                    {isGeneratingPdf ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                    )}
+                    <span>WhatsApp Closing</span>
+                  </button>
+                  <button
+                    onClick={handleDownloadPdf}
+                    disabled={sheet.items.length === 0 || isGeneratingPdf}
+                    className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-xs transition cursor-pointer disabled:opacity-50"
+                    title="Download styled A4 PDF"
+                  >
+                    <FileDown className="w-3.5 h-3.5 text-gray-600" />
+                    <span>PDF</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowLockConfirmModal(true)}
+                  disabled={sheet.items.length === 0}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-black shadow-xs transition cursor-pointer disabled:opacity-50"
+                  title="Confirm & Lock Day Closing before exporting"
+                >
+                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Lock Day</span>
+                </button>
+              )}
+
+              <button
+                onClick={handleCopyText}
+                disabled={sheet.items.length === 0}
+                className="p-2 rounded-xl text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer disabled:opacity-50"
+                title="Copy text summary"
+              >
+                {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-gray-600" />}
+              </button>
+
+              <button
+                onClick={() => window.print()}
+                className="p-2 rounded-xl text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 transition cursor-pointer"
+                title="Print sales register"
+              >
+                <Printer className="w-3.5 h-3.5 text-gray-600" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* WhatsApp destination phone number bar */}
+        <div className="pt-2.5 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-600">Selected Sheet Date:</span>
+            <span className="font-bold text-gray-900 bg-gray-100 px-2.5 py-0.5 rounded-lg">
+              {readableDate}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-emerald-800">
+            <Phone className="w-3 h-3 text-emerald-600" />
+            <span className="font-semibold">WhatsApp Target:</span>
+            {showPhoneEditor ? (
+              <input
+                type="text"
+                value={targetPhone}
+                onChange={(e) => setTargetPhone(e.target.value)}
+                onBlur={() => setShowPhoneEditor(false)}
+                autoFocus
+                className="w-28 px-1.5 py-0.5 rounded border border-emerald-400 bg-white text-xs font-mono outline-none"
+              />
+            ) : (
+              <span className="font-black font-mono">+{targetPhone}</span>
+            )}
+            <button
+              type="button"
+              onClick={() => setShowPhoneEditor(!showPhoneEditor)}
+              className="text-[10px] text-emerald-700 hover:underline cursor-pointer ml-1"
+            >
+              {showPhoneEditor ? 'Save' : 'Edit'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 2. STAFF ON DUTY & QUICK ADD STAFF BAR                   */}
+      {/* ========================================================= */}
+      <div className="bg-white rounded-3xl border border-gray-200/90 p-4 sm:p-5 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2.5 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shadow-2xs">
+              <Users className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs font-black uppercase tracking-wider text-gray-900">
+                  Staff On Duty Today
+                </h3>
+                {onDutyCount > 0 ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    {onDutyCount} Active
+                  </span>
+                ) : (
+                  <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-500">
+                    None Selected
+                  </span>
+                )}
+              </div>
+              <span className="text-[11px] text-gray-500 font-medium block mt-0.5">
+                {salesperson ? `Credited: ${salesperson}` : 'Tap a staff chip to mark Full Day / Half Day / Off duty'}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowAddStaffModal(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition cursor-pointer self-start sm:self-auto shadow-2xs group"
+          >
+            <UserPlus className="w-3.5 h-3.5 text-emerald-700 transition-transform group-hover:scale-110" />
+            <span>+ Add Staff Member</span>
+          </button>
+        </div>
+
+        {availableStaff.length === 0 ? (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50/50 via-white to-amber-50/30 border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="space-y-0.5">
+              <h4 className="text-xs font-black text-gray-800">
+                No staff members in store roster yet
+              </h4>
+              <p className="text-[11px] text-gray-500 font-medium">
+                Add your salespersons, cashiers, or managers so their names appear on daily sales sheets and PDFs.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowAddStaffModal(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-white bg-[#FB8500] hover:bg-[#e07500] shadow-xs transition cursor-pointer shrink-0"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>+ Add First Staff</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 flex-wrap pt-1">
+            {availableStaff.map((staff) => {
+              const status = dutyMap[staff.id] || 'Off';
+              const isFull = status === 'Full';
+              const isHalf = status === 'Half';
+
+              return (
+                <div
+                  key={staff.id}
+                  className={`inline-flex items-center gap-2 p-1.5 pr-2.5 rounded-2xl border transition shadow-2xs ${
+                    isFull
+                      ? 'bg-emerald-50 text-emerald-950 border-emerald-300 ring-1 ring-emerald-400/40'
+                      : isHalf
+                      ? 'bg-amber-50 text-amber-950 border-amber-300 ring-1 ring-amber-400/40'
+                      : 'bg-gray-50/80 text-gray-700 border-gray-200 hover:bg-gray-100'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    disabled={sheet.isLocked}
+                    onClick={() => handleToggleStaffDuty(staff.id)}
+                    className="flex items-center gap-2 text-left cursor-pointer disabled:opacity-50"
+                    title={`Click to cycle duty status (currently ${status})`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs ${
+                        isFull
+                          ? 'bg-emerald-600 text-white'
+                          : isHalf
+                          ? 'bg-amber-500 text-white'
+                          : 'bg-gray-200 text-gray-600'
+                      }`}
+                    >
+                      {staff.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <span className="font-extrabold text-xs block leading-tight">
+                        {staff.name}
+                      </span>
+                      <span className="text-[10px] text-gray-400 block font-medium">
+                        {staff.role || 'Staff'}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`ml-1 text-[9px] font-black uppercase px-2 py-0.5 rounded-md transition ${
+                        isFull
+                          ? 'bg-emerald-600 text-white'
+                          : isHalf
+                          ? 'bg-amber-500 text-white'
+                          : 'bg-gray-200 text-gray-600'
+                      }`}
+                    >
+                      {status === 'Full' ? 'Full Day' : status === 'Half' ? 'Half Day' : 'Off'}
+                    </span>
+                  </button>
+
+                  {!sheet.isLocked && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveStaff(staff.id, staff.name)}
+                      className="p-1 text-gray-300 hover:text-red-500 hover:bg-white rounded-lg transition cursor-pointer ml-0.5"
+                      title={`Remove ${staff.name} from staff list`}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ========================================================= */}
+      {/* 3. QUICK SALE ENTRY POS TERMINAL (THE MAIN FOCUS)        */}
+      {/* ========================================================= */}
+      <div className="bg-white rounded-3xl border border-gray-200/90 p-5 sm:p-6 shadow-md shadow-gray-200/50 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FB8500] to-[#FFB703] text-white flex items-center justify-center shadow-xs">
+              <Plus className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-wider text-gray-900">
+                Quick Sale Entry
+              </h2>
+              <span className="text-[11px] text-gray-400 font-medium">
+                Type toy or item name, amount, choose payment, and hit Enter
+              </span>
+            </div>
+          </div>
+
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+            <span>Fast Billing</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-white border border-amber-300 text-[10px] font-mono shadow-2xs">Enter ↵</kbd>
+          </span>
+        </div>
+
+        {sheet.isLocked ? (
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-50/90 via-white to-amber-50/50 border border-amber-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold shadow-2xs shrink-0">
+                <Lock className="w-5 h-5 text-amber-700" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-gray-900">
+                  Daily Sales Register is Confirmed &amp; Locked
+                </h4>
+                <p className="text-xs text-gray-500 font-medium mt-0.5">
+                  New sales entry is locked to protect closing accounts. Unlock with Store Owner PIN to edit.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <button
+                type="button"
+                onClick={handleOpenUnlockModal}
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-black text-xs text-white bg-amber-600 hover:bg-amber-700 shadow-sm transition cursor-pointer"
+              >
+                <Unlock className="w-3.5 h-3.5" />
+                <span>Unlock with Owner PIN</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleOpenDeleteSheetModal}
+                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-xs text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition cursor-pointer"
+                title="Delete this day's sales sheet"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                <span>Reset</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleAddItem} className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-end">
+              {/* Product / Toy Name Input */}
+              <div className="lg:col-span-5 relative">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Item / Toy Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <input
+                    ref={itemInputRef}
+                    type="text"
+                    required
+                    value={itemName}
+                    onChange={(e) => setItemName(e.target.value)}
+                    placeholder="e.g. Magic Twister, Baby Tricycle, Teddy Bear..."
+                    className="w-full pl-10 pr-9 py-3 rounded-2xl border border-gray-200 text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-[#FB8500] focus:border-transparent outline-none transition bg-gray-50/50 focus:bg-white"
+                  />
+                  {itemName && (
+                    <button
+                      type="button"
+                      onClick={() => setItemName('')}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Instant Catalogue Autocomplete Dropdown */}
+                {itemSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-40 mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-xl divide-y divide-gray-100 overflow-hidden">
+                    <div className="p-2 bg-gray-50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                      Matching Store Catalogue Toys
+                    </div>
+                    {itemSuggestions.map((sug) => (
+                      <div
+                        key={sug.id}
+                        onClick={() => handleSelectSuggestion(sug)}
+                        className="p-3 hover:bg-amber-50 flex items-center justify-between text-xs cursor-pointer transition"
+                      >
+                        <div className="min-w-0 pr-2">
+                          <span className="font-bold text-gray-900 block truncate">{sug.name}</span>
+                          <span className="text-[10px] text-gray-400 block">{sug.category || 'Toy'}</span>
+                        </div>
+                        {sug.price && (
+                          <span className="font-black text-sm text-[#FB8500] shrink-0 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                            ₹{sug.price}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Price / Amount Input */}
+              <div className="lg:col-span-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-gray-700">
+                    Amount (₹) <span className="text-red-500">*</span>
+                  </label>
+                  {/* Preset Amount Increment Pills */}
+                  <div className="flex items-center gap-1">
+                    {[100, 500, 1000].map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => handlePresetAmount(preset)}
+                        className="px-1.5 py-0.5 rounded bg-gray-100 hover:bg-amber-100 text-[10px] font-bold text-gray-700 hover:text-amber-900 transition cursor-pointer"
+                        title={`Add +₹${preset}`}
+                      >
+                        +{preset}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 font-bold text-sm">
+                    ₹
+                  </div>
+                  <input
+                    type="number"
+                    step="any"
+                    required
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0.00"
+                    className="w-full pl-8 pr-3.5 py-3 rounded-2xl border border-gray-200 text-sm font-black text-gray-900 focus:ring-2 focus:ring-[#FB8500] focus:border-transparent outline-none transition bg-gray-50/50 focus:bg-white font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Payment Method Selector */}
+              <div className="lg:col-span-2">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Payment Mode
+                </label>
+                <div className="grid grid-cols-3 gap-1 bg-gray-100/80 p-1 rounded-2xl border border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('Cash')}
+                    className={`py-2 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                      paymentMethod === 'Cash'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Banknote className="w-3.5 h-3.5" />
+                    <span className="text-[10px]">Cash</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('UPI')}
+                    className={`py-2 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                      paymentMethod === 'UPI'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span className="text-[10px]">UPI</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('Card')}
+                    className={`py-2 rounded-xl text-xs font-black transition cursor-pointer flex flex-col items-center gap-0.5 ${
+                      paymentMethod === 'Card'
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span className="text-[10px]">Card</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* + Add Sale Button */}
+              <div className="lg:col-span-2">
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 rounded-2xl font-black text-xs text-white bg-gradient-to-r from-[#FB8500] to-[#FFB703] hover:from-[#e07500] hover:to-[#f0a500] shadow-md shadow-[#FB8500]/25 transition transform active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-4 h-4 stroke-[3]" />
+                  <span>Add Sale Item</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+      </div>
+
+      {/* ========================================================= */}
+      {/* 3. LIVE REVENUE METRICS (FINANCIAL STAT CARDS)             */}
+      {/* ========================================================= */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        {/* Card 1: Total Day Revenue */}
+        <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-4 sm:p-5 rounded-3xl shadow-md space-y-2 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-100 flex items-center gap-1.5">
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Total Revenue</span>
+            </span>
+            <span className="text-[10px] font-black bg-white/20 text-white px-2 py-0.5 rounded-full">
+              {sheet.count} {sheet.count === 1 ? 'Sale' : 'Sales'}
+            </span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black tracking-tight">
+            ₹{Number(sheet?.total || 0).toLocaleString('en-IN')}
+          </div>
+          <span className="text-[11px] text-emerald-100 block">
+            {readableDate}
+          </span>
+        </div>
+
+        {/* Card 2: Cash In Hand */}
+        <div className="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200/90 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+              <Banknote className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Cash</span>
+            </span>
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              {sheet.total > 0 ? `${Math.round((cashTotal / sheet.total) * 100)}%` : '0%'}
+            </span>
+          </div>
+          <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+            ₹{cashTotal.toLocaleString('en-IN')}
+          </div>
+          <span className="text-[11px] text-gray-400 block font-medium">
+            Physical cash collection
+          </span>
+        </div>
+
+        {/* Card 3: UPI / QR Collection */}
+        <div className="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200/90 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+              <QrCode className="w-3.5 h-3.5 text-purple-600" />
+              <span>UPI / QR</span>
+            </span>
+            <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">
+              {sheet.total > 0 ? `${Math.round((upiTotal / sheet.total) * 100)}%` : '0%'}
+            </span>
+          </div>
+          <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+            ₹{upiTotal.toLocaleString('en-IN')}
+          </div>
+          <span className="text-[11px] text-gray-400 block font-medium">
+            GPay, PhonePe, Paytm
+          </span>
+        </div>
+
+        {/* Card 4: Card Collection */}
+        <div className="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200/90 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+              <CreditCard className="w-3.5 h-3.5 text-blue-600" />
+              <span>Card / Machine</span>
+            </span>
+            <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+              {sheet.total > 0 ? `${Math.round((cardTotal / sheet.total) * 100)}%` : '0%'}
+            </span>
+          </div>
+          <div className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+            ₹{cardTotal.toLocaleString('en-IN')}
+          </div>
+          <span className="text-[11px] text-gray-400 block font-medium">
+            Debit / Credit Card POS
+          </span>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* 4. TODAY'S SALES LEDGER TABLE & FILTER STATION           */}
+      {/* ========================================================= */}
+      <div className="bg-white rounded-3xl border border-gray-200/90 shadow-xs overflow-hidden" ref={sheetPrintRef}>
+        {/* Table Toolbar */}
+        <div className="p-4 sm:p-5 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+          {/* Payment Mode Filter Tabs */}
+          <div className="flex items-center gap-1.5 bg-gray-100/80 p-1 rounded-2xl border border-gray-200 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setPaymentFilter('All')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                paymentFilter === 'All'
+                  ? 'bg-white text-gray-900 shadow-xs'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <span>All Items</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-gray-100 text-gray-700">
+                {sheet.items.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPaymentFilter('Cash')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                paymentFilter === 'Cash'
+                  ? 'bg-white text-emerald-800 shadow-xs'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Banknote className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Cash</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-800">
+                {sheet.items.filter((i) => i.paymentMethod === 'Cash').length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPaymentFilter('UPI')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                paymentFilter === 'UPI'
+                  ? 'bg-white text-purple-800 shadow-xs'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <QrCode className="w-3.5 h-3.5 text-purple-600" />
+              <span>UPI</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-purple-50 text-purple-800">
+                {sheet.items.filter((i) => i.paymentMethod === 'UPI').length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPaymentFilter('Card')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                paymentFilter === 'Card'
+                  ? 'bg-white text-blue-800 shadow-xs'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <CreditCard className="w-3.5 h-3.5 text-blue-600" />
+              <span>Card</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-800">
+                {sheet.items.filter((i) => i.paymentMethod === 'Card').length}
+              </span>
+            </button>
+          </div>
+
+          {/* Search Sales Input & Actions */}
+          <div className="flex items-center gap-2 flex-1 max-w-sm justify-end">
+            <div className="relative w-full">
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={salesSearch}
+                onChange={(e) => setSalesSearch(e.target.value)}
+                placeholder="Search today's items..."
+                className="w-full pl-9 pr-3 py-1.5 rounded-xl text-xs bg-gray-50 border border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FB8500]/20 focus:border-[#FB8500] transition"
+              />
+              {salesSearch && (
+                <button
+                  type="button"
+                  onClick={() => setSalesSearch('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {!sheet.isLocked && sheet.items.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearSheet}
+                className="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 border border-gray-200 transition cursor-pointer shrink-0"
+                title="Clear all items from today's sheet"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Sales Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="bg-gray-50/80 border-b border-gray-200 text-gray-600 font-bold uppercase text-[10px] tracking-wider">
+                <th className="py-3 px-4 w-12 text-center">#</th>
+                <th className="py-3 px-4">Item / Toy Sold</th>
+                <th className="py-3 px-4 text-center w-28">Payment Mode</th>
+                <th className="py-3 px-4 text-center w-28">Time</th>
+                <th className="py-3 px-4 text-right w-36">Amount (₹)</th>
+                <th className="py-3 px-4 w-12 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="max-w-xs mx-auto space-y-2">
+                      <div className="w-12 h-12 rounded-2xl bg-amber-50 text-[#FB8500] flex items-center justify-center mx-auto shadow-2xs">
+                        <ShoppingBag className="w-6 h-6" />
+                      </div>
+                      <p className="font-bold text-sm text-gray-800">
+                        {sheet.items.length === 0
+                          ? 'No sales recorded for this date yet'
+                          : 'No sales match your current search/filter'}
+                      </p>
+                      <p className="text-xs text-gray-400 leading-relaxed">
+                        {sheet.items.length === 0
+                          ? 'Use the Quick Sale Entry station above to record items sold at the counter.'
+                          : 'Try switching the payment mode filter or clearing the search box.'}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((item, index) => {
+                  return (
+                    <tr
+                      key={item.id || index}
+                      className="hover:bg-amber-50/30 transition group"
+                    >
+                      <td className="py-3.5 px-4 text-center font-bold text-gray-400 text-xs">
+                        {index + 1}
+                      </td>
+
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-gray-900 text-sm">
+                            {item.itemName}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-4 text-center">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                            item.paymentMethod === 'UPI'
+                              ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                              : item.paymentMethod === 'Card'
+                              ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                              : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          }`}
+                        >
+                          {item.paymentMethod === 'UPI' ? (
+                            <QrCode className="w-3 h-3" />
+                          ) : item.paymentMethod === 'Card' ? (
+                            <CreditCard className="w-3 h-3" />
+                          ) : (
+                            <Banknote className="w-3 h-3" />
+                          )}
+                          <span>{item.paymentMethod}</span>
+                        </span>
+                      </td>
+
+                      <td className="py-3.5 px-4 text-center text-gray-500 font-medium">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-gray-400" />
+                          <span>{item.time || 'Today'}</span>
+                        </span>
+                      </td>
+
+                      <td className="py-3.5 px-4 text-right">
+                        <span className="font-black text-sm text-gray-900 font-mono">
+                          ₹{Number(item.amount).toLocaleString('en-IN')}
+                        </span>
+                      </td>
+
+                      <td className="py-3.5 px-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (sheet.isLocked) {
+                              showNotice?.('info', 'Register is locked. Please unlock first to delete items.');
+                              handleOpenUnlockModal();
+                            } else {
+                              handleDeleteItem(item.id);
+                            }
+                          }}
+                          className={`p-1.5 rounded-xl transition cursor-pointer ${
+                            sheet.isLocked
+                              ? 'text-gray-300 hover:text-amber-600 hover:bg-amber-50'
+                              : 'text-gray-300 hover:text-red-600 hover:bg-red-50'
+                          }`}
+                          title={sheet.isLocked ? 'Sheet is locked. Click to unlock & delete' : 'Delete item'}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Ledger Bottom Summary Bar */}
+        <div className="p-4 sm:p-5 bg-gray-50/90 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-wrap text-xs">
+            <span className="font-extrabold text-gray-900">
+              Day Closing Total: <strong className="text-base text-emerald-700 font-black">₹{Number(sheet?.total || 0).toLocaleString('en-IN')}</strong> ({sheet?.count || 0} items)
+            </span>
+            <span className="text-gray-400">&bull;</span>
+            <span className="text-gray-600 font-medium">Cash: <strong className="text-gray-900">₹{cashTotal.toLocaleString('en-IN')}</strong></span>
+            <span className="text-gray-600 font-medium">UPI: <strong className="text-gray-900">₹{upiTotal.toLocaleString('en-IN')}</strong></span>
+            {cardTotal > 0 && <span className="text-gray-600 font-medium">Card: <strong className="text-gray-900">₹{cardTotal.toLocaleString('en-IN')}</strong></span>}
+          </div>
+
+          <div className="flex items-center gap-2">
             {!sheet.isLocked ? (
               <button
                 type="button"
                 onClick={() => setShowLockConfirmModal(true)}
                 disabled={sheet.items.length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-black shadow-xs transition cursor-pointer disabled:opacity-50"
-                title="Confirm & Lock Day Closing before exporting"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-black shadow-xs transition cursor-pointer disabled:opacity-50"
               >
                 <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Confirm &amp; Lock Day</span>
+                <span>Lock Day Closing</span>
               </button>
             ) : (
-              <>
-                <button
-                  onClick={handleSendPdfToWhatsApp}
-                  disabled={sheet.items.length === 0 || isGeneratingPdf}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black text-white bg-[#25D366] hover:bg-[#20ba59] shadow-xs transition cursor-pointer disabled:opacity-50"
-                >
-                  {isGeneratingPdf ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
-                  ) : (
-                    <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                  )}
-                  <span>Send to WhatsApp</span>
-                </button>
-                <button
-                  onClick={handleDownloadPdf}
-                  disabled={sheet.items.length === 0 || isGeneratingPdf}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 shadow-xs transition cursor-pointer disabled:opacity-50"
-                >
-                  <FileDown className="w-3.5 h-3.5 text-gray-600" />
-                  <span>Download PDF</span>
-                </button>
-              </>
+              <button
+                type="button"
+                onClick={handleOpenUnlockModal}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 transition cursor-pointer"
+              >
+                <Unlock className="w-3.5 h-3.5" />
+                <span>Unlock Sheet</span>
+              </button>
             )}
-            <button
-              onClick={handleCopyText}
-              disabled={sheet.items.length === 0}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer disabled:opacity-50"
-              title="Copy text summary"
-            >
-              {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-gray-500" />}
-              <span>{isCopied ? 'Copied' : 'Copy'}</span>
-            </button>
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200 transition cursor-pointer"
-              title="Print sheet"
-            >
-              <Printer className="w-3.5 h-3.5 text-gray-500" />
-            </button>
-          </div>
-        </div>
-
-        {/* Sub-bar with Live Syncing badge, Date, WhatsApp target, and Date Picker */}
-        <div className="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-[11px]">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Live Syncing</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-50 text-gray-700 border border-gray-200 font-semibold text-[11px]">
-              <Calendar className="w-3 h-3 text-[#FB8500]" />
-              <span>{readableDate}</span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* WhatsApp Target Pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold shadow-2xs">
-              <Phone className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Send to WhatsApp</span>
-              {showPhoneEditor ? (
-                <input
-                  type="text"
-                  value={targetPhone}
-                  onChange={(e) => setTargetPhone(e.target.value)}
-                  onBlur={() => setShowPhoneEditor(false)}
-                  autoFocus
-                  className="w-28 px-1.5 py-0.5 rounded border border-emerald-400 bg-white text-xs font-mono outline-none"
-                />
-              ) : (
-                <span className="text-emerald-800 font-extrabold">({targetPhone})</span>
-              )}
-              <button
-                type="button"
-                onClick={() => setShowPhoneEditor(!showPhoneEditor)}
-                className="text-[10px] text-emerald-700 hover:underline cursor-pointer ml-0.5"
-              >
-                {showPhoneEditor ? 'Save' : 'Edit'}
-              </button>
-            </div>
-
-            {/* Date Input */}
-            <div className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-xl px-2.5 py-1 shadow-2xs">
-              <Calendar className="w-3.5 h-3.5 text-[#FB8500]" />
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="text-xs font-bold text-gray-800 outline-none bg-transparent"
-              />
-              <button
-                type="button"
-                onClick={() => setSelectedDate(todayStr)}
-                className={`text-[10px] font-bold px-2 py-0.5 rounded transition ${selectedDate === todayStr ? 'bg-slate-900 text-white' : 'text-gray-500 hover:bg-gray-100'
-                  }`}
-              >
-                Today
-              </button>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* LOCKED STATUS NOTIFICATION BANNER */}
-
-
       {/* ========================================================= */}
-      {/* 2-COLUMN DASHBOARD GRID (RETAILOS LAYOUT)                 */}
+      {/* 5. QUICK LINK TO PAST SALES SHEETS ARCHIVE                */}
       {/* ========================================================= */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
-        {/* ========================================================= */}
-        {/* LEFT COLUMN: QUICK ENTRY & LIVE DAY SALES COLLECTION      */}
-        {/* ========================================================= */}
-        <div className="xl:col-span-7 space-y-5">
-          {/* CARD 1: QUICK SALE ENTRY */}
-          <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-              <span className="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
-                <Plus className="w-3.5 h-3.5 text-[#FB8500]" />
-                <span>Quick Sale Entry</span>
-              </span>
-              <span className="text-[11px] font-bold text-gray-400">
-                Cash / UPI / Card
-              </span>
-            </div>
-
-            {sheet.isLocked ? (
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 via-white to-amber-50/40 border border-amber-200/90 shadow-xs space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold shadow-2xs">
-                      <Lock className="w-4 h-4 text-amber-700" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-gray-900 leading-tight">
-                        Daily Register is Locked &amp; Finalized
-                      </h4>
-                      <p className="text-[11px] text-gray-500 font-medium">
-                        New sales are paused to protect official records. Unlock with Store Owner PIN.
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                    Locked
-                  </span>
-                </div>
-
-                <div className="pt-1 flex flex-col sm:flex-row items-center gap-2.5">
-                  {/* UNLOCK SECTION */}
-                  <button
-                    type="button"
-                    onClick={handleOpenUnlockModal}
-                    className="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-black text-xs text-white bg-amber-600 hover:bg-amber-700 shadow-sm transition cursor-pointer"
-                    title="Unlock register to add or edit sales"
-                  >
-                    <Unlock className="w-3.5 h-3.5" />
-                    <span>Unlock Register to Add Items</span>
-                  </button>
-
-                  {/* DELETE SECTION */}
-                  <button
-                    type="button"
-                    onClick={handleOpenDeleteSheetModal}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-black text-xs text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 shadow-2xs transition cursor-pointer"
-                    title="Permanently delete this day's sales register"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-red-600" />
-                    <span>Delete / Reset Sheet</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleAddItem} className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
-                  {/* Item / Toy Sold */}
-                  <div className="sm:col-span-5 relative">
-                    <label className="block text-[11px] font-bold text-gray-700 mb-1">
-                      Item / Toy Sold *
-                    </label>
-                    <input
-                      ref={itemInputRef}
-                      type="text"
-                      required
-                      value={itemName}
-                      onChange={(e) => setItemName(e.target.value)}
-                      placeholder="e.g. Magic Twister, Baby Cot..."
-                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-semibold focus:ring-2 focus:ring-[#FB8500] outline-none"
-                    />
-
-                    {/* Autocomplete suggestions */}
-                    {itemSuggestions.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 z-30 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg divide-y divide-gray-100 overflow-hidden">
-                        {itemSuggestions.map((sug) => (
-                          <div
-                            key={sug.id}
-                            onClick={() => handleSelectSuggestion(sug)}
-                            className="p-2.5 hover:bg-amber-50 flex items-center justify-between text-xs cursor-pointer transition"
-                          >
-                            <span className="font-bold text-gray-800">{sug.name}</span>
-                            {sug.price && (
-                              <span className="font-extrabold text-[#FB8500]">₹{sug.price}</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Price / Amount */}
-                  <div className="sm:col-span-3">
-                    <label className="block text-[11px] font-bold text-gray-700 mb-1">
-                      Price / Amount (₹) *
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      required
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      placeholder="e.g. 1234"
-                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-black text-gray-900 focus:ring-2 focus:ring-[#FB8500] outline-none"
-                    />
-                  </div>
-
-                  {/* Payment Mode */}
-                  <div className="sm:col-span-2">
-                    <label className="block text-[11px] font-bold text-gray-700 mb-1">
-                      Payment Mode
-                    </label>
-                    <select
-                      value={paymentMethod}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-full px-2.5 py-2 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 focus:ring-2 focus:ring-[#FB8500] outline-none"
-                    >
-                      <option value="Cash">Cash</option>
-                      <option value="UPI">UPI</option>
-                      <option value="Card">Card</option>
-                    </select>
-                  </div>
-
-                  {/* + Add Button */}
-                  <div className="sm:col-span-2">
-                    <button
-                      type="submit"
-                      className="w-full py-2 px-3 rounded-xl font-extrabold text-xs text-white bg-[#FB8500] hover:bg-[#e07500] shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>+ Add</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-                  <span>
-                    Record on Duty: <strong className="text-gray-800">{salesperson || 'None recorded'}</strong>
-                  </span>
-                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
-                    ✓ Auto-Syncing with Monthly Ledger
-                  </span>
-                </div>
-              </form>
-            )}
+      <div className="bg-white rounded-3xl border border-gray-200/90 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-center text-[#FB8500] shrink-0">
+            <Calendar className="w-5 h-5" />
           </div>
-
-          {/* CARD 2: LIVE DAY SALES COLLECTION */}
-          <div className="bg-emerald-50/70 border border-emerald-200/90 rounded-2xl p-5 shadow-xs space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-900">
-                Live Day Sales Collection
-              </span>
-              <span className="text-[11px] font-bold text-emerald-800 bg-white/90 border border-emerald-200 px-2.5 py-0.5 rounded-lg">
-                {sheet.count} {sheet.count === 1 ? 'item' : 'items'} sold
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="text-3xl sm:text-4xl font-black text-emerald-700 tracking-tight">
-                  ₹{sheet.total.toLocaleString('en-IN')}
-                </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-100/90 text-emerald-900 text-xs font-bold border border-emerald-300">
-                  <UserCheck className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>{salesperson ? `${salesperson} on duty` : 'No staff on duty'}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="bg-white/90 border border-emerald-200 rounded-xl px-3.5 py-2 text-center min-w-[90px] shadow-2xs">
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                    Cash
-                  </span>
-                  <span className="text-sm font-black text-gray-900">
-                    ₹{cashTotal.toLocaleString('en-IN')}
-                  </span>
-                </div>
-                <div className="bg-white/90 border border-emerald-200 rounded-xl px-3.5 py-2 text-center min-w-[90px] shadow-2xs">
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                    UPI
-                  </span>
-                  <span className="text-sm font-black text-gray-900">
-                    ₹{upiTotal.toLocaleString('en-IN')}
-                  </span>
-                </div>
-                {cardTotal > 0 && (
-                  <div className="bg-white/90 border border-emerald-200 rounded-xl px-3.5 py-2 text-center min-w-[90px] shadow-2xs">
-                    <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
-                      Card
-                    </span>
-                    <span className="text-sm font-black text-gray-900">
-                      ₹{cardTotal.toLocaleString('en-IN')}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-emerald-200/60 flex items-center justify-between text-[11px] text-emerald-900/80">
-              <span>Staff on Duty: <strong>{salesperson || 'None recorded'}</strong></span>
-              <span className="text-[10px]">Ready to register by WhatsApp and A4 Print/PDF</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-5 space-y-3.5">
-
-
-            <div className="space-y-2">
-              {filteredStaff.length === 0 ? (
-                <div className="p-4 rounded-xl bg-gray-50 border border-dashed border-gray-200 text-center space-y-1">
-                  <p className="text-xs font-bold text-gray-700">No staff members in register</p>
-                  <p className="text-[11px] text-gray-400">Add staff members in the &quot;Attendance&quot; tab to record who is on duty.</p>
-                </div>
-              ) : (
-                filteredStaff.map((staff) => {
-                  const status = dutyMap[staff.id] || 'Off';
-                  const isFull = status === 'Full';
-                  const isHalf = status === 'Half';
-                  const isActive = isFull || isHalf;
-
-                  return (
-                    <div
-                      key={staff.id}
-                      className={`p-3 rounded-xl border transition flex items-center justify-between gap-3 ${isActive
-                        ? 'bg-emerald-50/50 border-emerald-300 ring-1 ring-emerald-300/60'
-                        : 'bg-gray-50/70 border-gray-200'
-                        }`}
-                    >
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-extrabold text-xs text-gray-900 truncate">
-                            {staff.name}
-                          </span>
-                          <button
-                            type="button"
-                            disabled={sheet.isLocked}
-                            onClick={() => {
-                              const next = status === 'Off' ? 'Full' : status === 'Full' ? 'Half' : 'Off';
-                              handleSetStaffDuty(staff.id, next);
-                            }}
-                            className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded cursor-pointer transition ${isFull
-                              ? 'bg-emerald-600 text-white'
-                              : isHalf
-                                ? 'bg-amber-400 text-amber-950'
-                                : 'bg-gray-200 text-gray-600'
-                              }`}
-                            title="Click to cycle Full / Half / Off"
-                          >
-                            {status}
-                          </button>
-                        </div>
-                        <span className="text-[10px] text-gray-400 block truncate">
-                          {staff.role}
-                        </span>
-                      </div>
-
-                      {/* iOS style toggle switch */}
-                      <button
-                        type="button"
-                        disabled={sheet.isLocked}
-                        onClick={() => handleToggleStaffDuty(staff.id)}
-                        className={`w-11 h-6 flex items-center rounded-full p-1 transition duration-200 cursor-pointer ${sheet.isLocked ? 'opacity-50 cursor-not-allowed' : ''
-                          } ${isActive ? 'bg-emerald-600' : 'bg-gray-300'
-                          }`}
-                        title={isActive ? `Turn ${staff.name} Off Duty` : `Turn ${staff.name} Full Day On Duty`}
-                      >
-                        <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-200 ${isActive ? 'translate-x-5' : 'translate-x-0'
-                            }`}
-                        />
-                      </button>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+          <div>
+            <h4 className="text-xs font-black uppercase tracking-wider text-gray-800">
+              Browse Past Daily Sales Sheets
+            </h4>
+            <p className="text-[11px] text-gray-500 font-medium">
+              Access full historical sales archives, items sold &amp; official closing records.
+            </p>
           </div>
         </div>
-
-        {/* ========================================================= */}
-        {/* RIGHT COLUMN: CLOSING SHEET, STAFF DUTY & PAST SHEETS     */}
-        {/* ========================================================= */}
-        <div className="xl:col-span-5 space-y-5">
-          {/* CARD 1: 7DAYS TOYS & BABYSHOP • DAILY SALES CLOSING */}
-          <div
-            ref={sheetPrintRef}
-            className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-5 space-y-4"
-          >
-            {/* Sheet Card Header */}
-            <div className="pb-3 border-b border-gray-200 flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-              <div>
-                <h3 className="text-sm font-black text-gray-900 uppercase tracking-wide">
-                  7Days Toys &amp; Babyshop &bull; Daily Sales Closing
-                </h3>
-                <span className="text-[10px] font-bold text-gray-500 block mt-0.5">
-                  DAILY SALES CLOSING SHEET &bull; {readableDate}
-                </span>
-              </div>
-              <span className="inline-flex items-center gap-1 text-[10px] font-extrabold bg-emerald-50 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded-lg shrink-0">
-                <UserCheck className="w-3 h-3 text-emerald-600" />
-                <span className="truncate max-w-[150px]">{salesperson || 'Staff on duty'}</span>
-              </span>
-            </div>
-
-            {/* Items Table */}
-            <div className="overflow-x-auto max-h-[340px] overflow-y-auto rounded-xl border border-gray-200">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead className="sticky top-0 bg-gray-50 z-10 border-b border-gray-200 text-gray-600 text-[10px] font-bold uppercase">
-                  <tr>
-                    <th className="py-2 px-2.5 w-8 text-center">#</th>
-                    <th className="py-2 px-2">Item / Product Name</th>
-                    <th className="py-2 px-2 text-center w-14">Mode</th>
-                    <th className="py-2 px-2 text-center w-16">Time</th>
-                    <th className="py-2 px-2.5 text-right w-20">Amount (₹)</th>
-                    <th className="py-2 px-1 w-7 text-center"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 font-medium">
-                  {sheet.items.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="py-8 text-center text-gray-400 italic text-xs">
-                        No sales recorded for this date yet.
-                      </td>
-                    </tr>
-                  ) : (
-                    sheet.items.map((it, idx) => (
-                      <tr key={it.id} className="hover:bg-amber-50/40 transition">
-                        <td className="py-2 px-2.5 text-center text-gray-400 font-bold text-[11px]">{idx + 1}</td>
-                        <td className="py-2 px-2 font-bold text-gray-900 text-xs truncate max-w-[140px]">{it.itemName}</td>
-                        <td className="py-2 px-2 text-center">
-                          <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-black uppercase ${it.paymentMethod === 'UPI'
-                            ? 'bg-purple-100 text-purple-800'
-                            : it.paymentMethod === 'Card'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-emerald-100 text-emerald-800'
-                            }`}>
-                            {it.paymentMethod}
-                          </span>
-                        </td>
-                        <td className="py-2 px-2 text-center text-gray-400 text-[10px]">{it.time}</td>
-                        <td className="py-2 px-2.5 text-right font-black text-gray-900 text-xs">
-                          ₹{Number(it.amount).toLocaleString('en-IN')}
-                        </td>
-                        <td className="py-2 px-1 text-center">
-                          <button
-                            onClick={() => {
-                              if (sheet.isLocked) {
-                                showNotice?.('info', 'Register is locked. Please unlock first to delete items.');
-                                handleOpenUnlockModal();
-                              } else {
-                                handleDeleteItem(it.id);
-                              }
-                            }}
-                            className={`p-1 rounded-lg transition cursor-pointer ${
-                              sheet.isLocked
-                                ? 'text-gray-300 hover:text-amber-600 hover:bg-amber-50'
-                                : 'text-gray-300 hover:text-red-600 hover:bg-red-50'
-                            }`}
-                            title={sheet.isLocked ? "Sheet is locked. Click to unlock & delete" : "Delete row"}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Total Collection Footer */}
-            <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-extrabold text-gray-800">
-                  TOTAL COLLECTION ({sheet.count} items)
-                </span>
-                <span className="text-base font-black text-emerald-700">
-                  ₹{sheet.total.toLocaleString('en-IN')}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-[11px] text-gray-500 pt-1 border-t border-gray-200">
-                <span>Cash: <strong>₹{cashTotal.toLocaleString('en-IN')}</strong></span>
-                <span>UPI: <strong>₹{upiTotal.toLocaleString('en-IN')}</strong></span>
-                {cardTotal > 0 && <span>Card: <strong>₹{cardTotal.toLocaleString('en-IN')}</strong></span>}
-              </div>
-            </div>
-
-            {/* Export and Action Buttons */}
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between gap-2">
-                {/* All-Days Monthly Attendance Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setIncludeMonthAttendance(!includeMonthAttendance)}
-                  className={`flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${includeMonthAttendance
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                    : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-                    }`}
-                  title="Toggle all-days monthly attendance audit in PDF"
-                >
-                  <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>{includeMonthAttendance ? '✓ All-Days Attendance in PDF' : '+ Add All-Days Attendance'}</span>
-                </button>
-
-                {!sheet.isLocked && sheet.items.length > 0 && (
-                  <button
-                    onClick={handleClearSheet}
-                    className="p-2 text-gray-400 hover:text-red-600 rounded-xl border border-gray-200 transition cursor-pointer"
-                    title="Clear sheet"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {!sheet.isLocked ? (
-                <div className="space-y-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowLockConfirmModal(true)}
-                    disabled={sheet.items.length === 0}
-                    className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-extrabold text-xs text-white bg-slate-900 hover:bg-black shadow-xs transition cursor-pointer disabled:opacity-50"
-                    title="Confirm & Lock Day Closing to unlock PDF & WhatsApp"
-                  >
-                    <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Confirm &amp; Lock Day to Export PDF</span>
-                  </button>
-
-                  {sheet.items.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={handleOpenDeleteSheetModal}
-                      className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition cursor-pointer"
-                      title="Clear and delete today's sales items"
-                    >
-                      <Trash2 className="w-3.5 h-3.5 text-red-600" />
-                      <span>Delete / Reset Today's Sheet</span>
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <button
-                    onClick={handleSendPdfToWhatsApp}
-                    disabled={sheet.items.length === 0 || isGeneratingPdf}
-                    className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-extrabold text-xs text-white bg-[#25D366] hover:bg-[#20ba59] shadow-xs transition cursor-pointer disabled:opacity-50"
-                  >
-                    {isGeneratingPdf ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
-                    ) : (
-                      <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                    )}
-                    <span>
-                      {isGeneratingPdf
-                        ? 'Generating PDF...'
-                        : `Send Full Sheet PDF WhatsApp (${SHOP_PHONE_DISPLAY}) ↗`}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDownloadPdf}
-                    disabled={sheet.items.length === 0 || isGeneratingPdf}
-                    className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-2xs transition cursor-pointer disabled:opacity-50"
-                  >
-                    <FileDown className="w-3.5 h-3.5 text-gray-600" />
-                    <span>Download PDF</span>
-                  </button>
-
-                  {/* UNLOCK SECTION & DELETE SECTION */}
-                  <div className="pt-2 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={handleOpenUnlockModal}
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition cursor-pointer shadow-2xs"
-                      title="Unlock register to allow adding or editing items"
-                    >
-                      <Unlock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Unlock Sheet</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleOpenDeleteSheetModal}
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition cursor-pointer shadow-2xs"
-                      title="Permanently delete this day's sales register"
-                    >
-                      <Trash2 className="w-3.5 h-3.5 text-red-600" />
-                      <span>Delete Register</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* CARD 2: STAFF ON DUTY (QUICK TOGGLES) */}
-
-
-          {/* CARD 3: PAST DAYS SHEETS (PAGINATED HISTORY CARDS) */}
-          {pastDates.length > 0 && (
-            <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase tracking-wider text-gray-700">
-                  Past Days Sheets
-                </h3>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    disabled={pastDaysPage === 0}
-                    onClick={() => setPastDaysPage((p) => Math.max(0, p - 1))}
-                    className="p-1 rounded-lg border border-gray-200 hover:bg-gray-100 disabled:opacity-30 cursor-pointer text-gray-600"
-                    title="Previous page"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="text-[10px] text-gray-400 px-1 font-bold">
-                    {pastDaysPage + 1}/{totalPastPages}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={pastDaysPage >= totalPastPages - 1}
-                    onClick={() => setPastDaysPage((p) => Math.min(totalPastPages - 1, p + 1))}
-                    className="p-1 rounded-lg border border-gray-200 hover:bg-gray-100 disabled:opacity-30 cursor-pointer text-gray-600"
-                    title="Next page"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5">
-                {visiblePastDates.map((item) => (
-                  <button
-                    key={item.date}
-                    type="button"
-                    onClick={() => setSelectedDate(item.date)}
-                    className={`p-3 rounded-xl border text-left transition cursor-pointer ${selectedDate === item.date
-                      ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                      : 'bg-gray-50/80 hover:bg-gray-100 text-gray-800 border-gray-200'
-                      }`}
-                  >
-                    <span className="text-[10px] font-bold block opacity-70">
-                      {item.date}
-                    </span>
-                    <span className="text-sm font-black block mt-0.5">
-                      ₹{item.total.toLocaleString('en-IN')}
-                    </span>
-                    <span className="text-[10px] block opacity-60 truncate mt-0.5">
-                      {item.salesperson ? item.salesperson : `${item.count} items`}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={() => onNavigateToPastSales?.()}
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black text-gray-800 bg-gray-100 hover:bg-gray-200 transition cursor-pointer self-start sm:self-auto"
+        >
+          <span>View Past Sales Sheets</span>
+          <ChevronRight className="w-3.5 h-3.5 text-[#FB8500]" />
+        </button>
       </div>
 
       {/* ========================================================= */}
@@ -1310,16 +1656,16 @@ export default function DailySalesRegister({ products = [], showNotice }) {
             <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 space-y-2 text-xs">
               <div className="flex justify-between items-center py-1 border-b border-gray-200">
                 <span className="text-gray-500 font-semibold">Total Collection:</span>
-                <span className="text-sm font-black text-emerald-700">₹{sheet.total.toLocaleString('en-IN')}</span>
+                <span className="text-sm font-black text-emerald-700">₹{Number(sheet?.total || 0).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between items-center py-1 border-b border-gray-200">
                 <span className="text-gray-500 font-semibold">Total Items Sold:</span>
                 <span className="font-bold text-gray-900">{sheet.count} items</span>
               </div>
               <div className="flex justify-between items-center py-1">
-                <span className="text-gray-500 font-semibold">Staff on Duty:</span>
-                <span className="font-bold text-gray-800 text-right truncate max-w-[200px]">
-                  {salesperson || 'None recorded'}
+                <span className="text-gray-500 font-semibold">Breakdown:</span>
+                <span className="font-bold text-gray-800 text-right text-xs">
+                  Cash: ₹{cashTotal} &bull; UPI: ₹{upiTotal}{cardTotal > 0 ? ` • Card: ₹${cardTotal}` : ''}
                 </span>
               </div>
             </div>
@@ -1327,7 +1673,7 @@ export default function DailySalesRegister({ products = [], showNotice }) {
             <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2.5 text-xs text-amber-900 font-medium">
               <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <strong>Tamper-Proof Notice:</strong> Once confirmed, this day's sales register and staff attendance will be strictly locked. Workers cannot add, edit, or delete items.
+                <strong>Tamper-Proof Notice:</strong> Once confirmed, this day's sales register will be strictly locked. Workers cannot add, edit, or delete items.
               </div>
             </div>
 
@@ -1519,6 +1865,118 @@ export default function DailySalesRegister({ products = [], showNotice }) {
                 >
                   <Trash2 className="w-4 h-4" />
                   <span>Delete &amp; Reset</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* USER-FRIENDLY ADD STAFF MEMBER MODAL                     */}
+      {/* ========================================================= */}
+      {showAddStaffModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shadow-xs">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-gray-900 leading-tight">
+                    Add New Staff Member
+                  </h3>
+                  <span className="text-xs text-gray-500 font-medium">
+                    Store salesperson, cashier, or billing counter
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddStaffModal(false)}
+                className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddNewStaff} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Staff Full Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  value={newStaffName}
+                  onChange={(e) => setNewStaffName(e.target.value)}
+                  placeholder="e.g. Rahul, Salman, Athil, Muhammed..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-[#FB8500] outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
+                  Role / Position
+                </label>
+                <input
+                  type="text"
+                  value={newStaffRole}
+                  onChange={(e) => setNewStaffRole(e.target.value)}
+                  placeholder="e.g. Sales Staff, Cashier, Manager..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-800 focus:ring-2 focus:ring-[#FB8500] outline-none mb-2"
+                />
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {['Sales Staff', 'Cashier', 'Billing Counter', 'Store Manager', 'Counter Helper'].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setNewStaffRole(preset)}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border transition cursor-pointer ${
+                        newStaffRole === preset
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                      }`}
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-3 bg-emerald-50/80 rounded-2xl border border-emerald-200/80 flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-xs text-emerald-950 block">
+                    Mark On Duty Immediately
+                  </span>
+                  <span className="text-[11px] text-emerald-800 block">
+                    Automatically record this staff as on duty for today
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={newStaffOnDutyNow}
+                  onChange={(e) => setNewStaffOnDutyNow(e.target.checked)}
+                  className="w-4 h-4 accent-emerald-600 cursor-pointer"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddStaffModal(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-gray-200 text-xs font-bold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#FB8500] to-[#FFB703] hover:from-[#e07500] hover:to-[#f0a500] text-xs font-black text-white shadow-md shadow-[#FB8500]/25 transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Save Staff Member</span>
                 </button>
               </div>
             </form>

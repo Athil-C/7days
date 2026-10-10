@@ -22,14 +22,33 @@ import {
   ShoppingBag,
   Users,
   KeyRound,
-  AlertCircle
+  AlertCircle,
+  UserPlus,
+  Mail,
+  Shield,
+  Check,
+  X,
+  Globe,
+  Smartphone,
+  Monitor,
+  Wifi,
+  PowerOff,
+  ShieldAlert
 } from 'lucide-react';
 import {
   getCurrentAdminSession,
   getAdminLoginHistory,
   clearAdminLoginHistory,
   getAdminActivityLogs,
-  clearAdminActivityLogs
+  clearAdminActivityLogs,
+  getAdminAccounts,
+  saveAdminAccount,
+  deleteAdminAccount,
+  terminateAdminSession,
+  syncAdminSessionsFromServer,
+  parseSessionDetails,
+  updateSessionHeartbeat,
+  setVerifiedDeviceLabel
 } from '../../services/adminLogService';
 
 const CATEGORY_COLORS = {
@@ -48,37 +67,84 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
   const [activityLogs, setActivityLogs] = useState([]);
   const [sessionUptime, setSessionUptime] = useState('');
 
-  // Active view tab: 'activities' (Admin Edits & Actions) or 'logins' (Login Audit History)
-  const [activeViewTab, setActiveViewTab] = useState('activities');
+  // Admin Accounts list state & modal
+  const [adminAccounts, setAdminAccounts] = useState(() => getAdminAccounts(user));
+  const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
+  const [newAccountEmail, setNewAccountEmail] = useState('');
+  const [newAccountName, setNewAccountName] = useState('');
+  const [newAccountRole, setNewAccountRole] = useState('Store Admin');
+
+  // Active view tab: 'accounts' (Admin Login Accounts), 'logins' (Login Audit History), or 'activities' (Admin Edits & Actions)
+  const [activeViewTab, setActiveViewTab] = useState('accounts');
 
   // Activity filter states
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [actionTypeFilter, setActionTypeFilter] = useState('All');
 
-  const refreshData = () => {
+  const refreshData = async () => {
     const current = getCurrentAdminSession(user);
     setActiveSession(current);
-    setLoginHistory(getAdminLoginHistory());
+    const sessions = await syncAdminSessionsFromServer();
+    setLoginHistory(sessions);
     setActivityLogs(getAdminActivityLogs());
+    setAdminAccounts(getAdminAccounts(user));
   };
 
   useEffect(() => {
     refreshData();
-  }, [user]);
 
-  // Listen to live updates from other tabs/actions
-  useEffect(() => {
+    // Heartbeat every 60 seconds to update online status of active device
+    const heartbeatTimer = setInterval(() => {
+      updateSessionHeartbeat();
+    }, 60000);
+
+    const handleSessionsUpdate = () => {
+      setLoginHistory(getAdminLoginHistory());
+    };
     const handleActivityUpdate = () => {
       setActivityLogs(getAdminActivityLogs());
     };
+    const handleAccountsUpdate = () => {
+      setAdminAccounts(getAdminAccounts(user));
+    };
+
+    window.addEventListener('7days_admin_sessions_updated', handleSessionsUpdate);
     window.addEventListener('7days_admin_activity_updated', handleActivityUpdate);
+    window.addEventListener('7days_admin_accounts_updated', handleAccountsUpdate);
     window.addEventListener('storage', refreshData);
+
     return () => {
+      clearInterval(heartbeatTimer);
+      window.removeEventListener('7days_admin_sessions_updated', handleSessionsUpdate);
       window.removeEventListener('7days_admin_activity_updated', handleActivityUpdate);
+      window.removeEventListener('7days_admin_accounts_updated', handleAccountsUpdate);
       window.removeEventListener('storage', refreshData);
     };
-  }, []);
+  }, [user]);
+
+  const handleTerminateSession = (session) => {
+    const parsed = parseSessionDetails(session);
+    if (window.confirm(`Are you sure you want to revoke and disconnect ${parsed.userIdentifier || session.email} (${parsed.deviceSummary})?`)) {
+      terminateAdminSession(session.id);
+      refreshData();
+      showNotice?.('success', `Session disconnected for ${parsed.userIdentifier || session.email}`);
+    }
+  };
+
+  const handleLabelDevice = (deviceId, currentName) => {
+    if (!deviceId) return;
+    const cleanCurrent = currentName?.replace(/\s*\[DEV-[A-Z0-9]+\]/, '') || '';
+    const newName = window.prompt(
+      'Assign an official name for this device (e.g. Counter 1 Mobile, Cashier PC, Shabeer Phone):',
+      cleanCurrent
+    );
+    if (newName !== null) {
+      setVerifiedDeviceLabel(deviceId, newName.trim());
+      refreshData();
+      showNotice?.('success', newName.trim() ? `Device assigned label: "${newName.trim()}"` : 'Device label removed');
+    }
+  };
 
   // Live session uptime counter
   useEffect(() => {
@@ -118,6 +184,48 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
       clearAdminActivityLogs();
       refreshData();
       showNotice?.('success', 'Cleared all admin activity and edit logs');
+    }
+  };
+
+  const handleSaveNewAccount = (e) => {
+    e.preventDefault();
+    if (!newAccountEmail.trim() || !newAccountEmail.includes('@')) {
+      showNotice?.('error', 'Please enter a valid admin email address');
+      return;
+    }
+    const email = newAccountEmail.trim().toLowerCase();
+    const name = newAccountName.trim() || email.split('@')[0];
+    const role = newAccountRole || 'Store Admin';
+
+    saveAdminAccount({
+      email,
+      name,
+      role,
+      permissions:
+        role === 'Super Admin'
+          ? ['All Permissions', 'Catalog Products', 'Daily Sales', 'Staff & Attendance', 'Hero Showcase', 'Settings']
+          : ['Catalog Products', 'Daily Sales', 'Staff & Attendance'],
+      lastLogin: null
+    });
+
+    setAdminAccounts(getAdminAccounts(user));
+    setNewAccountEmail('');
+    setNewAccountName('');
+    setNewAccountRole('Store Admin');
+    setIsAddAccountModalOpen(false);
+    showNotice?.('success', `Admin login account for ${email} registered successfully!`);
+  };
+
+  const handleDeleteAccount = (acc) => {
+    const currentEmail = user?.email || 'admin@7days.com';
+    if (acc.isPrimary || acc.email?.toLowerCase() === currentEmail.toLowerCase()) {
+      showNotice?.('error', 'The primary administrator account cannot be deleted');
+      return;
+    }
+    if (window.confirm(`Are you sure you want to remove ${acc.email} from authorized login accounts?`)) {
+      deleteAdminAccount(acc.email);
+      setAdminAccounts(getAdminAccounts(user));
+      showNotice?.('success', `Removed ${acc.email} from login accounts`);
     }
   };
 
@@ -209,19 +317,19 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FB8500] mb-1">
             <ShieldCheck className="w-4 h-4" />
-            <span>Admin Audit, Edits & Session Center</span>
+            <span>Admin Security & Access Management</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2.5">
-            <span>Admin Audit History & Logs</span>
+            <span>Admin Login Accounts &amp; Audit</span>
             <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live Audit Trail
+              Live Security Center
             </span>
           </h1>
           <p className="text-sm text-gray-600 mt-1 max-w-3xl">
-            Complete chronological record of all administrative activities, edits, price changes, product deletions, sales registrations, and staff duty adjustments.
+            View authorized login accounts, active administrator sessions, login security history, and complete chronological edit audit trail.
           </p>
         </div>
 
@@ -358,20 +466,20 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
 
       {/* Primary Log Tabs Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-3">
-        <div className="flex items-center gap-2 p-1 bg-gray-100/80 rounded-2xl border border-gray-200">
+        <div className="flex items-center gap-2 p-1 bg-gray-100/80 rounded-2xl border border-gray-200 flex-wrap">
           <button
             type="button"
-            onClick={() => setActiveViewTab('activities')}
+            onClick={() => setActiveViewTab('accounts')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
-              activeViewTab === 'activities'
+              activeViewTab === 'accounts'
                 ? 'bg-white text-gray-900 shadow-xs'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
           >
-            <Edit3 className="w-3.5 h-3.5 text-blue-600" />
-            <span>Admin Activity & Edit History</span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700">
-              {activityLogs.length}
+            <Users className="w-3.5 h-3.5 text-[#FB8500]" />
+            <span>Admin Login Accounts</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700">
+              {adminAccounts.length}
             </span>
           </button>
 
@@ -390,9 +498,34 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
               {loginHistory.length}
             </span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveViewTab('activities')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+              activeViewTab === 'activities'
+                ? 'bg-white text-gray-900 shadow-xs'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Edit3 className="w-3.5 h-3.5 text-blue-600" />
+            <span>Activity &amp; Edit Trail</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-700">
+              {activityLogs.length}
+            </span>
+          </button>
         </div>
 
-        {activeViewTab === 'activities' ? (
+        {activeViewTab === 'accounts' ? (
+          <button
+            type="button"
+            onClick={() => setIsAddAccountModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-xs transition cursor-pointer self-start sm:self-auto"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Add Admin Account</span>
+          </button>
+        ) : activeViewTab === 'activities' ? (
           activityLogs.length > 0 && (
             <button
               type="button"
@@ -418,7 +551,296 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
       </div>
 
       {/* ========================================================= */}
-      {/* TAB 1: ADMIN EDIT & ACTIVITY AUDIT TRAIL                  */}
+      {/* TAB 1: AUTHORIZED ADMIN LOGIN ACCOUNTS & LOGGED DEVICES   */}
+      {/* ========================================================= */}
+      {activeViewTab === 'accounts' && (
+        <div className="space-y-8">
+          {/* SECTION 1: USERS & DEVICES LOGGED IN WITH SUPER ADMIN */}
+          <div className="space-y-4">
+            <div className="bg-white p-5 rounded-3xl border border-gray-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700">
+                    Shared Super Admin Device Tracking
+                  </span>
+                </div>
+                <h3 className="text-lg font-black text-gray-900 flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-[#FB8500]" />
+                  <span>Devices &amp; Users Logged In with Super Admin</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {loginHistory.filter((s) => parseSessionDetails(s).isOnline).length} Active Online
+                  </span>
+                </h3>
+                <p className="text-xs text-gray-500 mt-1 max-w-2xl leading-relaxed">
+                  Even though your store uses <strong>one Super Admin username &amp; password</strong>, every staff member, phone, tablet, and PC is identified individually below with their name, device model, IP address, and location.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={refreshData}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer self-start sm:self-auto shrink-0"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-gray-500" />
+                <span>Refresh Devices</span>
+              </button>
+            </div>
+
+            {/* Devices Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {loginHistory.slice(0, 12).map((session, index) => {
+                const parsed = parseSessionDetails(session);
+                const isCurrent = activeSession?.id === session.id;
+                const isMobile =
+                  session.userAgent?.includes('Mobi') ||
+                  session.userAgent?.includes('Android') ||
+                  session.userAgent?.includes('iPhone');
+
+                return (
+                  <div
+                    key={session.id || index}
+                    className={`bg-white rounded-3xl p-5 border transition shadow-xs flex flex-col justify-between ${
+                      isCurrent
+                        ? 'border-emerald-300 ring-2 ring-emerald-500/20 bg-emerald-50/10'
+                        : parsed.isOnline
+                        ? 'border-emerald-200 hover:border-emerald-300'
+                        : 'border-gray-200 opacity-90 hover:opacity-100'
+                    }`}
+                  >
+                    <div>
+                      {/* Top Bar: Online Status & Tag */}
+                      <div className="flex items-center justify-between gap-2 mb-3.5">
+                        {parsed.isOnline ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            Online Right Now
+                          </span>
+                        ) : session.status === 'Terminated' ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                            Disconnected
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-600">
+                            Session Recorded
+                          </span>
+                        )}
+
+                        {isCurrent && (
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            This Device
+                          </span>
+                        )}
+                      </div>
+
+                      {/* User & Device Identity */}
+                      <div className="flex items-start gap-3.5 mb-4">
+                        <div
+                          className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg shadow-xs shrink-0 ${
+                            isMobile
+                              ? 'bg-gradient-to-tr from-[#FB8500] to-[#FFB703] text-white'
+                              : 'bg-gradient-to-tr from-slate-800 to-slate-900 text-cyan-400'
+                          }`}
+                        >
+                          {isMobile ? (
+                            <Smartphone className="w-6 h-6" />
+                          ) : (
+                            <Monitor className="w-6 h-6" />
+                          )}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-extrabold text-sm text-gray-900 truncate">
+                              {parsed.userIdentifier}
+                            </h4>
+                            {parsed.deviceId && (
+                              <button
+                                type="button"
+                                onClick={() => handleLabelDevice(parsed.deviceId, parsed.userIdentifier)}
+                                className="p-1 text-gray-400 hover:text-[#FB8500] hover:bg-amber-50 rounded-lg transition shrink-0 cursor-pointer"
+                                title="Owner: Assign or rename this device"
+                              >
+                                <Edit3 className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                          <span className="text-xs text-gray-500 truncate block mt-0.5 font-medium">
+                            {parsed.deviceSummary}
+                          </span>
+                          <span className="text-[10px] text-[#FB8500] font-bold block mt-0.5">
+                            Logged in via Super Admin ({session.email})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Technical Details: IP, Location & Network */}
+                      <div className="bg-gray-50/80 p-3 rounded-2xl border border-gray-100 text-[11px] space-y-1.5 mb-4 font-mono">
+                        <div className="flex items-center justify-between text-gray-600">
+                          <span className="flex items-center gap-1.5 font-semibold font-sans text-gray-500">
+                            <Wifi className="w-3.5 h-3.5 text-blue-500" />
+                            IP Address:
+                          </span>
+                          <span className="font-bold text-gray-900">{parsed.ipAddress}</span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-600">
+                          <span className="flex items-center gap-1.5 font-semibold font-sans text-gray-500">
+                            <Globe className="w-3.5 h-3.5 text-emerald-500" />
+                            Location:
+                          </span>
+                          <span className="font-bold text-gray-800 truncate max-w-[150px]">
+                            {parsed.location}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-between text-gray-600">
+                          <span className="flex items-center gap-1.5 font-semibold font-sans text-gray-500">
+                            <Clock className="w-3.5 h-3.5 text-amber-500" />
+                            Logged in:
+                          </span>
+                          <span className="text-gray-700 font-sans font-medium">
+                            {session.formattedTime}, {session.formattedDate}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Action */}
+                    <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                      <span className="text-[10px] text-gray-400">
+                        ID: {session.id?.slice(0, 14)}...
+                      </span>
+
+                      {!isCurrent && session.status !== 'Terminated' ? (
+                        <button
+                          type="button"
+                          onClick={() => handleTerminateSession(session)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer"
+                          title="Remotely log out this phone or PC"
+                        >
+                          <PowerOff className="w-3 h-3" />
+                          <span>Disconnect Device</span>
+                        </button>
+                      ) : (
+                        <span className="text-[10px] font-bold text-emerald-600">
+                          {isCurrent ? 'Your Current Screen' : 'Terminated'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* SECTION 2: AUTHORIZED ADMIN ACCOUNTS */}
+          <div className="space-y-4 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-base font-extrabold text-gray-900 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-[#FB8500]" />
+                  <span>Authorized Administrator Accounts</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                    {adminAccounts.length} Configured
+                  </span>
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Primary store administrator credentials and configured authorized accounts.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAddAccountModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-xs transition cursor-pointer shrink-0"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Add Admin Account</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {adminAccounts.map((acc, index) => {
+                const isCurrent =
+                  acc.email?.toLowerCase() === (user?.email || 'admin@7days.com').toLowerCase();
+                return (
+                  <div
+                    key={acc.id || index}
+                    className="bg-white rounded-3xl p-5 border border-gray-200 shadow-xs flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span
+                          className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+                            acc.role === 'Super Admin'
+                              ? 'bg-amber-50 text-amber-800 border-amber-200'
+                              : 'bg-blue-50 text-blue-800 border-blue-200'
+                          }`}
+                        >
+                          {acc.role || 'Super Admin'}
+                        </span>
+
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-600">
+                          <Check className="w-3 h-3 text-emerald-600" />
+                          Authorized
+                        </span>
+                      </div>
+
+                      <div className="flex items-start gap-3.5 mb-3">
+                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#FB8500] to-[#FFB703] text-white font-black text-base flex items-center justify-center shadow-xs shrink-0">
+                          {acc.email ? acc.email.charAt(0).toUpperCase() : 'A'}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-bold text-sm text-gray-900 truncate">
+                            {acc.name || acc.email?.split('@')[0]}
+                          </h4>
+                          <span className="text-xs text-gray-500 font-mono truncate block">
+                            {acc.email}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-gray-100">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">
+                          Privileges
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {(acc.permissions || ['All Permissions']).map((perm, pIdx) => (
+                            <span
+                              key={pIdx}
+                              className="text-[10px] font-semibold bg-gray-50 text-gray-700 px-2 py-0.5 rounded-md border border-gray-100"
+                            >
+                              {perm}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 mt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
+                      <span>Status: Active</span>
+                      {!acc.isPrimary && !isCurrent && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteAccount(acc)}
+                          className="text-gray-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                          title="Remove Account"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* TAB 2: ADMIN EDIT & ACTIVITY AUDIT TRAIL                  */}
       {/* ========================================================= */}
       {activeViewTab === 'activities' && (
         <div className="space-y-4">
@@ -620,55 +1042,193 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
                     </td>
                   </tr>
                 ) : (
-                  loginHistory.map((item, idx) => (
-                    <tr key={item.id || idx} className="hover:bg-gray-50/70 transition">
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center shrink-0">
-                            <User className="w-3.5 h-3.5" />
+                  loginHistory.map((item, idx) => {
+                    const parsed = parseSessionDetails(item);
+                    const isCurrent = activeSession?.id === item.id;
+                    return (
+                      <tr key={item.id || idx} className="hover:bg-gray-50/70 transition">
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-amber-50 text-[#FB8500] font-bold flex items-center justify-center shrink-0">
+                              <User className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-extrabold text-gray-900 block text-xs">
+                                  {parsed.userIdentifier}
+                                </span>
+                                {parsed.deviceId && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleLabelDevice(parsed.deviceId, parsed.userIdentifier)}
+                                    className="p-0.5 text-gray-400 hover:text-[#FB8500] hover:bg-amber-50 rounded transition cursor-pointer"
+                                    title="Assign or rename device label"
+                                  >
+                                    <Edit3 className="w-2.5 h-2.5" />
+                                  </button>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-gray-500 block font-mono">
+                                {item.email} &bull; {item.role || 'Super Admin'}
+                              </span>
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-bold text-gray-900 block">
-                              {item.email}
-                            </span>
-                            <span className="text-[10px] text-gray-400 block">
-                              {item.role || 'Super Admin'}
-                            </span>
+                        </td>
+
+                        <td className="py-3 px-4 font-semibold text-gray-800">
+                          {item.formattedTime}
+                        </td>
+
+                        <td className="py-3 px-4 text-gray-600">
+                          {item.formattedDate}
+                        </td>
+
+                        <td className="py-3 px-4 text-gray-600">
+                          <span className="font-medium text-gray-800 block truncate max-w-xs">
+                            {parsed.deviceSummary}
+                          </span>
+                          <span className="text-[10px] text-gray-400 block font-mono">
+                            {parsed.ipAddress} &bull; {parsed.location}
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            {isCurrent ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Current
+                              </span>
+                            ) : parsed.isOnline ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Active
+                              </span>
+                            ) : item.status === 'Terminated' ? (
+                              <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700">
+                                Disconnected
+                              </span>
+                            ) : (
+                              <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-600">
+                                Completed
+                              </span>
+                            )}
+
+                            {!isCurrent && item.status !== 'Terminated' && (
+                              <button
+                                type="button"
+                                onClick={() => handleTerminateSession(item)}
+                                className="p-1 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                                title="Disconnect remote session"
+                              >
+                                <PowerOff className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                           </div>
-                        </div>
-                      </td>
-
-                      <td className="py-3 px-4 font-semibold text-gray-800">
-                        {item.formattedTime}
-                      </td>
-
-                      <td className="py-3 px-4 text-gray-600">
-                        {item.formattedDate}
-                      </td>
-
-                      <td className="py-3 px-4 text-gray-600">
-                        <span className="truncate block max-w-xs">
-                          {item.deviceInfo || 'Web Browser'}
-                        </span>
-                      </td>
-
-                      <td className="py-3 px-4 text-right">
-                        {idx === 0 ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            Current
-                          </span>
-                        ) : (
-                          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-600">
-                            Completed
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Add Admin Account */}
+      {isAddAccountModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#FB8500] flex items-center justify-center">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-gray-900">
+                    Add Admin Login Account
+                  </h3>
+                  <span className="text-xs text-gray-500">
+                    Register authorized administrative access
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAddAccountModalOpen(false)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveNewAccount} className="space-y-4 text-xs">
+              <div>
+                <label className="font-bold text-gray-700 block mb-1">
+                  Admin Email Address *
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="email"
+                    required
+                    value={newAccountEmail}
+                    onChange={(e) => setNewAccountEmail(e.target.value)}
+                    placeholder="e.g. manager@7daystoys.com"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#FB8500] focus:ring-2 focus:ring-[#FB8500]/20 font-medium"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-gray-700 block mb-1">
+                  Full Name / Display Name
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={newAccountName}
+                    onChange={(e) => setNewAccountName(e.target.value)}
+                    placeholder="e.g. Store Manager"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#FB8500] focus:ring-2 focus:ring-[#FB8500]/20 font-medium"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-gray-700 block mb-1">
+                  Administrator Role &amp; Permissions
+                </label>
+                <select
+                  value={newAccountRole}
+                  onChange={(e) => setNewAccountRole(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 outline-none focus:border-[#FB8500] font-medium bg-white"
+                >
+                  <option value="Super Admin">Super Admin (Full Access: Products, Sales, Staff, Hero, Settings)</option>
+                  <option value="Store Admin">Store Admin (Catalog Products, Daily Sales, Attendance)</option>
+                  <option value="Sales Manager">Sales Manager (Daily Sales Register &amp; History Only)</option>
+                </select>
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsAddAccountModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl text-gray-600 hover:bg-gray-100 font-bold transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl text-white bg-[#FB8500] hover:bg-[#e07500] font-bold shadow-xs transition cursor-pointer"
+                >
+                  Save Account
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

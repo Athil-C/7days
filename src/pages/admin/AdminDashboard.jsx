@@ -6,11 +6,15 @@ import { getUpdates, addUpdate, updateUpdate, deleteUpdate } from '../../service
 import { getProductInquiryUrl, createWhatsAppUrl } from '../../data/config';
 import HeroShowcaseManager from '../../components/admin/HeroShowcaseManager';
 import DailySalesRegister from '../../components/admin/DailySalesRegister';
+import PastDailySalesView from '../../components/admin/PastDailySalesView';
 import StaffAttendanceRegister from '../../components/admin/StaffAttendanceRegister';
 import AdminLoginDetailsModal from '../../components/admin/AdminLoginDetailsModal';
 import AdminLoginDetailsView from '../../components/admin/AdminLoginDetailsView';
-import { getCurrentAdminSession, recordAdminAction } from '../../services/adminLogService';
-import { updateHeroSlot } from '../../services/heroShowcaseService';
+import { getCurrentAdminSession, recordAdminAction, checkCurrentSessionStatus } from '../../services/adminLogService';
+import { updateHeroSlot, getHeroShowcase } from '../../services/heroShowcaseService';
+import { syncDailySalesFromServer } from '../../services/dailySalesService';
+import { syncStaffFromServer, syncAttendanceFromServer } from '../../services/attendanceService';
+import { syncHomepageSectionsFromSupabase } from '../../services/homepageSectionsService';
 import {
   Plus,
   Search,
@@ -65,6 +69,7 @@ export default function AdminDashboard() {
 
   // Tab navigation: 'dashboard' | 'products' | 'salesHistory' | 'attendance' | 'settings'
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedRegisterDate, setSelectedRegisterDate] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -163,6 +168,41 @@ export default function AdminDashboard() {
     }
   };
 
+  // Cloud Server Force Sync State & Handler
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
+
+  const handleForceCloudSync = async () => {
+    if (isSyncingCloud) return;
+    setIsSyncingCloud(true);
+    try {
+      await Promise.allSettled([
+        syncDailySalesFromServer(),
+        syncStaffFromServer(),
+        syncAttendanceFromServer(),
+        syncHomepageSectionsFromSupabase(),
+        getHeroShowcase(),
+        loadData()
+      ]);
+
+      // Broadcast update events across all browser components and listeners
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('7days_daily_sales_updated'));
+        window.dispatchEvent(new Event('7days_staff_updated'));
+        window.dispatchEvent(new Event('7days_attendance_updated'));
+        window.dispatchEvent(new Event('7days_homepage_sections_updated'));
+        window.dispatchEvent(new Event('7days_hero_updated'));
+        window.dispatchEvent(new Event('7days_updates_updated'));
+      }
+
+      showNotice('success', 'Local storage & cloud database successfully reloaded from server!');
+    } catch (err) {
+      console.error('Cloud sync error:', err);
+      showNotice('error', 'Sync notice: ' + (err?.message || 'Could not sync with server'));
+    } finally {
+      setIsSyncingCloud(false);
+    }
+  };
+
   useEffect(() => {
     loadData();
 
@@ -179,6 +219,35 @@ export default function AdminDashboard() {
       window.removeEventListener('7days_updates_updated', handleUpdatesUpdated);
     };
   }, []);
+
+  // Live session security check: detects if this device was remotely disconnected / terminated
+  useEffect(() => {
+    let isChecking = false;
+    const verifySession = async () => {
+      if (isChecking) return;
+      isChecking = true;
+      try {
+        const { terminated } = await checkCurrentSessionStatus();
+        if (terminated) {
+          try {
+            await signOut();
+          } catch (e) {}
+          window.location.href = '/admin/login?terminated=1';
+        }
+      } catch (err) {
+        // silent
+      } finally {
+        isChecking = false;
+      }
+    };
+
+    const intervalId = setInterval(verifySession, 12000);
+    window.addEventListener('focus', verifySession);
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('focus', verifySession);
+    };
+  }, [signOut]);
 
   // ==========================================
   // PRODUCT HANDLERS
@@ -559,8 +628,9 @@ export default function AdminDashboard() {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
     { id: 'products', label: 'Products', icon: Package, badge: products.length },
     { id: 'updates', label: 'Updates', icon: Bell, badge: updatesList.length },
+    { id: 'salesHistory', label: 'Past Sales Sheets', icon: Calendar },
     { id: 'attendance', label: 'Attendance', icon: Users },
-    { id: 'loginDetails', label: 'Logged Details', icon: ShieldCheck },
+    { id: 'loginDetails', label: 'Login Accounts', icon: ShieldCheck },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
@@ -676,7 +746,7 @@ export default function AdminDashboard() {
               <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] font-bold text-[#FB8500] group-hover:text-[#e07500]">
                 <span className="flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" />
-                  View Login Details
+                  View Login Accounts
                 </span>
                 <span className="text-xs transition-transform group-hover:translate-x-0.5">&rarr;</span>
               </div>
@@ -736,7 +806,7 @@ export default function AdminDashboard() {
                     : activeTab === 'attendance'
                       ? 'Attendance'
                       : activeTab === 'loginDetails'
-                        ? 'Logged Details'
+                        ? 'Login Accounts'
                         : activeTab === 'hero' || activeTab === 'settings'
                           ? 'Settings'
                           : activeTab}
@@ -753,6 +823,20 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Force Reload / Cloud Sync Button */}
+            <button
+              type="button"
+              onClick={handleForceCloudSync}
+              disabled={isSyncingCloud}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 hover:border-emerald-400 transition cursor-pointer shadow-2xs disabled:opacity-50 group"
+              title="Click if local storage didn't update after server changes: Force reloads all data from cloud server"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-emerald-600 transition-transform ${isSyncingCloud ? 'animate-spin' : 'group-hover:rotate-180 duration-500'}`} />
+              <span className="hidden sm:inline">
+                {isSyncingCloud ? 'Syncing...' : 'Reload Server'}
+              </span>
+            </button>
+
             {/* Logged In Details Pill Trigger */}
             <button
               type="button"
@@ -823,8 +907,26 @@ export default function AdminDashboard() {
           {/* ========================================================= */}
           {/* TAB: DASHBOARD (DAILY SALES REGISTER & ATTENDANCE POS)     */}
           {/* ========================================================= */}
-          {(activeTab === 'dashboard' || activeTab === 'dailySales' || activeTab === 'salesHistory') && (
-            <DailySalesRegister products={products} showNotice={showNotice} />
+          {(activeTab === 'dashboard' || activeTab === 'dailySales') && (
+            <DailySalesRegister
+              products={products}
+              showNotice={showNotice}
+              initialDate={selectedRegisterDate}
+              onNavigateToPastSales={() => setActiveTab('salesHistory')}
+            />
+          )}
+
+          {/* ========================================================= */}
+          {/* TAB: BROWSE PAST DAILY SALES SHEETS                       */}
+          {/* ========================================================= */}
+          {activeTab === 'salesHistory' && (
+            <PastDailySalesView
+              showNotice={showNotice}
+              onOpenInRegister={(date) => {
+                setSelectedRegisterDate(date);
+                setActiveTab('dashboard');
+              }}
+            />
           )}
 
           {/* ========================================================= */}

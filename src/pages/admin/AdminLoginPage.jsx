@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { SHOP_FULL_NAME, SHOP_SUBTITLE } from '../../data/config';
 import { Lock, Mail, ArrowRight, Store, AlertCircle } from 'lucide-react';
+import { recordAdminLogin } from '../../services/adminLogService';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -15,6 +16,9 @@ export default function AdminLoginPage() {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/admin';
 
+  // Check if session was terminated remotely
+  const isTerminated = new URLSearchParams(location.search).get('terminated') === '1';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
@@ -25,6 +29,8 @@ export default function AdminLoginPage() {
       if (error) {
         setErrorMsg(error.message || 'Login failed. Please verify credentials.');
       } else {
+        // Record login with automatic hardware, IP, and location fingerprinting (no manual name spoofing)
+        await recordAdminLogin(email, 'Super Admin');
         navigate(from, { replace: true });
       }
     } catch (err) {
@@ -57,6 +63,16 @@ export default function AdminLoginPage() {
         </div>
 
         <div className="mt-6 bg-white py-8 px-6 shadow-xl shadow-[#263238]/5 rounded-2xl border border-[#263238]/10 sm:px-10">
+          {isTerminated && (
+            <div className="mb-4 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+              <div>
+                <strong className="block font-bold">Session Disconnected</strong>
+                <span>This device's session was remotely terminated by the Super Administrator.</span>
+              </div>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="mb-4 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2.5">
               <AlertCircle className="w-5 h-5 shrink-0 text-red-500 mt-0.5" />
