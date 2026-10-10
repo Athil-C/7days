@@ -251,23 +251,23 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
       {/* Grid: Active Session Hero Card & Security Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active Session Card (2 cols) */}
-        <div className="lg:col-span-2 rounded-3xl bg-gradient-to-br from-[#0c1424] via-[#101b30] to-[#0a101d] text-white p-6 sm:p-8 shadow-xl relative overflow-hidden border border-slate-800">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="lg:col-span-2 rounded-3xl bg-gradient-to-br from-[#1E252B] via-[#263238] to-[#161D22] text-white p-6 sm:p-8 shadow-xl relative overflow-hidden border border-white/10">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#FB8500]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center justify-between mb-6">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
               Active Administrator Session
             </span>
 
             <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700/60">
-              <Activity className="w-3.5 h-3.5 text-emerald-400" />
+              <Activity className="w-3.5 h-3.5 text-[#FB8500]" />
               <span>Online: {sessionUptime || 'Active'}</span>
             </span>
           </div>
 
           <div className="flex items-start sm:items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0284c7] via-[#059669] to-[#10b981] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#FB8500] to-[#FFB703] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-[#FB8500]/25 shrink-0">
               {activeSession?.email ? activeSession.email.charAt(0).toUpperCase() : 'A'}
             </div>
             <div className="min-w-0 flex-1">
@@ -275,7 +275,7 @@ export default function AdminLoginDetailsView({ user, onSignOut, showNotice }) {
                 {activeSession?.email || user?.email || 'admin@7days.com'}
               </h2>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <span className="text-xs text-emerald-400 font-bold flex items-center gap-1">
+                <span className="text-xs text-[#FFB703] font-bold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   {activeSession?.role || 'Super Admin'}
                 </span>

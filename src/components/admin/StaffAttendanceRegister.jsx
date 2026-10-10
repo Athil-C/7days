@@ -370,45 +370,71 @@ export default function StaffAttendanceRegister({
           </thead>
 
           <tbody className="divide-y divide-gray-200 font-medium">
-            {staffList.map((staff) => {
-              const staffRecords = attendance[staff.id] || {};
-              let presentCount = 0;
-              let totalMarked = 0;
+            {staffList.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={daysInMonth + 4}
+                  className="py-14 text-center bg-white"
+                >
+                  <div className="max-w-md mx-auto space-y-3 px-4">
+                    <div className="w-14 h-14 rounded-2xl bg-amber-50 text-[#FB8500] flex items-center justify-center mx-auto shadow-xs border border-amber-200/60">
+                      <Users className="w-7 h-7" />
+                    </div>
+                    <h3 className="text-base font-extrabold text-[#263238]">No Staff Members in Register</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      All demo staff data has been cleared. Click <span className="font-bold text-[#FB8500]">"+ Add Staff Member"</span> above to add your team members to the attendance register.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddStaffOpen(true)}
+                      className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-sm transition cursor-pointer"
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      Add Staff Member
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              staffList.map((staff) => {
+                const staffRecords = attendance[staff.id] || {};
+                let presentCount = 0;
+                let totalMarked = 0;
 
-              for (let d = 1; d <= daysInMonth; d++) {
-                const raw = staffRecords[d] ?? staffRecords[String(d)];
-                if (
-                  raw === 'P' ||
-                  raw === 'Full' ||
-                  raw === 'full' ||
-                  raw === 'Present'
-                ) {
-                  presentCount += 1;
-                  totalMarked += 1;
-                } else if (
-                  raw === 'H' ||
-                  raw === 'Half' ||
-                  raw === 'half'
-                ) {
-                  presentCount += 0.5;
-                  totalMarked += 1;
-                } else if (
-                  raw === 'A' ||
-                  raw === 'Absent' ||
-                  raw === 'absent' ||
-                  raw === 'Off'
-                ) {
-                  totalMarked += 1;
+                for (let d = 1; d <= daysInMonth; d++) {
+                  const raw = staffRecords[d] ?? staffRecords[String(d)];
+                  if (
+                    raw === 'P' ||
+                    raw === 'Full' ||
+                    raw === 'full' ||
+                    raw === 'Present'
+                  ) {
+                    presentCount += 1;
+                    totalMarked += 1;
+                  } else if (
+                    raw === 'H' ||
+                    raw === 'Half' ||
+                    raw === 'half'
+                  ) {
+                    presentCount += 0.5;
+                    totalMarked += 1;
+                  } else if (
+                    raw === 'A' ||
+                    raw === 'Absent' ||
+                    raw === 'absent' ||
+                    raw === 'Off'
+                  ) {
+                    totalMarked += 1;
+                  }
                 }
-              }
 
-              const percentage =
-                totalMarked > 0 ? Math.round((presentCount / totalMarked) * 100) : 0;
+                const percentage =
+                  totalMarked > 0 ? Math.round((presentCount / totalMarked) * 100) : 0;
 
-              return (
-                <tr key={staff.id} className="hover:bg-amber-50/30 transition">
-                  {/* Staff Name & Role */}
-                  <td className="py-2.5 px-3 sticky left-0 bg-white hover:bg-amber-50/30 z-10 border-r border-gray-200 shadow-xs">
+                return (
+                  <tr key={staff.id} className="hover:bg-amber-50/30 transition">
+                    {/* Staff Name & Role */}
+                    <td className="py-2.5 px-3 sticky left-0 bg-white hover:bg-amber-50/30 z-10 border-r border-gray-200 shadow-xs">
                     <span className="font-extrabold text-gray-900 block leading-tight">
                       {staff.name}
                     </span>
@@ -505,7 +531,7 @@ export default function StaffAttendanceRegister({
                   </td>
                 </tr>
               );
-            })}
+            }))}
           </tbody>
 
           {/* Daily Total Staff on Duty Footer */}

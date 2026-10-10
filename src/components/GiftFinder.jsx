@@ -289,7 +289,7 @@ export default function GiftFinder() {
                           : 'border-black/5 bg-[#FFF9F0] text-[#263238] hover:border-black/15'
                         }`}
                     >
-                      <span className="text-xl mb-0.5">{age.icon}</span>
+                      {age.icon ? <span className="text-xl mb-0.5">{age.icon}</span> : null}
                       <span className="text-xs sm:text-sm font-extrabold font-heading">{age.label}</span>
                       <span className="text-[10px] text-[#546E7A]">{age.tagline}</span>
                     </button>

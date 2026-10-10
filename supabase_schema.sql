@@ -325,3 +325,21 @@ TO anon, authenticated
 USING (true)
 WITH CHECK (true);
 
+-- ==========================================================
+-- 15. Create Site Settings Table (Homepage Sections, Configs)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow All Operations on Site Settings"
+ON public.site_settings
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+

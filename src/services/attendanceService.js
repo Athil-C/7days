@@ -10,25 +10,31 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 const STAFF_STORAGE_KEY = '7days_staff_list_v1';
 const ATTENDANCE_STORAGE_KEY = '7days_staff_attendance_ledger_v1';
 
-// Initial staff list for 7Days
-const DEFAULT_STAFF = [
-  { id: 'staff_1', name: 'Athil', role: 'Store Lead / Manager' },
-  { id: 'staff_2', name: 'Salman', role: 'Sales Executive' },
-  { id: 'staff_3', name: 'Faisal', role: 'Sales & Service Specialist' }
-];
+// Initial staff list for 7Days - Clean slate, no demo data
+const DEFAULT_STAFF = [];
 
 // Initial sync from Supabase if configured
 if (typeof window !== 'undefined' && isSupabaseConfigured) {
-  // Sync staff members
+  // Sync staff members (excluding any legacy demo records)
   supabase
     .from('staff_members')
     .select('*')
     .then(({ data, error }) => {
-      if (!error && Array.isArray(data) && data.length > 0) {
-        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(data));
+      if (!error && Array.isArray(data)) {
+        const cleaned = data.filter((s) => s && !['staff_1', 'staff_2', 'staff_3'].includes(s.id));
+        localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(cleaned));
         window.dispatchEvent(new Event('7days_staff_updated'));
       }
     });
+
+  // Clean demo staff from Supabase database if present
+  try {
+    supabase
+      .from('staff_members')
+      .delete()
+      .in('id', ['staff_1', 'staff_2', 'staff_3'])
+      .then(() => {});
+  } catch {}
 
   // Sync attendance ledger
   supabase
@@ -44,6 +50,14 @@ if (typeof window !== 'undefined' && isSupabaseConfigured) {
             merged[row.month_key] = row.ledger_data;
           }
         });
+        // Remove demo staff keys from merged ledger
+        Object.keys(merged).forEach((mKey) => {
+          if (merged[mKey] && typeof merged[mKey] === 'object') {
+            ['staff_1', 'staff_2', 'staff_3'].forEach((dId) => {
+              delete merged[mKey][dId];
+            });
+          }
+        });
         localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(merged));
         window.dispatchEvent(new Event('7days_attendance_updated'));
       }
@@ -54,13 +68,21 @@ export function getStaffList() {
   try {
     const raw = localStorage.getItem(STAFF_STORAGE_KEY);
     if (!raw) {
-      saveStaffList(DEFAULT_STAFF);
-      return DEFAULT_STAFF;
+      return [];
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_STAFF;
+    if (!Array.isArray(parsed)) return [];
+    
+    // Auto-clean any legacy demo records
+    const cleaned = parsed.filter(
+      (s) => s && !['staff_1', 'staff_2', 'staff_3'].includes(s.id)
+    );
+    if (cleaned.length !== parsed.length) {
+      localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(cleaned));
+    }
+    return cleaned;
   } catch {
-    return DEFAULT_STAFF;
+    return [];
   }
 }
 
@@ -128,23 +150,30 @@ function getStoredAttendance() {
   }
 }
 
-function saveStoredAttendance(ledger) {
+let attendanceDebounceTimer = null;
+
+function saveStoredAttendance(ledger, targetMonthKey = null) {
   try {
     localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(ledger));
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_attendance_updated'));
     }
-    // Database background sync if Supabase is active
+    // Database background sync if Supabase is active (debounced to prevent network loop flooding)
     if (isSupabaseConfigured && ledger && typeof ledger === 'object') {
-      Object.keys(ledger).forEach(async (mKey) => {
-        try {
-          await supabase.from('staff_attendance').upsert({
-            month_key: mKey,
-            ledger_data: ledger[mKey],
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'month_key' });
-        } catch {}
-      });
+      clearTimeout(attendanceDebounceTimer);
+      attendanceDebounceTimer = setTimeout(() => {
+        const monthsToSync = targetMonthKey ? [targetMonthKey] : Object.keys(ledger);
+        monthsToSync.forEach(async (mKey) => {
+          if (!ledger[mKey]) return;
+          try {
+            await supabase.from('staff_attendance').upsert({
+              month_key: mKey,
+              ledger_data: ledger[mKey],
+              updated_at: new Date().toISOString()
+            }, { onConflict: 'month_key' });
+          } catch {}
+        });
+      }, 500);
     }
   } catch (err) {
     console.error('Failed to save attendance ledger:', err);
@@ -202,7 +231,7 @@ export function syncDutyToAttendance(dateStr, dutyMap) {
     }
   });
 
-  saveStoredAttendance(ledger);
+  saveStoredAttendance(ledger, monthKey);
   return ledger[monthKey];
 }
 

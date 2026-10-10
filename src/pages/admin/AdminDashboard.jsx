@@ -565,12 +565,12 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-[#263238] flex font-body">
+    <div className="min-h-screen bg-[#FFF9F0] text-[#263238] flex font-body">
       {/* ========================================================= */}
-      {/* RETAILOS DARK SIDEBAR NAVIGATION                          */}
+      {/* 7DAYS BRAND LIGHT SIDEBAR NAVIGATION                      */}
       {/* ========================================================= */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 bg-[#0e1626] border-r border-[#1a273e] flex flex-col justify-between transition-all duration-300 md:sticky md:top-0 md:h-screen md:max-h-screen shrink-0 select-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        className={`fixed inset-y-0 left-0 z-40 bg-white border-r border-[#263238]/10 flex flex-col justify-between transition-all duration-300 h-screen max-h-screen select-none shadow-xs ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
           } ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}
       >
         {/* Top: Logo & Nav items */}
@@ -578,13 +578,13 @@ export default function AdminDashboard() {
           {/* Logo Bar */}
           <div className="h-20 flex items-center justify-between px-5">
             <Link to="/" className="flex items-center gap-3 min-w-0 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0284c7] via-[#059669] to-[#10b981] flex items-center justify-center font-black text-white text-lg shadow-md shadow-emerald-500/10 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#FB8500] to-[#FFB703] flex items-center justify-center font-black text-white text-lg shadow-md shadow-[#FB8500]/25 shrink-0">
                 7
               </div>
               {!isSidebarCollapsed && (
                 <div className="flex items-center font-heading font-bold text-xl tracking-tight truncate">
-                  <span className="text-white">7Days</span>
-                  <span className="text-[#10b981] drop-shadow-[0_0_8px_rgba(16,185,129,0.35)]"></span>
+                  <span className="text-[#263238]">7Days</span>
+                  <span className="text-[#FB8500]">.</span>
                 </div>
               )}
             </Link>
@@ -592,7 +592,7 @@ export default function AdminDashboard() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-1 rounded-lg text-slate-400 hover:text-white md:hidden cursor-pointer"
+              className="p-1.5 rounded-lg text-gray-400 hover:text-[#263238] hover:bg-black/5 md:hidden cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -614,18 +614,18 @@ export default function AdminDashboard() {
                     setActiveTab(item.id);
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-medium transition cursor-pointer ${isActive
-                    ? 'bg-[#1c293d] text-white shadow-xs font-semibold'
-                    : 'text-[#8896ab] hover:text-slate-100 hover:bg-[#152033]'
+                  className={`w-full flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${isActive
+                    ? 'bg-[#FB8500] text-white shadow-md shadow-[#FB8500]/25 font-bold'
+                    : 'text-[#263238]/70 hover:text-[#263238] hover:bg-black/5'
                     } ${isSidebarCollapsed ? 'justify-center px-2' : ''}`}
                   title={item.label}
                 >
-                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-white' : 'text-[#8896ab]'}`} />
+                  <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-white' : 'text-[#263238]/60'}`} />
                   {!isSidebarCollapsed && (
                     <span className="truncate flex-1 text-left text-sm tracking-wide">{item.label}</span>
                   )}
                   {!isSidebarCollapsed && item.badge !== undefined && (
-                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#162235] text-slate-300 border border-slate-700/50">
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-white/25 text-white' : 'bg-[#FFB703]/20 text-[#263238] border border-[#FFB703]/30'}`}>
                       {item.badge}
                     </span>
                   )}
@@ -638,34 +638,34 @@ export default function AdminDashboard() {
         {/* ========================================================= */}
         {/* BOTTOM: ADMIN LOGIN DETAILS & SIDEBAR COLLAPSE            */}
         {/* ========================================================= */}
-        <div className="p-3 border-t border-[#1a273e] space-y-2 bg-[#09101d] shrink-0">
+        <div className="p-3 border-t border-[#263238]/10 space-y-2 bg-[#FFF9F0]/80 shrink-0">
           {/* Dedicated Admin Login Details Button & Card */}
           <div
             onClick={() => setIsLoginModalOpen(true)}
-            className="w-full text-left p-2.5 rounded-xl bg-[#131d2e] hover:bg-[#18263e] border border-[#1e2e48] hover:border-emerald-500/50 transition cursor-pointer group shadow-xs"
+            className="w-full text-left p-2.5 rounded-2xl bg-white hover:bg-amber-50/30 border border-[#263238]/10 hover:border-[#FB8500]/40 transition cursor-pointer group shadow-xs"
             title="Click to view full login details and session history"
           >
             <div className="flex items-center gap-2.5">
               <div className="relative shrink-0">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-black text-sm flex items-center justify-center shadow-xs">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FB8500] to-[#FFB703] text-white font-black text-sm flex items-center justify-center shadow-xs">
                   {user?.email ? user.email.charAt(0).toUpperCase() : 'A'}
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-[#0e1626]" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#25D366] ring-2 ring-white" />
               </div>
 
               {!isSidebarCollapsed && (
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white truncate group-hover:text-emerald-300 transition">
+                    <span className="text-xs font-bold text-[#263238] truncate group-hover:text-[#FB8500] transition">
                       {user?.email?.split('@')[0] || 'Store Owner'}
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                    <span className="text-[10px] font-bold text-[#25D366] bg-[#25D366]/10 px-1.5 py-0.2 rounded border border-[#25D366]/25">
                       Active
                     </span>
                   </div>
 
-                  <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5 truncate font-medium">
-                    <Clock className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <div className="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5 truncate font-medium">
+                    <Clock className="w-3 h-3 text-[#FB8500] shrink-0" />
                     <span>Logged in: {adminSession?.formattedTime || 'Active'}</span>
                   </div>
                 </div>
@@ -673,7 +673,7 @@ export default function AdminDashboard() {
             </div>
 
             {!isSidebarCollapsed && (
-              <div className="mt-2 pt-2 border-t border-slate-700/50 flex items-center justify-between text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300">
+              <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] font-bold text-[#FB8500] group-hover:text-[#e07500]">
                 <span className="flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" />
                   View Login Details
@@ -687,7 +687,7 @@ export default function AdminDashboard() {
           <button
             type="button"
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-white hover:bg-[#152033] rounded-xl transition cursor-pointer w-full justify-center"
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-gray-500 hover:text-[#263238] hover:bg-black/5 rounded-xl transition cursor-pointer w-full justify-center"
             title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isSidebarCollapsed ? (
@@ -711,23 +711,24 @@ export default function AdminDashboard() {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      <div className={`flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
         {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-2xs h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
+        <header className="bg-[#FFF9F0]/95 backdrop-blur-md border-b border-[#263238]/10 sticky top-0 z-20 shadow-2xs h-14 sm:h-16 flex items-center justify-between px-2.5 sm:px-6 lg:px-8 w-full max-w-full">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 rounded-xl text-gray-600 hover:bg-gray-100 md:hidden cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-xl text-[#263238] hover:bg-black/5 md:hidden cursor-pointer shrink-0"
+              aria-label="Open navigation menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Breadcrumb / Title */}
-            <div className="flex items-center gap-2 text-xs font-bold text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500 truncate">
               <span className="text-gray-400 hidden sm:inline">7Days</span>
               <span className="text-gray-300 hidden sm:inline">/</span>
-              <span className="text-gray-900 font-black text-sm capitalize">
+              <span className="text-[#263238] font-black text-sm capitalize truncate">
                 {activeTab === 'dailySales' || activeTab === 'dashboard'
                   ? 'Dashboard'
                   : activeTab === 'salesHistory'
@@ -737,37 +738,37 @@ export default function AdminDashboard() {
                       : activeTab === 'loginDetails'
                         ? 'Logged Details'
                         : activeTab === 'hero' || activeTab === 'settings'
-                          ? 'Settings & Showcase'
+                          ? 'Settings'
                           : activeTab}
               </span>
             </div>
 
             {/* Environment Badge */}
-            <div className="hidden lg:flex items-center gap-1.5 ml-3 px-2.5 py-1 rounded-full text-[11px] font-semibold border border-gray-200 bg-gray-50">
-              <Database className={`w-3 h-3 ${isConfigured ? 'text-emerald-500' : 'text-amber-500'}`} />
-              <span className="text-gray-600">
+            <div className="hidden lg:flex items-center gap-1.5 ml-3 px-2.5 py-1 rounded-full text-[11px] font-semibold border border-[#263238]/10 bg-white/70">
+              <Database className={`w-3 h-3 ${isConfigured ? 'text-[#25D366]' : 'text-[#FB8500]'}`} />
+              <span className="text-[#263238]/80">
                 {isConfigured ? 'Supabase Live' : 'Local Preview'}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Logged In Details Pill Trigger */}
             <button
               type="button"
               onClick={() => setIsLoginModalOpen(true)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 transition cursor-pointer shadow-2xs group"
+              className="inline-flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#FB8500]/10 hover:bg-[#FB8500]/15 text-[#263238] border border-[#FB8500]/25 transition cursor-pointer shadow-2xs group"
               title="Click to view active session, login time, device, and audit logs"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
               </span>
-              <span className="hidden sm:inline text-gray-500 font-medium">Logged in:</span>
-              <span className="font-bold text-emerald-950 truncate max-w-[130px]">
+              <span className="hidden md:inline text-gray-500 font-medium">Logged in:</span>
+              <span className="font-bold text-[#263238] truncate max-w-[65px] sm:max-w-[120px]">
                 {user?.email?.split('@')[0] || 'Admin'}
               </span>
-              <span className="text-[10px] bg-emerald-600 text-white font-bold px-1.5 py-0.5 rounded-md">
+              <span className="text-[9px] sm:text-[10px] bg-[#25D366] text-white font-bold px-1.5 py-0.5 rounded-md hidden sm:inline">
                 Active
               </span>
             </button>
@@ -776,17 +777,17 @@ export default function AdminDashboard() {
               to="/products"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
+              className="inline-flex items-center gap-1 p-2 sm:px-3 sm:py-1.5 text-xs font-bold rounded-xl text-[#263238] bg-[#FFB703]/20 hover:bg-[#FFB703]/35 transition shrink-0"
               title="Open customer storefront in new tab"
             >
-              <Store className="w-3.5 h-3.5 text-gray-500" />
+              <Store className="w-3.5 h-3.5 text-[#FB8500]" />
               <span className="hidden sm:inline">View Store</span>
-              <ExternalLink className="w-3 h-3 text-gray-400" />
             </Link>
 
             <button
               onClick={() => signOut()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl text-red-600 hover:bg-red-50 border border-red-200 transition cursor-pointer"
+              className="inline-flex items-center gap-1 p-2 sm:px-3 sm:py-1.5 text-xs font-bold rounded-xl text-red-600 hover:bg-red-50 border border-red-200 transition cursor-pointer shrink-0"
+              title="Sign Out"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Sign Out</span>
@@ -846,16 +847,16 @@ export default function AdminDashboard() {
                   <button
                     onClick={loadData}
                     disabled={productsLoading}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-xs transition cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-[#263238]/10 hover:bg-amber-50/40 shadow-xs transition cursor-pointer"
                     title="Refresh Products"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${productsLoading ? 'animate-spin text-[#FF6B6B]' : 'text-gray-500'}`} />
+                    <RefreshCw className={`w-3.5 h-3.5 ${productsLoading ? 'animate-spin text-[#FB8500]' : 'text-gray-500'}`} />
                     <span>Refresh</span>
                   </button>
 
                   <button
                     onClick={handleOpenAddProduct}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#FF6B6B] hover:bg-[#ff5252] shadow-md shadow-[#FF6B6B]/25 transition cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-md shadow-[#FB8500]/25 transition cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add New Product</span>
@@ -865,12 +866,12 @@ export default function AdminDashboard() {
 
               {/* Quick Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs">
+                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#263238]/10 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Total Products
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#FFB703]/20 text-[#FB8500] flex items-center justify-center">
                       <Layers className="w-4 h-4" />
                     </div>
                   </div>
@@ -878,12 +879,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400 mt-0.5">Active in store catalog</p>
                 </div>
 
-                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs">
+                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#263238]/10 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Featured Items
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#FB8500]/15 text-[#FB8500] flex items-center justify-center">
                       <Star className="w-4 h-4" />
                     </div>
                   </div>
@@ -891,12 +892,12 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400 mt-0.5">Highlighted on homepage</p>
                 </div>
 
-                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs">
+                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#263238]/10 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Custom/Uploaded
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#6A994E]/15 text-[#6A994E] flex items-center justify-center">
                       <Database className="w-4 h-4" />
                     </div>
                   </div>
@@ -904,22 +905,22 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400 mt-0.5">Added via Admin Portal</p>
                 </div>
 
-                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs">
+                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#263238]/10 shadow-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Checkout Flow
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-[#25D366]/15 text-[#25D366] flex items-center justify-center">
                       <MessageCircle className="w-4 h-4" />
                     </div>
                   </div>
                   <p className="text-2xl font-black text-gray-900 mt-2">WhatsApp</p>
-                  <p className="text-xs text-emerald-600 font-medium mt-0.5">No gateway required</p>
+                  <p className="text-xs text-[#25D366] font-medium mt-0.5">No gateway required</p>
                 </div>
               </div>
 
               {/* Filter and Search Bar */}
-              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200/80 shadow-xs mb-6 space-y-4">
+              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#263238]/10 shadow-xs mb-6 space-y-4">
                 <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
                   <div className="relative flex-1">
                     <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -928,7 +929,7 @@ export default function AdminDashboard() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search products by title, description, or badge..."
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] focus:border-transparent transition"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500] focus:border-transparent transition"
                     />
                     {searchQuery && (
                       <button
@@ -945,7 +946,7 @@ export default function AdminDashboard() {
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] transition cursor-pointer"
+                      className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-[#FB8500] transition cursor-pointer"
                     >
                       <option value="All">All Categories</option>
                       {CATEGORIES.map((cat) => (
@@ -962,7 +963,7 @@ export default function AdminDashboard() {
                   <button
                     onClick={() => setFilterType('all')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filterType === 'all'
-                      ? 'bg-[#263238] text-white'
+                      ? 'bg-[#263238] text-white shadow-xs'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                   >
@@ -971,7 +972,7 @@ export default function AdminDashboard() {
                   <button
                     onClick={() => setFilterType('featured')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filterType === 'featured'
-                      ? 'bg-amber-500 text-white'
+                      ? 'bg-[#FB8500] text-white shadow-xs'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                   >
@@ -980,7 +981,7 @@ export default function AdminDashboard() {
                   <button
                     onClick={() => setFilterType('database')}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filterType === 'database'
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-[#6A994E] text-white shadow-xs'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                   >
@@ -994,12 +995,12 @@ export default function AdminDashboard() {
 
               {/* Products Table */}
               {productsLoading ? (
-                <div className="bg-white rounded-2xl p-12 border border-gray-200 text-center">
-                  <div className="w-10 h-10 border-4 border-[#FF6B6B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <div className="bg-white rounded-2xl p-12 border border-[#263238]/10 text-center">
+                  <div className="w-10 h-10 border-4 border-[#FB8500] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                   <p className="text-sm font-medium text-gray-600">Loading catalog items...</p>
                 </div>
               ) : filteredProducts.length === 0 ? (
-                <div className="bg-white rounded-2xl p-12 border border-gray-200 text-center">
+                <div className="bg-white rounded-2xl p-12 border border-[#263238]/10 text-center">
                   <FolderOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                   <h3 className="text-base font-bold text-gray-800">No products match your filter</h3>
                   <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
@@ -1007,17 +1008,17 @@ export default function AdminDashboard() {
                   </p>
                   <button
                     onClick={handleOpenAddProduct}
-                    className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-[#FF6B6B] text-white rounded-xl text-xs font-bold hover:bg-[#ff5252] transition cursor-pointer"
+                    className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-[#FB8500] text-white rounded-xl text-xs font-bold hover:bg-[#e07500] transition cursor-pointer shadow-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add Product Now
                   </button>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+                <div className="bg-white rounded-2xl border border-[#263238]/10 shadow-xs overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm text-gray-600">
-                      <thead className="bg-gray-50/80 text-xs uppercase font-bold text-gray-500 border-b border-gray-200">
+                      <thead className="bg-[#FFF9F0]/60 text-xs uppercase font-bold text-[#263238] border-b border-[#263238]/10">
                         <tr>
                           <th className="py-3.5 px-4 w-16">Photo</th>
                           <th className="py-3.5 px-4">Product Details</th>
@@ -1031,7 +1032,7 @@ export default function AdminDashboard() {
                         {filteredProducts.slice(0, 100).map((prod) => {
                           const whatsAppUrl = getProductInquiryUrl(prod);
                           return (
-                            <tr key={prod.id} className="hover:bg-gray-50/60 transition group">
+                            <tr key={prod.id} className="hover:bg-amber-50/20 transition group">
                               {/* Image Thumbnail */}
                               <td className="py-3 px-4">
                                 <div className="w-14 h-14 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
@@ -1053,7 +1054,7 @@ export default function AdminDashboard() {
 
                               {/* Product Title & Description */}
                               <td className="py-3 px-4 max-w-md">
-                                <div className="font-bold text-gray-900 group-hover:text-[#FF6B6B] transition">
+                                <div className="font-bold text-gray-900 group-hover:text-[#FB8500] transition">
                                   {prod.name}
                                 </div>
                                 {prod.description && (
@@ -1062,7 +1063,7 @@ export default function AdminDashboard() {
                                   </p>
                                 )}
                                 {prod.source === 'database' || prod.source === 'local' ? (
-                                  <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                                  <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-semibold text-[#6A994E] bg-[#6A994E]/10 px-2 py-0.5 rounded-full">
                                     <Database className="w-2.5 h-2.5" />
                                     Custom Added
                                   </span>
@@ -1098,7 +1099,7 @@ export default function AdminDashboard() {
                               <td className="py-3 px-4 whitespace-nowrap">
                                 <div className="flex flex-col items-start gap-1">
                                   {prod.badge && (
-                                    <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#FFB300]/15 text-[#b37d00]">
+                                    <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#FFB703]/20 text-[#263238]">
                                       {prod.badge}
                                     </span>
                                   )}
@@ -1192,16 +1193,16 @@ export default function AdminDashboard() {
                   <button
                     onClick={loadData}
                     disabled={updatesLoading}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-xs transition cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-[#263238]/10 hover:bg-amber-50/40 shadow-xs transition cursor-pointer"
                     title="Refresh Updates"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${updatesLoading ? 'animate-spin text-[#FF6B6B]' : 'text-gray-500'}`} />
+                    <RefreshCw className={`w-3.5 h-3.5 ${updatesLoading ? 'animate-spin text-[#FB8500]' : 'text-gray-500'}`} />
                     <span>Refresh</span>
                   </button>
 
                   <button
                     onClick={handleOpenAddUpdate}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#FF6B6B] hover:bg-[#ff5252] shadow-md shadow-[#FF6B6B]/25 transition cursor-pointer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-md shadow-[#FB8500]/25 transition cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add New Store Update</span>
@@ -1211,12 +1212,12 @@ export default function AdminDashboard() {
 
               {/* Updates Cards List */}
               {updatesLoading ? (
-                <div className="bg-white rounded-2xl p-12 border border-gray-200 text-center">
-                  <div className="w-10 h-10 border-4 border-[#FF6B6B] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <div className="bg-white rounded-2xl p-12 border border-[#263238]/10 text-center">
+                  <div className="w-10 h-10 border-4 border-[#FB8500] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                   <p className="text-sm font-medium text-gray-600">Loading store updates...</p>
                 </div>
               ) : updatesList.length === 0 ? (
-                <div className="bg-white rounded-2xl p-12 border border-gray-200 text-center">
+                <div className="bg-white rounded-2xl p-12 border border-[#263238]/10 text-center">
                   <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                   <h3 className="text-base font-bold text-gray-800">No store updates published yet</h3>
                   <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
@@ -1224,7 +1225,7 @@ export default function AdminDashboard() {
                   </p>
                   <button
                     onClick={handleOpenAddUpdate}
-                    className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-[#FF6B6B] text-white rounded-xl text-xs font-bold hover:bg-[#ff5252] transition cursor-pointer"
+                    className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-[#FB8500] text-white rounded-xl text-xs font-bold hover:bg-[#e07500] transition cursor-pointer shadow-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Add Update Now
@@ -1237,7 +1238,7 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={upd.id}
-                        className="bg-white rounded-2xl sm:rounded-3xl border border-gray-200 p-5 sm:p-7 shadow-xs hover:shadow-md transition flex flex-col md:flex-row gap-6 items-start"
+                        className="bg-white rounded-2xl sm:rounded-3xl border border-[#263238]/10 p-5 sm:p-7 shadow-xs hover:shadow-md transition flex flex-col md:flex-row gap-6 items-start"
                       >
                         {/* Banner Poster Thumbnail */}
                         <div className="w-full md:w-64 h-48 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shrink-0 relative group">
@@ -1250,7 +1251,7 @@ export default function AdminDashboard() {
                               e.target.src = 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=80';
                             }}
                           />
-                          <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white shadow-xs">
+                          <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FB8500] text-white shadow-xs">
                             {upd.badge || 'Update'}
                           </span>
                         </div>
@@ -1402,7 +1403,7 @@ export default function AdminDashboard() {
 
                 <div
                   onClick={() => productFileInputRef.current?.click()}
-                  className="border-2 border-dashed border-gray-300 hover:border-[#FF6B6B] rounded-2xl p-4 text-center cursor-pointer transition bg-gray-50/50 hover:bg-red-50/30 group"
+                  className="border-2 border-dashed border-gray-300 hover:border-[#FB8500] rounded-2xl p-4 text-center cursor-pointer transition bg-gray-50/50 hover:bg-amber-50/20 group"
                 >
                   <input
                     type="file"
@@ -1419,14 +1420,14 @@ export default function AdminDashboard() {
                         alt="Preview"
                         className="w-36 h-36 object-contain bg-white rounded-xl shadow-xs border border-gray-200 mx-auto"
                       />
-                      <div className="mt-2 text-xs font-semibold text-[#FF6B6B] flex items-center justify-center gap-1">
+                      <div className="mt-2 text-xs font-semibold text-[#FB8500] flex items-center justify-center gap-1">
                         <Upload className="w-3.5 h-3.5" />
                         Click to change photo
                       </div>
                     </div>
                   ) : (
                     <div className="py-4">
-                      <div className="w-12 h-12 rounded-full bg-red-50 text-[#FF6B6B] flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition">
+                      <div className="w-12 h-12 rounded-full bg-amber-50 text-[#FB8500] flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition">
                         <Upload className="w-6 h-6" />
                       </div>
                       <p className="text-xs font-bold text-gray-700">
@@ -1448,7 +1449,7 @@ export default function AdminDashboard() {
                       if (e.target.value) setProductImagePreview(e.target.value);
                     }}
                     placeholder="Or enter image URL (e.g. /products/... or https://...)"
-                    className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#FF6B6B]"
+                    className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#FB8500]"
                   />
                 </div>
               </div>
@@ -1464,7 +1465,7 @@ export default function AdminDashboard() {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Baybee Rampage Rechargeable Battery Operated Jeep for Kids"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                 />
               </div>
 
@@ -1477,7 +1478,7 @@ export default function AdminDashboard() {
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] cursor-pointer"
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FB8500] cursor-pointer"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -1496,7 +1497,7 @@ export default function AdminDashboard() {
                     value={formBadge}
                     onChange={(e) => setFormBadge(e.target.value)}
                     placeholder="e.g. Electric Jeep, Bestseller, Save 42%"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
               </div>
@@ -1513,7 +1514,7 @@ export default function AdminDashboard() {
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
                     placeholder="e.g. 25990"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
 
@@ -1527,7 +1528,7 @@ export default function AdminDashboard() {
                     value={formMrp}
                     onChange={(e) => setFormMrp(e.target.value)}
                     placeholder="e.g. 44990"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
 
@@ -1555,7 +1556,7 @@ export default function AdminDashboard() {
                     value={formAgeGroup}
                     onChange={(e) => setFormAgeGroup(e.target.value)}
                     placeholder="e.g. 2 to 8 Years"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
 
@@ -1568,7 +1569,7 @@ export default function AdminDashboard() {
                     value={formColors}
                     onChange={(e) => setFormColors(e.target.value)}
                     placeholder="e.g. Red, Black, White, Yellow"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
               </div>
@@ -1584,7 +1585,7 @@ export default function AdminDashboard() {
                     value={formBrand}
                     onChange={(e) => setFormBrand(e.target.value)}
                     placeholder="e.g. Baybee, Hero Cycles, 7Days"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
 
@@ -1597,7 +1598,7 @@ export default function AdminDashboard() {
                     value={formItemForm}
                     onChange={(e) => setFormItemForm(e.target.value)}
                     placeholder="e.g. 4x4 Battery Operated Jeep, Mountain Bike"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
               </div>
@@ -1612,7 +1613,7 @@ export default function AdminDashboard() {
                   value={formMaterial}
                   onChange={(e) => setFormMaterial(e.target.value)}
                   placeholder="e.g. Non-Toxic Virgin BPA-Free Plastic & High Tensile Alloy Steel"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                 />
               </div>
 
@@ -1629,7 +1630,7 @@ export default function AdminDashboard() {
                   value={formSpecs}
                   onChange={(e) => setFormSpecs(e.target.value)}
                   placeholder={"Battery: 12V 7Ah Rechargeable\nMotor: Dual 390 High-Torque Motors\nWeight Capacity: Up to 35 kg\nRemote Control: 2.4G Bluetooth Parental Remote\nSpeed: 3 - 5 km/h\nCharging Time: 6 - 8 Hours"}
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-mono bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] resize-none"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-mono bg-white focus:outline-none focus:ring-2 focus:ring-[#FB8500] resize-none"
                 />
                 <p className="text-[11px] text-gray-500">
                   Renders as an Amazon-style 2-column specifications table on the product page.
@@ -1646,7 +1647,7 @@ export default function AdminDashboard() {
                   value={formAboutItem}
                   onChange={(e) => setFormAboutItem(e.target.value)}
                   placeholder={"DUAL DRIVING MODES: Can be operated manually by child via foot pedal and steering, or by parents via 2.4G remote control.\nENTERTAINMENT CONSOLE: Built-in music console, USB/AUX port, battery percentage indicator, and bright LED headlamps.\nSAFETY GUARANTEE: Equipped with slow-start technology, 5-point safety harness, and multi-wheel spring shock absorbers."}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500] resize-none"
                 />
                 <p className="text-[11px] text-gray-500">
                   Tip: Start each line with a bold heading like <code className="bg-gray-100 px-1 py-0.5 rounded font-mono">HEADING: description</code> for Amazon formatting.
@@ -1663,7 +1664,7 @@ export default function AdminDashboard() {
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   placeholder="Detailed product information, safety instructions, store warranty, etc."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500] resize-none"
                 />
               </div>
 
@@ -1677,7 +1678,7 @@ export default function AdminDashboard() {
                   value={formAdditionalImages}
                   onChange={(e) => setFormAdditionalImages(e.target.value)}
                   placeholder="https://...image2.jpg, https://...image3.jpg"
-                  className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-1 focus:ring-[#FF6B6B]"
+                  className="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:ring-1 focus:ring-[#FB8500]"
                 />
               </div>
 
@@ -1688,7 +1689,7 @@ export default function AdminDashboard() {
                   id="featuredToggle"
                   checked={formIsFeatured}
                   onChange={(e) => setFormIsFeatured(e.target.checked)}
-                  className="w-4 h-4 text-[#FF6B6B] rounded border-gray-300 focus:ring-[#FF6B6B] cursor-pointer"
+                  className="w-4 h-4 text-[#FB8500] rounded border-gray-300 focus:ring-[#FB8500] cursor-pointer"
                 />
                 <label htmlFor="featuredToggle" className="text-xs font-bold text-gray-800 cursor-pointer">
                   Feature this item on Homepage highlights
@@ -1736,7 +1737,7 @@ export default function AdminDashboard() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-[#FF6B6B] hover:bg-[#ff5252] shadow-md shadow-[#FF6B6B]/25 disabled:opacity-50 transition cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-md shadow-[#FB8500]/25 disabled:opacity-50 transition cursor-pointer"
                 >
                   {submitting ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1766,7 +1767,7 @@ export default function AdminDashboard() {
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-2 text-red-600 mb-1">
+            <div className="flex items-center gap-2 text-[#FB8500] mb-1">
               <Bell className="w-5 h-5" />
               <span className="text-xs font-bold uppercase tracking-wider">Store Announcements</span>
             </div>
@@ -1786,7 +1787,7 @@ export default function AdminDashboard() {
 
                 <div
                   onClick={() => updateFileInputRef.current?.click()}
-                  className="border-2 border-dashed border-gray-300 hover:border-red-500 rounded-2xl p-4 text-center cursor-pointer transition bg-gray-50/50 hover:bg-red-50/20 group"
+                  className="border-2 border-dashed border-gray-300 hover:border-[#FB8500] rounded-2xl p-4 text-center cursor-pointer transition bg-gray-50/50 hover:bg-amber-50/20 group"
                 >
                   <input
                     type="file"
@@ -1803,14 +1804,14 @@ export default function AdminDashboard() {
                         alt="Preview Banner"
                         className="w-full h-44 object-contain bg-white rounded-xl shadow-xs border border-gray-200 mx-auto"
                       />
-                      <div className="mt-2 text-xs font-semibold text-red-600 flex items-center justify-center gap-1">
+                      <div className="mt-2 text-xs font-semibold text-[#FB8500] flex items-center justify-center gap-1">
                         <Upload className="w-3.5 h-3.5" />
                         Click to change banner
                       </div>
                     </div>
                   ) : (
                     <div className="py-4">
-                      <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition">
+                      <div className="w-12 h-12 rounded-full bg-amber-50 text-[#FB8500] flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition">
                         <Upload className="w-6 h-6" />
                       </div>
                       <p className="text-xs font-bold text-gray-700">
@@ -1832,7 +1833,7 @@ export default function AdminDashboard() {
                       if (e.target.value) setUpdateBannerPreview(e.target.value);
                     }}
                     placeholder="Or enter banner image URL (e.g. /updates/... or https://...)"
-                    className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-1 focus:ring-red-500"
+                    className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#FB8500]"
                   />
                 </div>
               </div>
@@ -1847,7 +1848,7 @@ export default function AdminDashboard() {
                   value={updateTitleMalayalam}
                   onChange={(e) => setUpdateTitleMalayalam(e.target.value)}
                   placeholder="e.g. Specialized Repair, Diagnostics & Parts"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 font-medium"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500] font-medium"
                 />
               </div>
 
@@ -1862,7 +1863,7 @@ export default function AdminDashboard() {
                   value={updateTitle}
                   onChange={(e) => setUpdateTitle(e.target.value)}
                   placeholder="e.g. Electric Car, Bike & Gear Cycle Spare Parts & Service Available"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                 />
               </div>
 
@@ -1877,7 +1878,7 @@ export default function AdminDashboard() {
                     value={updateCategory}
                     onChange={(e) => setUpdateCategory(e.target.value)}
                     placeholder="e.g. New Service, Offer"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
 
@@ -1890,7 +1891,7 @@ export default function AdminDashboard() {
                     value={updateBadge}
                     onChange={(e) => setUpdateBadge(e.target.value)}
                     placeholder="e.g. Specialized Service"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
 
@@ -1903,7 +1904,7 @@ export default function AdminDashboard() {
                     value={updateDate}
                     onChange={(e) => setUpdateDate(e.target.value)}
                     placeholder="e.g. Available Now"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                   />
                 </div>
               </div>
@@ -1918,7 +1919,7 @@ export default function AdminDashboard() {
                   value={updateDescription}
                   onChange={(e) => setUpdateDescription(e.target.value)}
                   placeholder="Complete repair, spare parts replacement, and professional maintenance service at our Payod showroom..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500] resize-none"
                 />
               </div>
 
@@ -1932,7 +1933,7 @@ export default function AdminDashboard() {
                   value={updateHighlights}
                   onChange={(e) => setUpdateHighlights(e.target.value)}
                   placeholder={"Electric Ride-on Cars & Bikes Servicing\nAll Kinds of Gear Cycle Service & Tuning\nAuthentic Spare Parts & Battery Replacements\nExpert In-Store Diagnostic & Quick Repair"}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500 resize-none font-mono"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500] resize-none font-mono"
                 />
               </div>
 
@@ -1946,18 +1947,18 @@ export default function AdminDashboard() {
                   value={updateWhatsappMessage}
                   onChange={(e) => setUpdateWhatsappMessage(e.target.value)}
                   placeholder="Hi 7Days Toys, I would like to inquire about..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                 />
               </div>
 
               {/* Featured toggle */}
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-red-50/60 border border-red-200/60">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50/60 border border-amber-200/60">
                 <input
                   type="checkbox"
                   id="featuredUpdateToggle"
                   checked={updateIsFeatured}
                   onChange={(e) => setUpdateIsFeatured(e.target.checked)}
-                  className="w-4 h-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
+                  className="w-4 h-4 text-[#FB8500] rounded border-gray-300 focus:ring-[#FB8500] cursor-pointer"
                 />
                 <label htmlFor="featuredUpdateToggle" className="text-xs font-bold text-gray-800 cursor-pointer">
                   Feature this announcement prominently on the Homepage
@@ -1976,7 +1977,7 @@ export default function AdminDashboard() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-600/25 disabled:opacity-50 transition cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-[#FB8500] hover:bg-[#e07500] shadow-md shadow-[#FB8500]/25 disabled:opacity-50 transition cursor-pointer"
                 >
                   {submitting ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

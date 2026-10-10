@@ -1,8 +1,4 @@
-/**
- * 7Days Toys & Babyshop - Homepage Sections Configuration Service
- * Provides live synchronization between Admin "Homepage Sections & Showcase"
- * and the customer-facing Homepage.
- */
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const STORAGE_KEYS = {
   AGE_BRACKETS: '7days_custom_age_brackets_v1',
@@ -17,7 +13,7 @@ export const DEFAULT_AGE_BRACKETS = [
     label: "0–12 Months",
     tagline: "Infant & Sensory",
     description: "BPA-free silicone teethers, soothing bouncers, and kick piano sensory gyms.",
-    icon: "🍼",
+    icon: "",
     category: "Baby",
     tag: "Infants"
   },
@@ -26,7 +22,7 @@ export const DEFAULT_AGE_BRACKETS = [
     label: "1–3 Years",
     tagline: "First Steps & Discovery",
     description: "Musical walkers, canopy tricycles, magic twister cars & high chairs.",
-    icon: "🧸",
+    icon: "",
     category: "Toys",
     tag: "Toddlers"
   },
@@ -35,7 +31,7 @@ export const DEFAULT_AGE_BRACKETS = [
     label: "3–6 Years",
     tagline: "Curious Preschoolers",
     description: "Rechargeable electric jeeps, sports bikes, study desks & activity sets.",
-    icon: "🎨",
+    icon: "",
     category: "Toys",
     tag: "Preschool"
   },
@@ -44,7 +40,7 @@ export const DEFAULT_AGE_BRACKETS = [
     label: "6–12 Years",
     tagline: "Active Exploration & Cycles",
     description: "Police electric jeeps, adventure bicycles, sports bikes & skates.",
-    icon: "🚲",
+    icon: "",
     category: "Outdoors",
     tag: "Big Kids"
   }
@@ -144,13 +140,64 @@ function dispatchHomepageSyncEvent() {
   }
 }
 
+// Supabase Cloud Synchronizer
+export async function syncHomepageSectionsFromSupabase() {
+  if (!isSupabaseConfigured) return;
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .in('key', ['age_brackets', 'care_services', 'instagram_feed', 'store_location']);
+
+    if (!error && data && data.length > 0) {
+      data.forEach((row) => {
+        if (row.key === 'age_brackets' && Array.isArray(row.value) && row.value.length > 0) {
+          localStorage.setItem(STORAGE_KEYS.AGE_BRACKETS, JSON.stringify(row.value));
+        } else if (row.key === 'care_services' && Array.isArray(row.value) && row.value.length > 0) {
+          localStorage.setItem(STORAGE_KEYS.CARE_SERVICES, JSON.stringify(row.value));
+        } else if (row.key === 'instagram_feed' && row.value && row.value.posts) {
+          localStorage.setItem(STORAGE_KEYS.INSTAGRAM_FEED, JSON.stringify(row.value));
+        } else if (row.key === 'store_location' && row.value && row.value.storeName) {
+          localStorage.setItem(STORAGE_KEYS.STORE_LOCATION, JSON.stringify(row.value));
+        }
+      });
+      dispatchHomepageSyncEvent();
+    }
+  } catch (err) {
+    console.warn('Supabase site_settings sync note:', err?.message);
+  }
+}
+
 // 1. AGE BRACKETS
 export function getCustomAgeBrackets() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.AGE_BRACKETS);
     if (!raw) return DEFAULT_AGE_BRACKETS;
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_AGE_BRACKETS;
+    let parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_AGE_BRACKETS;
+
+    // Purge only the specific corrupted test string (jsdfhd)
+    let cleaned = false;
+    parsed = parsed.map((item) => {
+      if (
+        item.icon === 'jsdfhd' ||
+        (typeof item.icon === 'string' && item.icon.toLowerCase().includes('jsdf'))
+      ) {
+        cleaned = true;
+        return { ...item, icon: '' };
+      }
+      return item;
+    });
+
+    if (cleaned) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.AGE_BRACKETS, JSON.stringify(parsed));
+      } catch (e) {
+        console.error('Failed to update sanitized brackets in storage:', e);
+      }
+    }
+
+    return parsed;
   } catch {
     return DEFAULT_AGE_BRACKETS;
   }
@@ -160,6 +207,17 @@ export function saveCustomAgeBrackets(brackets) {
   try {
     localStorage.setItem(STORAGE_KEYS.AGE_BRACKETS, JSON.stringify(brackets));
     dispatchHomepageSyncEvent();
+
+    if (isSupabaseConfigured) {
+      supabase.from('site_settings').upsert({
+        key: 'age_brackets',
+        value: brackets,
+        updated_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.warn('Supabase site_settings age_brackets note:', error.message);
+      });
+    }
+
     return brackets;
   } catch (err) {
     console.error('Failed to save age brackets:', err);
@@ -183,6 +241,17 @@ export function saveCustomCareServices(services) {
   try {
     localStorage.setItem(STORAGE_KEYS.CARE_SERVICES, JSON.stringify(services));
     dispatchHomepageSyncEvent();
+
+    if (isSupabaseConfigured) {
+      supabase.from('site_settings').upsert({
+        key: 'care_services',
+        value: services,
+        updated_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.warn('Supabase site_settings care_services note:', error.message);
+      });
+    }
+
     return services;
   } catch (err) {
     console.error('Failed to save care services:', err);
@@ -206,6 +275,17 @@ export function saveCustomInstagramFeed(feed) {
   try {
     localStorage.setItem(STORAGE_KEYS.INSTAGRAM_FEED, JSON.stringify(feed));
     dispatchHomepageSyncEvent();
+
+    if (isSupabaseConfigured) {
+      supabase.from('site_settings').upsert({
+        key: 'instagram_feed',
+        value: feed,
+        updated_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.warn('Supabase site_settings instagram_feed note:', error.message);
+      });
+    }
+
     return feed;
   } catch (err) {
     console.error('Failed to save instagram feed:', err);
@@ -229,6 +309,17 @@ export function saveCustomStoreLocation(info) {
   try {
     localStorage.setItem(STORAGE_KEYS.STORE_LOCATION, JSON.stringify(info));
     dispatchHomepageSyncEvent();
+
+    if (isSupabaseConfigured) {
+      supabase.from('site_settings').upsert({
+        key: 'store_location',
+        value: info,
+        updated_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.warn('Supabase site_settings store_location note:', error.message);
+      });
+    }
+
     return info;
   } catch (err) {
     console.error('Failed to save store info:', err);

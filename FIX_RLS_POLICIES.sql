@@ -195,3 +195,21 @@ TO anon, authenticated
 USING (true)
 WITH CHECK (true);
 
+-- 10. CREATE & FIX SITE SETTINGS TABLE (Homepage Sections, Age Brackets, etc.)
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow All Operations on Site Settings" ON public.site_settings;
+
+CREATE POLICY "Allow All Operations on Site Settings"
+ON public.site_settings
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+

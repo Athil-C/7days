@@ -186,9 +186,11 @@ export default function HeroShowcaseManager({
   const activeAge = ageBrackets[selectedAgeIndex] || ageBrackets[0];
 
   const handleUpdateActiveAge = (field, value) => {
-    setAgeBrackets((prev) =>
-      prev.map((item, idx) => (idx === selectedAgeIndex ? { ...item, [field]: value } : item))
-    );
+    setAgeBrackets((prev) => {
+      const next = prev.map((item, idx) => (idx === selectedAgeIndex ? { ...item, [field]: value } : item));
+      saveCustomAgeBrackets(next);
+      return next;
+    });
   };
 
   const handleSaveAge = () => {
@@ -210,7 +212,6 @@ export default function HeroShowcaseManager({
   };
 
   const handleResetAge = () => {
-    if (!window.confirm('Reset Age Brackets to defaults?')) return;
     setAgeBrackets(DEFAULT_AGE_BRACKETS);
     saveCustomAgeBrackets(DEFAULT_AGE_BRACKETS);
     if (showNotice) showNotice('success', 'Age collections reset to defaults');
@@ -437,9 +438,11 @@ export default function HeroShowcaseManager({
   const activeCareService = careServices[selectedCareIndex] || careServices[0];
 
   const handleUpdateCareField = (field, value) => {
-    setCareServices((prev) =>
-      prev.map((item, idx) => (idx === selectedCareIndex ? { ...item, [field]: value } : item))
-    );
+    setCareServices((prev) => {
+      const next = prev.map((item, idx) => (idx === selectedCareIndex ? { ...item, [field]: value } : item));
+      saveCustomCareServices(next);
+      return next;
+    });
   };
 
   const handleSaveCareServices = () => {
@@ -461,7 +464,6 @@ export default function HeroShowcaseManager({
   };
 
   const handleResetCareServices = () => {
-    if (!window.confirm('Reset Care & Services to defaults?')) return;
     setCareServices(DEFAULT_CARE_SERVICES);
     saveCustomCareServices(DEFAULT_CARE_SERVICES);
     if (showNotice) showNotice('success', 'Care services reset to defaults');
@@ -484,7 +486,11 @@ export default function HeroShowcaseManager({
   const activeInstaPost = instaFeed?.posts?.[selectedInstaSlot] || instaFeed.posts[0];
 
   const handleUpdateInstaField = (field, value) => {
-    setInstaFeed((prev) => ({ ...prev, [field]: value }));
+    setInstaFeed((prev) => {
+      const next = { ...prev, [field]: value };
+      saveCustomInstagramFeed(next);
+      return next;
+    });
   };
 
   const handleUpdateActiveInstaPost = (field, value) => {
@@ -492,7 +498,9 @@ export default function HeroShowcaseManager({
       const updatedPosts = prev.posts.map((p, idx) =>
         idx === selectedInstaSlot ? { ...p, [field]: value } : p
       );
-      return { ...prev, posts: updatedPosts };
+      const next = { ...prev, posts: updatedPosts };
+      saveCustomInstagramFeed(next);
+      return next;
     });
   };
 
@@ -528,7 +536,6 @@ export default function HeroShowcaseManager({
   };
 
   const handleResetInstaFeed = () => {
-    if (!window.confirm('Reset Instagram Feed to default photos?')) return;
     setInstaFeed(DEFAULT_INSTAGRAM_FEED);
     saveCustomInstagramFeed(DEFAULT_INSTAGRAM_FEED);
     if (showNotice) showNotice('success', 'Instagram feed reset to defaults');
@@ -547,7 +554,11 @@ export default function HeroShowcaseManager({
   const [savingLocation, setSavingLocation] = useState(false);
 
   const handleUpdateStoreField = (field, value) => {
-    setStoreLocation((prev) => ({ ...prev, [field]: value }));
+    setStoreLocation((prev) => {
+      const next = { ...prev, [field]: value };
+      saveCustomStoreLocation(next);
+      return next;
+    });
   };
 
   const handleSaveStoreLocation = () => {
@@ -569,7 +580,6 @@ export default function HeroShowcaseManager({
   };
 
   const handleResetStoreLocation = () => {
-    if (!window.confirm('Reset store location details to defaults?')) return;
     setStoreLocation(DEFAULT_STORE_LOCATION);
     saveCustomStoreLocation(DEFAULT_STORE_LOCATION);
     if (showNotice) showNotice('success', 'Store location reset to defaults');
@@ -992,7 +1002,7 @@ export default function HeroShowcaseManager({
                   >
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-2xl">{bracket.icon}</span>
+                        {bracket.icon ? <span className="text-2xl">{bracket.icon}</span> : <div />}
                         <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-sky-50 text-[#219EBC]">
                           {bracket.tag || 'Stage'}
                         </span>
@@ -1039,7 +1049,7 @@ export default function HeroShowcaseManager({
                         : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
                       }`}
                   >
-                    <span className="text-base block">{bracket.icon}</span>
+                    {bracket.icon ? <span className="text-base block">{bracket.icon}</span> : null}
                     <span className="text-[10px] font-bold truncate block mt-0.5">{bracket.label}</span>
                   </button>
                 ))}
@@ -1048,16 +1058,39 @@ export default function HeroShowcaseManager({
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Emoji / Icon
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+                    Emoji / Icon
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateActiveAge('icon', '')}
+                    className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer"
+                  >
+                    Clear / No Icon
+                  </button>
+                </div>
                 <input
                   type="text"
                   value={activeAge.icon || ''}
                   onChange={(e) => handleUpdateActiveAge('icon', e.target.value)}
-                  placeholder="🍼, 🧸, 🎨, 🚲"
+                  placeholder="Leave empty for no icon, or paste emoji"
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
                 />
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <span className="text-[10px] text-gray-400">Presets:</span>
+                  {['🍼', '🧸', '🎨', '🚲', '🛴', '👶', '🧩'].map((em) => (
+                    <button
+                      key={em}
+                      type="button"
+                      onClick={() => handleUpdateActiveAge('icon', em)}
+                      className="w-6 h-6 rounded-lg bg-gray-50 hover:bg-[#219EBC]/15 border border-gray-200 text-xs flex items-center justify-center transition cursor-pointer"
+                      title={`Use ${em}`}
+                    >
+                      {em}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">

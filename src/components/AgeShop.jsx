@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, ArrowRight, LayoutGrid, SlidersHorizontal } from 'lucide-react';
 import { AGE_GROUPS as DEFAULT_AGE_GROUPS } from '../data/shoppingConfig';
-import { getCustomAgeBrackets } from '../services/homepageSectionsService';
+import { getCustomAgeBrackets, syncHomepageSectionsFromSupabase } from '../services/homepageSectionsService';
 import { products } from '../data/products';
 import { filterProductsByAge } from '../utils/shoppingEngine';
 import ProductCard from './ProductCard';
@@ -14,6 +14,11 @@ export default function AgeShop() {
   });
 
   useEffect(() => {
+    syncHomepageSectionsFromSupabase().then(() => {
+      const custom = getCustomAgeBrackets();
+      if (custom && custom.length > 0) setAgeGroups(custom);
+    });
+
     const handleSync = () => {
       const custom = getCustomAgeBrackets();
       if (custom && custom.length > 0) setAgeGroups(custom);
@@ -128,7 +133,7 @@ export default function AgeShop() {
                     }`}
                     aria-pressed={isActive}
                   >
-                    <span className="text-base">{group.icon}</span>
+                    {group.icon ? <span className="text-base">{group.icon}</span> : null}
                     <span>{group.label}</span>
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                       isActive ? 'bg-white/20 text-white' : 'bg-black/5 text-[#546E7A]'
@@ -164,7 +169,7 @@ export default function AgeShop() {
                   aria-pressed={isActive}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl">{group.icon}</span>
+                    {group.icon ? <span className="text-2xl">{group.icon}</span> : <div />}
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                       isActive ? 'bg-white/20 text-white' : 'bg-black/5 text-[#546E7A]'
                     }`}>

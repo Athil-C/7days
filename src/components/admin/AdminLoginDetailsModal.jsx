@@ -76,7 +76,7 @@ export default function AdminLoginDetailsModal({ isOpen, onClose, user, onSignOu
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-[#FB8500]/10 text-[#FB8500] flex items-center justify-center">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
@@ -98,29 +98,29 @@ export default function AdminLoginDetailsModal({ isOpen, onClose, user, onSignOu
         </div>
 
         {/* Current Active Session Card */}
-        <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-[#111c30] to-[#0c1424] text-white shadow-md relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#1E252B] via-[#263238] to-[#161D22] text-white shadow-md relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#FB8500]/10 rounded-full blur-2xl pointer-events-none" />
 
           <div className="flex items-center justify-between mb-3.5">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30">
+              <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
               Active Live Session
             </span>
-            <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-              <Activity className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-[11px] font-semibold text-slate-300 flex items-center gap-1">
+              <Activity className="w-3.5 h-3.5 text-[#FB8500]" />
               {sessionUptime || 'Active'}
             </span>
           </div>
 
           <div className="flex items-center gap-3.5 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-black text-lg flex items-center justify-center shadow-sm shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FB8500] to-[#FFB703] text-white font-black text-lg flex items-center justify-center shadow-sm shrink-0">
               {activeSession?.email ? activeSession.email.charAt(0).toUpperCase() : 'A'}
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-base font-bold text-white truncate">
                 {activeSession?.email || user?.email || 'admin@7days.com'}
               </h3>
-              <p className="text-xs text-emerald-400 font-semibold flex items-center gap-1 mt-0.5">
+              <p className="text-xs text-[#FFB703] font-semibold flex items-center gap-1 mt-0.5">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 {activeSession?.role || 'Super Admin'} &bull; 7Days Toys Wayanad
               </p>

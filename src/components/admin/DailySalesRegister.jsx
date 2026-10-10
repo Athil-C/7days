@@ -97,10 +97,13 @@ export default function DailySalesRegister({ products = [], showNotice }) {
   useEffect(() => {
     const handleStaffUpdate = () => {
       const currentStaff = getStaffList();
-      setAvailableStaff(currentStaff);
+      setAvailableStaff((prev) => {
+        // Prevent re-trigger if staff list didn't change
+        if (JSON.stringify(prev) === JSON.stringify(currentStaff)) return prev;
+        return currentStaff;
+      });
       const currentDuty = getDutyStatusForDate(selectedDate);
       setDutyMap(currentDuty);
-      setAttendanceVersion((v) => v + 1);
 
       const activeFromDuty = currentStaff
         .filter((s) => currentDuty[s.id] === 'Full' || currentDuty[s.id] === 'Half')
@@ -126,11 +129,10 @@ export default function DailySalesRegister({ products = [], showNotice }) {
     setPastDates(getAllSalesDates());
     const currentDuty = getDutyStatusForDate(selectedDate);
     setDutyMap(currentDuty);
-    syncDutyToAttendance(selectedDate, currentDuty);
-    setAttendanceVersion((v) => v + 1);
 
     // If dutyMap has active staff, synchronize salesperson display
-    const activeFromDuty = availableStaff
+    const currentStaff = getStaffList();
+    const activeFromDuty = currentStaff
       .filter((s) => currentDuty[s.id] === 'Full' || currentDuty[s.id] === 'Half')
       .map((s) => `${s.name} (${currentDuty[s.id]})`);
 
@@ -141,7 +143,7 @@ export default function DailySalesRegister({ products = [], showNotice }) {
     } else {
       setSalesperson(loaded.salesperson || '');
     }
-  }, [selectedDate, availableStaff]);
+  }, [selectedDate]);
 
   // Product name autocomplete suggestion
   useEffect(() => {
@@ -644,14 +646,21 @@ export default function DailySalesRegister({ products = [], showNotice }) {
         {/* LEFT COLUMN: QUICK ENTRY & LIVE DAY SALES COLLECTION      */}
         {/* ========================================================= */}
         <div className="xl:col-span-7 space-y-5">
-          {/* CARD 1: LIVE COLLECTION & QUICK ENTRY */}
-          <div className="">
-
+          {/* CARD 1: QUICK SALE ENTRY */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 p-4 sm:p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+              <span className="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
+                <Plus className="w-3.5 h-3.5 text-[#FB8500]" />
+                <span>Quick Sale Entry</span>
+              </span>
+              <span className="text-[11px] font-bold text-gray-400">
+                Cash / UPI / Card
+              </span>
+            </div>
 
             {sheet.isLocked ? (
-              <div className="">
-
-
+              <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-center text-xs text-gray-500 font-bold">
+                Sheet is locked. Unlock to add items.
               </div>
             ) : (
               <form onSubmit={handleAddItem} className="space-y-3">
@@ -808,66 +817,73 @@ export default function DailySalesRegister({ products = [], showNotice }) {
 
 
             <div className="space-y-2">
-              {filteredStaff.map((staff) => {
-                const status = dutyMap[staff.id] || 'Off';
-                const isFull = status === 'Full';
-                const isHalf = status === 'Half';
-                const isActive = isFull || isHalf;
+              {filteredStaff.length === 0 ? (
+                <div className="p-4 rounded-xl bg-gray-50 border border-dashed border-gray-200 text-center space-y-1">
+                  <p className="text-xs font-bold text-gray-700">No staff members in register</p>
+                  <p className="text-[11px] text-gray-400">Add staff members in the &quot;Attendance&quot; tab to record who is on duty.</p>
+                </div>
+              ) : (
+                filteredStaff.map((staff) => {
+                  const status = dutyMap[staff.id] || 'Off';
+                  const isFull = status === 'Full';
+                  const isHalf = status === 'Half';
+                  const isActive = isFull || isHalf;
 
-                return (
-                  <div
-                    key={staff.id}
-                    className={`p-3 rounded-xl border transition flex items-center justify-between gap-3 ${isActive
-                      ? 'bg-emerald-50/50 border-emerald-300 ring-1 ring-emerald-300/60'
-                      : 'bg-gray-50/70 border-gray-200'
-                      }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-extrabold text-xs text-gray-900 truncate">
-                          {staff.name}
-                        </span>
-                        <button
-                          type="button"
-                          disabled={sheet.isLocked}
-                          onClick={() => {
-                            const next = status === 'Off' ? 'Full' : status === 'Full' ? 'Half' : 'Off';
-                            handleSetStaffDuty(staff.id, next);
-                          }}
-                          className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded cursor-pointer transition ${isFull
-                            ? 'bg-emerald-600 text-white'
-                            : isHalf
-                              ? 'bg-amber-400 text-amber-950'
-                              : 'bg-gray-200 text-gray-600'
-                            }`}
-                          title="Click to cycle Full / Half / Off"
-                        >
-                          {status}
-                        </button>
-                      </div>
-                      <span className="text-[10px] text-gray-400 block truncate">
-                        {staff.role}
-                      </span>
-                    </div>
-
-                    {/* iOS style toggle switch */}
-                    <button
-                      type="button"
-                      disabled={sheet.isLocked}
-                      onClick={() => handleToggleStaffDuty(staff.id)}
-                      className={`w-11 h-6 flex items-center rounded-full p-1 transition duration-200 cursor-pointer ${sheet.isLocked ? 'opacity-50 cursor-not-allowed' : ''
-                        } ${isActive ? 'bg-emerald-600' : 'bg-gray-300'
+                  return (
+                    <div
+                      key={staff.id}
+                      className={`p-3 rounded-xl border transition flex items-center justify-between gap-3 ${isActive
+                        ? 'bg-emerald-50/50 border-emerald-300 ring-1 ring-emerald-300/60'
+                        : 'bg-gray-50/70 border-gray-200'
                         }`}
-                      title={isActive ? `Turn ${staff.name} Off Duty` : `Turn ${staff.name} Full Day On Duty`}
                     >
-                      <div
-                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-200 ${isActive ? 'translate-x-5' : 'translate-x-0'
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-extrabold text-xs text-gray-900 truncate">
+                            {staff.name}
+                          </span>
+                          <button
+                            type="button"
+                            disabled={sheet.isLocked}
+                            onClick={() => {
+                              const next = status === 'Off' ? 'Full' : status === 'Full' ? 'Half' : 'Off';
+                              handleSetStaffDuty(staff.id, next);
+                            }}
+                            className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded cursor-pointer transition ${isFull
+                              ? 'bg-emerald-600 text-white'
+                              : isHalf
+                                ? 'bg-amber-400 text-amber-950'
+                                : 'bg-gray-200 text-gray-600'
+                              }`}
+                            title="Click to cycle Full / Half / Off"
+                          >
+                            {status}
+                          </button>
+                        </div>
+                        <span className="text-[10px] text-gray-400 block truncate">
+                          {staff.role}
+                        </span>
+                      </div>
+
+                      {/* iOS style toggle switch */}
+                      <button
+                        type="button"
+                        disabled={sheet.isLocked}
+                        onClick={() => handleToggleStaffDuty(staff.id)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition duration-200 cursor-pointer ${sheet.isLocked ? 'opacity-50 cursor-not-allowed' : ''
+                          } ${isActive ? 'bg-emerald-600' : 'bg-gray-300'
                           }`}
-                      />
-                    </button>
-                  </div>
-                );
-              })}
+                        title={isActive ? `Turn ${staff.name} Off Duty` : `Turn ${staff.name} Full Day On Duty`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-200 ${isActive ? 'translate-x-5' : 'translate-x-0'
+                            }`}
+                        />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
