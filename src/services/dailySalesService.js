@@ -8,27 +8,77 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const STORAGE_KEY = '7days_daily_sales_sheets_v1';
+const DELETED_DATES_KEY = '7days_deleted_sales_dates_v1';
 
 // Empty initial sales sheets (starts fresh)
 const DEFAULT_SHEETS = {};
 
-// Initial sync from Supabase if configured
+export function getDeletedSalesDates() {
+  try {
+    const raw = localStorage.getItem(DELETED_DATES_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+export function saveDeletedSalesDate(dateStr) {
+  try {
+    const set = getDeletedSalesDates();
+    set.add(dateStr);
+    localStorage.setItem(DELETED_DATES_KEY, JSON.stringify([...set]));
+  } catch {}
+}
+
+export function clearDeletedSalesDate(dateStr) {
+  try {
+    const set = getDeletedSalesDates();
+    set.delete(dateStr);
+    localStorage.setItem(DELETED_DATES_KEY, JSON.stringify([...set]));
+  } catch {}
+}
+
+// Initial sync from Supabase if configured (Protects against resurrecting deleted items/sheets)
 if (typeof window !== 'undefined' && isSupabaseConfigured) {
   supabase
     .from('daily_sales_sheets')
     .select('*')
-    .then(({ data, error }) => {
-      if (!error && Array.isArray(data) && data.length > 0) {
+    .then(async ({ data, error }) => {
+      if (!error && Array.isArray(data)) {
+        const deletedDates = getDeletedSalesDates();
         const raw = localStorage.getItem(STORAGE_KEY);
         const local = raw ? JSON.parse(raw) : {};
         const merged = { ...local };
-        data.forEach((row) => {
-          if (row.date_str && row.data) {
-            merged[row.date_str] = row.data;
+        let hasChanges = false;
+
+        for (const row of data) {
+          if (!row.date_str) continue;
+
+          // If user deleted this date, remove from Supabase and do NOT restore
+          if (deletedDates.has(row.date_str)) {
+            await supabase.from('daily_sales_sheets').delete().eq('date_str', row.date_str).catch(() => {});
+            if (merged[row.date_str]) {
+              delete merged[row.date_str];
+              hasChanges = true;
+            }
+            continue;
           }
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        window.dispatchEvent(new Event('7days_daily_sales_updated'));
+
+          // If local already exists, keep local state (prevents bringing back deleted items on refresh)
+          if (local[row.date_str] !== undefined) {
+            continue;
+          }
+
+          if (row.data) {
+            merged[row.date_str] = row.data;
+            hasChanges = true;
+          }
+        }
+
+        if (hasChanges) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          window.dispatchEvent(new Event('7days_daily_sales_updated'));
+        }
       }
     });
 }
@@ -52,23 +102,45 @@ function getStoredSheets() {
   }
 }
 
-function saveStoredSheets(sheets) {
+export async function saveSingleDailySheetToDb(dateStr, sheetData) {
+  if (!isSupabaseConfigured || !dateStr) return;
+  try {
+    await supabase.from('daily_sales_sheets').upsert({
+      date_str: dateStr,
+      data: sheetData,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'date_str' });
+  } catch (err) {
+    console.warn('Supabase upsert daily sheet error:', err);
+  }
+}
+
+async function saveStoredSheets(sheets, deletedDateStr = null) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('7days_daily_sales_updated'));
     }
-    // Database sync if Supabase is active
-    if (isSupabaseConfigured && sheets && typeof sheets === 'object') {
-      Object.keys(sheets).forEach(async (dateStr) => {
+
+    if (isSupabaseConfigured) {
+      if (deletedDateStr) {
         try {
-          await supabase.from('daily_sales_sheets').upsert({
+          await supabase.from('daily_sales_sheets').delete().eq('date_str', deletedDateStr);
+        } catch (e) {
+          console.warn('Supabase delete daily sheet error:', e);
+        }
+      }
+
+      if (sheets && typeof sheets === 'object') {
+        const promises = Object.keys(sheets).map((dateStr) =>
+          supabase.from('daily_sales_sheets').upsert({
             date_str: dateStr,
             data: sheets[dateStr],
             updated_at: new Date().toISOString()
-          }, { onConflict: 'date_str' });
-        } catch {}
-      });
+          }, { onConflict: 'date_str' }).catch((e) => console.warn(e))
+        );
+        await Promise.all(promises);
+      }
     }
   } catch (err) {
     console.error('Failed to save daily sales sheet:', err);
@@ -143,20 +215,28 @@ export function lockDailySalesSheet(dateStr) {
   day.isLocked = true;
   day.lockedAt = new Date().toISOString();
   sheets[dateStr] = day;
-  saveStoredSheets(sheets);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('7days_daily_sales_updated'));
+  }
+  saveSingleDailySheetToDb(dateStr, day);
   return getDailySalesSheet(dateStr);
 }
 
 /**
  * Unlock daily sales sheet (Admin override)
  */
-export function unlockDailySalesSheet(dateStr) {
+export async function unlockDailySalesSheet(dateStr) {
   const sheets = getStoredSheets();
   const day = normalizeDayRecord(sheets[dateStr]);
   day.isLocked = false;
   day.lockedAt = null;
   sheets[dateStr] = day;
-  saveStoredSheets(sheets);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('7days_daily_sales_updated'));
+  }
+  saveSingleDailySheetToDb(dateStr, day);
   return getDailySalesSheet(dateStr);
 }
 
@@ -169,20 +249,25 @@ export function isDailySheetLocked(dateStr) {
 /**
  * Update salesperson / staff name on duty for a specific date
  */
-export function setDailySalesperson(dateStr, salespersonName) {
+export async function setDailySalesperson(dateStr, salespersonName) {
   const sheets = getStoredSheets();
   const day = normalizeDayRecord(sheets[dateStr]);
   if (day.isLocked) return getDailySalesSheet(dateStr);
   day.salesperson = (salespersonName || '').trim();
   sheets[dateStr] = day;
-  saveStoredSheets(sheets);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('7days_daily_sales_updated'));
+  }
+  saveSingleDailySheetToDb(dateStr, day);
   return getDailySalesSheet(dateStr);
 }
 
 /**
  * Add a new sold product item to a specific date
  */
-export function addDailySaleItem(dateStr, item) {
+export async function addDailySaleItem(dateStr, item) {
+  clearDeletedSalesDate(dateStr);
   const sheets = getStoredSheets();
   const day = normalizeDayRecord(sheets[dateStr]);
   if (day.isLocked) return getDailySalesSheet(dateStr);
@@ -195,33 +280,70 @@ export function addDailySaleItem(dateStr, item) {
   };
   day.items = [...day.items, newItem];
   sheets[dateStr] = day;
-  saveStoredSheets(sheets);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('7days_daily_sales_updated'));
+  }
+  saveSingleDailySheetToDb(dateStr, day);
   return getDailySalesSheet(dateStr);
 }
 
 /**
- * Delete a sold item by ID
+ * Delete a sold item by ID (guaranteed deletion locally and in database)
  */
-export function deleteDailySaleItem(dateStr, itemId) {
+export async function deleteDailySaleItem(dateStr, itemId) {
   const sheets = getStoredSheets();
   const day = normalizeDayRecord(sheets[dateStr]);
   if (day.isLocked) return getDailySalesSheet(dateStr);
   day.items = day.items.filter((it) => it.id !== itemId);
   sheets[dateStr] = day;
-  saveStoredSheets(sheets);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('7days_daily_sales_updated'));
+  }
+  await saveSingleDailySheetToDb(dateStr, day);
   return getDailySalesSheet(dateStr);
 }
 
 /**
  * Clear all items for a given date
  */
-export function clearDailySalesSheet(dateStr) {
+export async function clearDailySalesSheet(dateStr) {
   const sheets = getStoredSheets();
   const day = normalizeDayRecord(sheets[dateStr]);
   if (day.isLocked) return getDailySalesSheet(dateStr);
   day.items = [];
   sheets[dateStr] = day;
-  saveStoredSheets(sheets);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('7days_daily_sales_updated'));
+  }
+  await saveSingleDailySheetToDb(dateStr, day);
+  return getDailySalesSheet(dateStr);
+}
+
+/**
+ * Permanently deletes or resets the daily sales sheet for a given date
+ * (Bypasses lock when authorized by Store Owner)
+ */
+export async function deleteDailySalesRecord(dateStr) {
+  saveDeletedSalesDate(dateStr);
+  const sheets = getStoredSheets();
+  delete sheets[dateStr];
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sheets));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('7days_daily_sales_updated'));
+    }
+  } catch {}
+
+  if (isSupabaseConfigured) {
+    try {
+      await supabase.from('daily_sales_sheets').delete().eq('date_str', dateStr);
+    } catch (e) {
+      console.warn('Supabase delete daily sheet error:', e);
+    }
+  }
   return getDailySalesSheet(dateStr);
 }
 

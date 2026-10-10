@@ -665,7 +665,7 @@ export async function updateProduct(id, updates, newImageFile = null) {
     updated_at: new Date().toISOString(),
   };
 
-  if (isSupabaseConfigured && typeof id === 'string' && !id.startsWith('local_')) {
+  if (isSupabaseConfigured && !String(id).startsWith('local_')) {
     const { data, error } = await supabase
       .from('products')
       .update(payload)
@@ -710,7 +710,7 @@ export async function deleteProduct(id, imageUrl = null) {
   const strId = String(id);
   saveDeletedProductId(strId);
 
-  if (isSupabaseConfigured && typeof id === 'string' && !id.startsWith('local_')) {
+  if (isSupabaseConfigured && !strId.startsWith('local_')) {
     if (imageUrl && imageUrl.includes('product-images/products/')) {
       try {
         const parts = imageUrl.split('product-images/');

@@ -8,20 +8,52 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const STAFF_STORAGE_KEY = '7days_staff_list_v1';
+const DELETED_STAFF_KEY = '7days_deleted_staff_ids_v1';
 const ATTENDANCE_STORAGE_KEY = '7days_staff_attendance_ledger_v1';
 
 // Initial staff list for 7Days - Clean slate, no demo data
 const DEFAULT_STAFF = [];
 
+export function getDeletedStaffIds() {
+  try {
+    const raw = localStorage.getItem(DELETED_STAFF_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+export function saveDeletedStaffId(id) {
+  try {
+    const set = getDeletedStaffIds();
+    set.add(String(id));
+    localStorage.setItem(DELETED_STAFF_KEY, JSON.stringify([...set]));
+  } catch {}
+}
+
+export function clearDeletedStaffId(id) {
+  try {
+    const set = getDeletedStaffIds();
+    set.delete(String(id));
+    localStorage.setItem(DELETED_STAFF_KEY, JSON.stringify([...set]));
+  } catch {}
+}
+
 // Initial sync from Supabase if configured
 if (typeof window !== 'undefined' && isSupabaseConfigured) {
-  // Sync staff members (excluding any legacy demo records)
+  // Sync staff members (excluding any legacy demo records or deleted staff)
   supabase
     .from('staff_members')
     .select('*')
-    .then(({ data, error }) => {
+    .then(async ({ data, error }) => {
       if (!error && Array.isArray(data)) {
-        const cleaned = data.filter((s) => s && !['staff_1', 'staff_2', 'staff_3'].includes(s.id));
+        const deletedStaff = getDeletedStaffIds();
+        for (const s of data) {
+          if (s && (deletedStaff.has(String(s.id)) || ['staff_1', 'staff_2', 'staff_3'].includes(s.id))) {
+            await supabase.from('staff_members').delete().eq('id', s.id).catch(() => {});
+          }
+        }
+        const cleaned = data.filter((s) => s && !['staff_1', 'staff_2', 'staff_3'].includes(s.id) && !deletedStaff.has(String(s.id)));
         localStorage.setItem(STAFF_STORAGE_KEY, JSON.stringify(cleaned));
         window.dispatchEvent(new Event('7days_staff_updated'));
       }
@@ -118,18 +150,20 @@ export function addStaffMember(name, role = 'Sales Staff') {
     name: trimmed,
     role: (role || 'Sales Staff').trim()
   };
+  clearDeletedStaffId(newStaff.id);
   const updated = [...current, newStaff];
   saveStaffList(updated);
   return updated;
 }
 
-export function removeStaffMember(id) {
+export async function removeStaffMember(id) {
+  saveDeletedStaffId(id);
   const current = getStaffList();
-  const updated = current.filter((s) => s.id !== id);
+  const updated = current.filter((s) => String(s.id) !== String(id));
   saveStaffList(updated);
   if (isSupabaseConfigured) {
     try {
-      supabase.from('staff_members').delete().eq('id', id);
+      await supabase.from('staff_members').delete().eq('id', id);
     } catch {}
   }
   return updated;

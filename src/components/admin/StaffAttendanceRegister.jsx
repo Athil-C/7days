@@ -136,9 +136,9 @@ export default function StaffAttendanceRegister({
     });
   };
 
-  const handleDeleteStaff = (staffId, staffName) => {
+  const handleDeleteStaff = async (staffId, staffName) => {
     if (!window.confirm(`Remove ${staffName} from staff register?`)) return;
-    const updated = removeStaffMember(staffId);
+    const updated = await removeStaffMember(staffId);
     setStaffList(updated);
     reloadAttendance();
     showNotice?.('success', `Removed ${staffName}`);
