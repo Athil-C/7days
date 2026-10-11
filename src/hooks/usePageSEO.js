@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const SITE_URL = 'https://7daystoys.in';
+const SITE_URL = 'https://www.7daystoys.in';
 
 /**
  * Custom hook to update document title, meta description, canonical URL,

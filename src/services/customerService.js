@@ -45,9 +45,9 @@ export function createCustomerWhatsAppUrl(phone, message = '') {
 export function formatProductBroadcastMessage(product, customHeader = '') {
   if (!product) return '';
 
-  const siteOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://7daystoys.in';
+  const siteOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://www.7daystoys.in';
   const productUrl = `${siteOrigin}/product/${product.id}`;
-  
+
   const title = product.name || 'New Arrival at 7Days Toys!';
   const price = product.price ? `₹${Number(product.price).toLocaleString('en-IN')}` : '';
   const mrp = product.mrp && product.mrp > product.price ? `₹${Number(product.mrp).toLocaleString('en-IN')}` : '';
@@ -67,7 +67,7 @@ export function formatProductBroadcastMessage(product, customHeader = '') {
 
   text += `🛍️ *Product:* ${title}\n`;
   text += `🏷️ *Category:* ${category}\n`;
-  
+
   if (price) {
     text += `💰 *Offer Price:* ${price}${discountText}\n`;
     if (mrp) {
@@ -80,7 +80,7 @@ export function formatProductBroadcastMessage(product, customHeader = '') {
   }
 
   if (product.description) {
-    const cleanDesc = product.description.length > 140 
+    const cleanDesc = product.description.length > 140
       ? product.description.substring(0, 137) + '...'
       : product.description;
     text += `📝 *Details:* ${cleanDesc}\n`;

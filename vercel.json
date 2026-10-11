@@ -9,7 +9,7 @@
           "value": "7days-seven.vercel.app"
         }
       ],
-      "destination": "https://7daystoys.in/:path*",
+      "destination": "https://www.7daystoys.in/:path*",
       "permanent": true
     },
     {
@@ -20,7 +20,7 @@
           "value": "www.7daystoys.in"
         }
       ],
-      "destination": "https://7daystoys.in/:path*",
+      "destination": "https://www.7daystoys.in/:path*",
       "permanent": true
     }
   ],

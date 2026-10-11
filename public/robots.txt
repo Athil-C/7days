@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://7daystoys.in/sitemap.xml
+Sitemap: https://www.7daystoys.in/sitemap.xml
 
