@@ -37,30 +37,13 @@ ALTER TABLE public.products ADD COLUMN IF NOT EXISTS about_item TEXT[] DEFAULT '
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 
--- 2. RLS Policies for Products Table
-CREATE POLICY "Allow All Operations on Products"
-ON public.products
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
--- 3. Storage Bucket for Product Images
--- Note: You can also create this manually in Storage -> New Bucket -> 'product-images' (Public)
+-- 2. Storage Bucket for Product Images
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('product-images', 'product-images', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- 4. Storage Policies
-CREATE POLICY "Allow All Storage Operations"
-ON storage.objects
-FOR ALL
-TO anon, authenticated
-USING (bucket_id = 'product-images')
-WITH CHECK (bucket_id = 'product-images');
-
 -- ==========================================================
--- 5. Create Updates Table (Store Announcements & News)
+-- 3. Create Updates Table (Store Announcements & News)
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.updates (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -79,47 +62,10 @@ CREATE TABLE IF NOT EXISTS public.updates (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable RLS for Updates
 ALTER TABLE public.updates ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow All Operations on Updates"
-ON public.updates
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 6. Create Hero Showcase Table ("Little things. Big smiles.")
--- ==========================================================
-CREATE TABLE IF NOT EXISTS public.hero_showcase (
-    slot INT PRIMARY KEY, -- 1, 2, 3
-    slot_label TEXT NOT NULL,
-    tag TEXT DEFAULT '',
-    title TEXT NOT NULL,
-    subtitle TEXT DEFAULT '',
-    image TEXT NOT NULL,
-    product_id TEXT DEFAULT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
--- Enable RLS for Hero Showcase
-ALTER TABLE public.hero_showcase ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Public Read Hero Showcase"
-ON public.hero_showcase
-FOR SELECT
-USING (true);
-
-CREATE POLICY "Admin Upsert Hero Showcase"
-ON public.hero_showcase
-FOR ALL
-TO authenticated
-USING (true)
-WITH CHECK (true);
-
--- ==========================================================
--- 6. Create Hero Showcase Table ("Little things. Big smiles.")
+-- 4. Create Hero Showcase Table ("Little things. Big smiles.")
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.hero_showcase (
     slot INT PRIMARY KEY, -- 1, 2, 3
@@ -134,22 +80,15 @@ CREATE TABLE IF NOT EXISTS public.hero_showcase (
 
 ALTER TABLE public.hero_showcase ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow All Operations on Hero Showcase"
-ON public.hero_showcase
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 7. Create Finance Transactions Table (Income & Expenses)
+-- 5. Create Finance Transactions Table (Income & Expenses)
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.finance_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     type TEXT NOT NULL, -- 'income' or 'expense'
     category TEXT NOT NULL,
     amount NUMERIC NOT NULL,
-    payment_method TEXT NOT NULL DEFAULT 'Cash', -- 'Cash', 'UPI', 'Card', 'Bank Transfer'
+    payment_method TEXT NOT NULL DEFAULT 'Cash',
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     description TEXT DEFAULT '',
     reference TEXT DEFAULT '',
@@ -158,15 +97,8 @@ CREATE TABLE IF NOT EXISTS public.finance_transactions (
 
 ALTER TABLE public.finance_transactions ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin Manage Finance Transactions"
-ON public.finance_transactions
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 8. Create Finance Purchases Table (Stock & Supplier Invoices)
+-- 6. Create Finance Purchases Table (Stock & Supplier Invoices)
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.finance_purchases (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -177,7 +109,7 @@ CREATE TABLE IF NOT EXISTS public.finance_purchases (
     pending_amount NUMERIC NOT NULL DEFAULT 0,
     payment_method TEXT NOT NULL DEFAULT 'Bank Transfer',
     purchase_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    status TEXT DEFAULT 'Paid', -- 'Paid', 'Partial', 'Pending'
+    status TEXT DEFAULT 'Paid',
     invoice_ref TEXT DEFAULT '',
     notes TEXT DEFAULT '',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -185,14 +117,8 @@ CREATE TABLE IF NOT EXISTS public.finance_purchases (
 
 ALTER TABLE public.finance_purchases ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin Manage Finance Purchases"
-ON public.finance_purchases
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
 -- ==========================================================
--- 9. Create Staff Members Table
+-- 7. Create Staff Members Table
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.staff_members (
     id TEXT PRIMARY KEY,
@@ -203,15 +129,8 @@ CREATE TABLE IF NOT EXISTS public.staff_members (
 
 ALTER TABLE public.staff_members ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin Manage Staff Members"
-ON public.staff_members
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 10. Create Staff Attendance Ledger Table
+-- 8. Create Staff Attendance Ledger Table
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.staff_attendance (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -223,15 +142,8 @@ CREATE TABLE IF NOT EXISTS public.staff_attendance (
 
 ALTER TABLE public.staff_attendance ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin Manage Staff Attendance"
-ON public.staff_attendance
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 11. Create Daily Sales Sheets Table
+-- 9. Create Daily Sales Sheets Table
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.daily_sales_sheets (
     date_str TEXT PRIMARY KEY, -- 'YYYY-MM-DD'
@@ -241,15 +153,8 @@ CREATE TABLE IF NOT EXISTS public.daily_sales_sheets (
 
 ALTER TABLE public.daily_sales_sheets ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admin Manage Daily Sales Sheets"
-ON public.daily_sales_sheets
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 12. Create Admin Login History Table ("Logged Details")
+-- 10. Create Admin Login History Table ("Logged Details")
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.admin_login_history (
     id TEXT PRIMARY KEY,
@@ -267,15 +172,8 @@ CREATE TABLE IF NOT EXISTS public.admin_login_history (
 
 ALTER TABLE public.admin_login_history ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow All Operations on Admin Login History"
-ON public.admin_login_history
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 13. Create Admin Activity Audit Logs Table
+-- 11. Create Admin Activity Audit Logs Table
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.admin_activity_logs (
     id TEXT PRIMARY KEY,
@@ -295,15 +193,8 @@ CREATE TABLE IF NOT EXISTS public.admin_activity_logs (
 
 ALTER TABLE public.admin_activity_logs ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow All Operations on Admin Activity Logs"
-ON public.admin_activity_logs
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 14. Create Customers Directory Table
+-- 12. Create Customers Directory Table
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.customers (
     id TEXT PRIMARY KEY,
@@ -318,15 +209,8 @@ CREATE TABLE IF NOT EXISTS public.customers (
 
 ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow All Operations on Customers"
-ON public.customers
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
-
 -- ==========================================================
--- 15. Create Site Settings Table (Homepage Sections, Configs)
+-- 13. Create Site Settings Table (Homepage Sections, Configs)
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS public.site_settings (
     key TEXT PRIMARY KEY,
@@ -336,10 +220,35 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
 
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow All Operations on Site Settings"
-ON public.site_settings
-FOR ALL
-TO anon, authenticated
-USING (true)
-WITH CHECK (true);
+-- ==========================================================
+-- 14. ROW LEVEL SECURITY (RLS) POLICIES
+-- ==========================================================
 
+-- Public Catalog: Anyone can VIEW, only Admin can MODIFY
+CREATE POLICY "Public Read Products" ON public.products FOR SELECT TO public USING (true);
+CREATE POLICY "Admin Full Access Products" ON public.products FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Public Read Updates" ON public.updates FOR SELECT TO public USING (true);
+CREATE POLICY "Admin Full Access Updates" ON public.updates FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Public Read Hero Showcase" ON public.hero_showcase FOR SELECT TO public USING (true);
+CREATE POLICY "Admin Full Access Hero Showcase" ON public.hero_showcase FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Public Read Site Settings" ON public.site_settings FOR SELECT TO public USING (true);
+CREATE POLICY "Admin Full Access Site Settings" ON public.site_settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Private Business Data: ONLY Authenticated Admin can Access (Zero Public Access)
+CREATE POLICY "Admin Only Daily Sales Sheets" ON public.daily_sales_sheets FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Staff Attendance" ON public.staff_attendance FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Staff Members" ON public.staff_members FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Finance Transactions" ON public.finance_transactions FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Finance Purchases" ON public.finance_purchases FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Customers" ON public.customers FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Login History" ON public.admin_login_history FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin Only Activity Logs" ON public.admin_activity_logs FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Storage Policies
+CREATE POLICY "Public Read Product Images" ON storage.objects FOR SELECT TO public USING (bucket_id = 'product-images');
+CREATE POLICY "Admin Upload Product Images" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'product-images');
+CREATE POLICY "Admin Manage Product Images" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'product-images');
+CREATE POLICY "Admin Delete Product Images" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'product-images');

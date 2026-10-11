@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://7days-seven.vercel.app/sitemap.xml
+Sitemap: https://7daystoys.in/sitemap.xml
+

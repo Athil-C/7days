@@ -6,7 +6,7 @@
 
 import { toCanvas } from 'html-to-image';
 import { jsPDF } from 'jspdf';
-import { SHOP_WHATSAPP_NUMBER, SHOP_PHONE_DISPLAY } from '../data/config';
+import { SHOP_WHATSAPP_NUMBER, SHOP_PHONE_DISPLAY } from '../data/config.js';
 
 // Cached Data URL for the official store circular badge logo
 let cachedLogoDataUrl = null;
@@ -120,6 +120,74 @@ const ICONS = {
 };
 
 /**
+ * Context-aware HTML entity escaping utility to prevent XSS injection.
+ * Replaces &, <, >, ", and ' with safe HTML entities.
+ */
+export function escapeHtml(value) {
+  if (value === null || value === undefined) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * Validates and sanitizes image URLs/Data URIs to ensure safe attribute insertion.
+ * Blocks dangerous schemes (javascript:, vbscript:, data:text/html), protocol-relative URLs (//),
+ * SVG data URIs (which can contain embedded script tags), control characters, and malformed inputs.
+ * Strictly permits only:
+ * - Raster base64 images (data:image/(png|jpe?g|webp|gif);base64,...)
+ * - Safe root-relative paths starting with / (excluding //)
+ * - Valid HTTPS URLs
+ */
+export function sanitizeImageUrl(url, fallback = '/7days-logo.png') {
+  if (!url || typeof url !== 'string') return fallback;
+  const trimmed = url.trim();
+
+  // Block any control characters or internal whitespace
+  if (/[\x00-\x1f\x7f\s]/.test(trimmed)) {
+    return fallback;
+  }
+
+  // Block protocol-relative URLs (//example.com) and backslash paths (\\)
+  if (trimmed.startsWith('//') || trimmed.startsWith('\\\\')) {
+    return fallback;
+  }
+
+  // 1. Permit strictly raster base64 data URIs (png, jpeg, webp, gif). Explicitly blocks SVG data URIs.
+  if (/^data:image\/(png|jpe?g|webp|gif);base64,[a-zA-Z0-9+/=]+$/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  // 2. Permit safe root-relative or local relative paths (e.g. /7days-logo.png, ./logo.png)
+  if (
+    (trimmed.startsWith('/') && !trimmed.startsWith('//')) ||
+    (trimmed.startsWith('./') && !trimmed.startsWith('.//'))
+  ) {
+    // Ensure no quotes or angle brackets in the relative path
+    if (/[<>"'`]/.test(trimmed)) return fallback;
+    return trimmed;
+  }
+
+  // 3. Permit safe absolute HTTPS URLs
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === 'https:') {
+      // Disallow quotes or tag brackets in URL
+      if (/[<>"'`]/.test(parsed.href)) return fallback;
+      return parsed.href;
+    }
+  } catch {
+    // Malformed URL
+    return fallback;
+  }
+
+  return fallback;
+}
+
+/**
  * Creates the exact 794px A4 document container matching the user reference design:
  * - Warm background #FAF8F5 with peach/mint cards
  * - 3D 7Days Circular Badge + Header
@@ -131,7 +199,7 @@ const ICONS = {
  * - Notes card
  * - Signature lines and official footer
  */
-function createA4SalesDocumentElement({
+export function createA4SalesDocumentElement({
   dateStr,
   readableDate,
   sheet,
@@ -198,7 +266,7 @@ function createA4SalesDocumentElement({
     (it) => it.paymentMethod === 'UPI' || it.paymentMethod === 'Card'
   ).length;
 
-  // Build items rows
+  // Build items rows with strict HTML escaping
   const itemsHtml =
     items.length > 0
       ? items
@@ -214,18 +282,18 @@ function createA4SalesDocumentElement({
                   ${idx + 1}
                 </td>
                 <td style="padding: 10px 14px; text-align: left; font-weight: 700; color: #1e293b; font-size: 11px; border-right: 1px solid #f1f5f9; line-height: 1.35; word-break: break-word;">
-                  ${it.itemName}
+                  ${escapeHtml(it.itemName || 'Item')}
                 </td>
                 <td style="padding: 10px 8px; text-align: center; border-right: 1px solid #f1f5f9;">
                   <span style="display: inline-block; background: ${badgeBg}; color: ${badgeColor}; font-size: 9px; font-weight: 900; padding: 3px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
-                    ${it.paymentMethod || 'Cash'}
+                    ${escapeHtml(it.paymentMethod || 'Cash')}
                   </span>
                 </td>
                 <td style="padding: 10px 8px; text-align: center; font-size: 10.5px; color: #334155; font-weight: 600; border-right: 1px solid #f1f5f9;">
-                  ${it.time || '-'}
+                  ${escapeHtml(it.time || '-')}
                 </td>
                 <td style="padding: 10px 14px; text-align: right; font-weight: 900; font-size: 13px; color: #0f172a;">
-                  ₹${Number(it.amount).toLocaleString('en-IN')}
+                  ₹${Number(it.amount || 0).toLocaleString('en-IN')}
                 </td>
               </tr>
             `;
@@ -267,12 +335,12 @@ function createA4SalesDocumentElement({
               <span style="border-bottom: 2.5px solid #ea580c; padding-bottom: 2px;">MONTHLY</span> STAFF ATTENDANCE REGISTER
             </div>
             <div style="font-size: 8.5px; font-weight: 800; color: #0369a1; letter-spacing: 0.8px;">
-              ALL DAYS AUDIT (${monthHeaderName})
+              ALL DAYS AUDIT (${escapeHtml(monthHeaderName)})
             </div>
           </div>
           <div style="background: #ffffff; border: 1.5px solid #86efac; border-radius: 6px; padding: 4px 10px; display: flex; align-items: center; gap: 6px; font-size: 8.5px; font-weight: 800; color: #15803d; letter-spacing: 0.5px;">
             ${ICONS.calendarGreen}
-            <span>ALL DAYS ATTENDANCE (${daysInMonth} DAYS)</span>
+            <span>ALL DAYS ATTENDANCE (${Number(daysInMonth || 0)} DAYS)</span>
           </div>
         </div>
 
@@ -290,7 +358,7 @@ function createA4SalesDocumentElement({
                         ? 'background: #ffedd5; color: #c2410c; font-weight: 900;'
                         : ''
                     }">
-                      <div style="font-size: 8px; font-weight: 800;">${d.dayNum}</div>
+                      <div style="font-size: 8px; font-weight: 800;">${escapeHtml(d.dayNum)}</div>
                     </th>
                   `
                   )
@@ -305,8 +373,8 @@ function createA4SalesDocumentElement({
                   return `
                     <tr style="background: #ffffff; border-bottom: 1px solid #f1f5f9;">
                       <td style="padding: 5px 6px; font-weight: 800; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-right: 1px solid #e2e8f0;">
-                        <div style="font-size: 9px; font-weight: 800;">${r.name}</div>
-                        <div style="font-size: 7px; color: #64748b; font-weight: 600;">${r.role || 'Sales Staff'}</div>
+                        <div style="font-size: 9px; font-weight: 800;">${escapeHtml(r.name || 'Staff')}</div>
+                        <div style="font-size: 7px; color: #64748b; font-weight: 600;">${escapeHtml(r.role || 'Sales Staff')}</div>
                       </td>
                       ${days
                         .map((d) => {
@@ -336,10 +404,10 @@ function createA4SalesDocumentElement({
                         })
                         .join('')}
                       <td style="padding: 5px 2px; text-align: center; font-weight: 900; color: #15803d; font-size: 9px; border-left: 1px solid #e2e8f0;">
-                        ${r.presentCount}
+                        ${escapeHtml(r.presentCount)}
                       </td>
                       <td style="padding: 5px 2px; text-align: center; font-weight: 900; color: #0f172a; font-size: 9px;">
-                        ${r.percentage}%
+                        ${escapeHtml(r.percentage)}%
                       </td>
                     </tr>
                   `;
@@ -359,9 +427,9 @@ function createA4SalesDocumentElement({
                       const count = monthAttendance.dailyHeadcount[d.dateStr] || 0;
                       let cellContent = '';
                       if (d.isSelectedDate) {
-                        cellContent = `<span style="display: inline-block; width: 13px; height: 13px; line-height: 13px; text-align: center; border-radius: 2px; background: #fed7aa; color: #ea580c; font-weight: 900; font-size: 7.5px;">${count}</span>`;
+                        cellContent = `<span style="display: inline-block; width: 13px; height: 13px; line-height: 13px; text-align: center; border-radius: 2px; background: #fed7aa; color: #ea580c; font-weight: 900; font-size: 7.5px;">${escapeHtml(count)}</span>`;
                       } else if (count > 0) {
-                        cellContent = `<span style="display: inline-block; width: 13px; height: 13px; line-height: 13px; text-align: center; border-radius: 2px; background: #f1f5f9; color: #475569; font-weight: 800; font-size: 7.5px;">${count}</span>`;
+                        cellContent = `<span style="display: inline-block; width: 13px; height: 13px; line-height: 13px; text-align: center; border-radius: 2px; background: #f1f5f9; color: #475569; font-weight: 800; font-size: 7.5px;">${escapeHtml(count)}</span>`;
                       } else {
                         cellContent = `<span style="display: inline-block; width: 13px; height: 13px; border-radius: 2px; background: #f8fafc; border: 1px solid #f1f5f9;"></span>`;
                       }
@@ -428,8 +496,8 @@ function createA4SalesDocumentElement({
                   .map(
                     (d) => `
                     <th style="padding: 4px 2px; text-align: center;">
-                      <div style="font-size: 7.5px;">${d.dayName}</div>
-                      <div style="font-size: 9px; font-weight: 800;">${d.dayNum}</div>
+                      <div style="font-size: 7.5px;">${escapeHtml(d.dayName)}</div>
+                      <div style="font-size: 9px; font-weight: 800;">${escapeHtml(d.dayNum)}</div>
                     </th>
                   `
                   )
@@ -444,8 +512,8 @@ function createA4SalesDocumentElement({
                   return `
                     <tr style="background: #ffffff; border-bottom: 1px solid #f1f5f9;">
                       <td style="padding: 6px 8px; font-weight: 800; color: #1e293b;">
-                        <div>${r.name}</div>
-                        <div style="font-size: 8px; color: #64748b;">${r.role}</div>
+                        <div>${escapeHtml(r.name || 'Staff')}</div>
+                        <div style="font-size: 8px; color: #64748b;">${escapeHtml(r.role || 'Sales Staff')}</div>
                       </td>
                       ${weeklyAttendance.days
                         .map((d) => {
@@ -465,10 +533,10 @@ function createA4SalesDocumentElement({
                         })
                         .join('')}
                       <td style="padding: 6px 4px; text-align: center; font-weight: 900; color: #15803d; font-size: 9.5px;">
-                        ${r.presentCount}
+                        ${escapeHtml(r.presentCount)}
                       </td>
                       <td style="padding: 6px 4px; text-align: center; font-weight: 900; color: #0f172a; font-size: 9.5px;">
-                        ${r.percentage}%
+                        ${escapeHtml(r.percentage)}%
                       </td>
                     </tr>
                   `;
@@ -522,7 +590,7 @@ function createA4SalesDocumentElement({
         <div style="display: flex; align-items: center; gap: 14px;">
           <div style="width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25); background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);">
             <img 
-              src="${logoDataUrl || '/7days-logo.png'}" 
+              src="${sanitizeImageUrl(logoDataUrl || '/7days-logo.png')}" 
               alt="7Days Logo" 
               style="width: 100%; height: 100%; object-fit: contain; display: block;" 
               crossOrigin="anonymous" 
@@ -553,7 +621,7 @@ function createA4SalesDocumentElement({
           </div>
           <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; color: #1e293b;">
             ${ICONS.phone}
-            <span>${SHOP_PHONE_DISPLAY || '+91 95629 22471'}</span>
+            <span>${escapeHtml(SHOP_PHONE_DISPLAY || '+91 95629 22471')}</span>
           </div>
         </div>
       </div>
@@ -572,10 +640,10 @@ function createA4SalesDocumentElement({
             </div>
             <div>
               <div style="font-size: 8.5px; font-weight: 800; color: #ea580c; text-transform: uppercase;">
-                ${dayOfWeek}
+                ${escapeHtml(dayOfWeek)}
               </div>
               <div style="font-size: 11px; font-weight: 900; color: #0f172a;">
-                ${dayMonthYear}
+                ${escapeHtml(dayMonthYear)}
               </div>
             </div>
           </div>
@@ -597,7 +665,7 @@ function createA4SalesDocumentElement({
               SALES DATE
             </div>
             <div style="font-size: 18px; font-weight: 900; color: #0f172a; margin-top: 1px;">
-              ${dateStr} (${dayOfWeek})
+              ${escapeHtml(dateStr)} (${escapeHtml(dayOfWeek)})
             </div>
           </div>
         </div>
@@ -609,10 +677,10 @@ function createA4SalesDocumentElement({
           </div>
           <div style="overflow: hidden;">
             <div style="font-size: 9px; font-weight: 800; color: #15803d; text-transform: uppercase; letter-spacing: 0.8px;">
-              STAFF ON DUTY (${staffDutyCount})
+              STAFF ON DUTY (${escapeHtml(staffDutyCount)})
             </div>
             <div style="font-size: 16px; font-weight: 900; color: #065f46; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              ${displayStaff}
+              ${escapeHtml(displayStaff)}
             </div>
           </div>
         </div>
@@ -621,7 +689,7 @@ function createA4SalesDocumentElement({
       <!-- 4. SALES DETAILS TABLE -->
       <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
         <div style="font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: #1e293b; text-transform: uppercase;">
-          <span style="border-bottom: 2.5px solid #ea580c; padding-bottom: 2px;">SALES</span> DETAILS (${sheet.count || items.length} ITEMS)
+          <span style="border-bottom: 2.5px solid #ea580c; padding-bottom: 2px;">SALES</span> DETAILS (${Number(sheet.count || items.length || 0)} ITEMS)
         </div>
         <div style="font-size: 9px; font-weight: 600; color: #64748b;">
           All amounts are in Indian Rupees (₹)
@@ -654,7 +722,7 @@ function createA4SalesDocumentElement({
           </div>
           <div>
             <div style="font-size: 9px; font-weight: 900; color: #ea580c; text-transform: uppercase; letter-spacing: 0.8px;">
-              TOTAL DAY SALES COLLECTION (${sheet.count || items.length} ITEMS)
+              TOTAL DAY SALES COLLECTION (${Number(sheet.count || items.length || 0)} ITEMS)
             </div>
             <div style="font-size: 30px; font-weight: 900; color: #ea580c; letter-spacing: -0.5px; margin-top: 1px; line-height: 1.1;">
               ₹${Number(sheet.total || 0).toLocaleString('en-IN')}
@@ -711,8 +779,8 @@ function createA4SalesDocumentElement({
           <div style="font-size: 9px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
             NOTES
           </div>
-          <div style="font-size: 11px; font-weight: 600; color: #334155; margin-top: 2px;">
-            ${sheet.notes || '-'}
+          <div style="font-size: 11px; font-weight: 600; color: #334155; margin-top: 2px; white-space: pre-wrap; word-break: break-word;">
+            ${escapeHtml(sheet.notes || '-')}
           </div>
         </div>
       </div>

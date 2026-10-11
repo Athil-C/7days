@@ -1,5 +1,29 @@
 {
   "cleanUrls": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "7days-seven.vercel.app"
+        }
+      ],
+      "destination": "https://7daystoys.in/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.7daystoys.in"
+        }
+      ],
+      "destination": "https://7daystoys.in/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/robots.txt",

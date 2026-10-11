@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const SITE_URL = 'https://7days-seven.vercel.app';
+const SITE_URL = 'https://7daystoys.in';
 
 /**
  * Custom hook to update document title, meta description, canonical URL,
@@ -36,8 +36,8 @@ export function usePageSEO({
     }
 
     // 3. Update Canonical URL
-    const normalizedPath = canonicalPath === '/' ? '' : canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`;
-    const fullCanonicalUrl = `${SITE_URL}${normalizedPath}`;
+    const normalizedPath = canonicalPath === '/' ? '/' : canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`;
+    const fullCanonicalUrl = canonicalPath === '/' ? `${SITE_URL}/` : `${SITE_URL}${normalizedPath}`;
 
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     if (!canonicalLink) {
