@@ -17,7 +17,7 @@
       "has": [
         {
           "type": "host",
-          "value": "www.7daystoys.in"
+          "value": "7daystoys.in"
         }
       ],
       "destination": "https://www.7daystoys.in/:path*",
