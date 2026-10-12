@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { getUpdates, addUpdate, updateUpdate, deleteUpdate } from '../../services/updateService';
 import { getProductInquiryUrl, createWhatsAppUrl } from '../../data/config';
+import { getProductUrl, slugify } from '../../utils/productUrl';
 import HeroShowcaseManager from '../../components/admin/HeroShowcaseManager';
 import DailySalesRegister from '../../components/admin/DailySalesRegister';
 import PastDailySalesView from '../../components/admin/PastDailySalesView';
@@ -28,6 +29,8 @@ import {
   LogOut,
   Check,
   X,
+  Copy,
+  Globe,
   AlertTriangle,
   MessageCircle,
   Database,
@@ -345,6 +348,7 @@ export default function AdminDashboard() {
         .map((s) => s.trim())
         .filter(Boolean);
 
+      let savedProduct = null;
       if (editingProduct) {
         const updated = await updateProduct(
           editingProduct.id,
@@ -369,6 +373,7 @@ export default function AdminDashboard() {
           },
           formImageFile
         );
+        savedProduct = updated;
         showNotice('success', `Product "${updated.name}" updated successfully!`);
         recordAdminAction({
           action: 'UPDATE',
@@ -397,7 +402,8 @@ export default function AdminDashboard() {
           imageFile: formImageFile,
           imageUrl: formImageUrl,
         });
-        showNotice('success', `Product "${created.name}" created successfully!`);
+        savedProduct = created;
+        showNotice('success', `Product "${created.name}" created! Public URL: ${getProductUrl(created)}`);
         recordAdminAction({
           action: 'CREATE',
           category: 'Products',
@@ -413,7 +419,7 @@ export default function AdminDashboard() {
           title: formName.trim(),
           image: targetImage,
           tag: formBadge.trim() || formCategory,
-          productId: editingProduct ? String(editingProduct.id) : null,
+          productId: savedProduct ? String(savedProduct.id) : null,
         });
         showNotice('success', `Product placed in Homepage Hero Slot ${formHeroSlot}!`);
         recordAdminAction({
@@ -1159,6 +1165,9 @@ export default function AdminDashboard() {
                                 <div className="font-bold text-gray-900 group-hover:text-[#FB8500] transition">
                                   {prod.name}
                                 </div>
+                                <div className="text-[11px] font-mono text-[#FB8500]/80 truncate max-w-sm mt-0.5">
+                                  {getProductUrl(prod)}
+                                </div>
                                 {prod.description && (
                                   <p className="text-xs text-gray-500 line-clamp-2 mt-0.5 leading-relaxed">
                                     {prod.description}
@@ -1219,7 +1228,7 @@ export default function AdminDashboard() {
                                 <div className="inline-flex items-center gap-1.5">
                                   {/* View Customer Product Page */}
                                   <Link
-                                    to={`/product/${prod.id}`}
+                                    to={getProductUrl(prod)}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="p-2 rounded-lg text-purple-600 hover:bg-purple-50 transition"
@@ -1227,6 +1236,19 @@ export default function AdminDashboard() {
                                   >
                                     <ExternalLink className="w-4 h-4" />
                                   </Link>
+
+                                  {/* Copy Direct Public Link */}
+                                  <button
+                                    onClick={() => {
+                                      const fullUrl = `${window.location.origin}${getProductUrl(prod)}`;
+                                      navigator.clipboard.writeText(fullUrl);
+                                      showNotice('success', `Copied link: ${fullUrl}`);
+                                    }}
+                                    className="p-2 rounded-lg text-gray-500 hover:text-[#FB8500] hover:bg-amber-50 transition cursor-pointer"
+                                    title="Copy Public Product URL"
+                                  >
+                                    <Copy className="w-4 h-4" />
+                                  </button>
 
 
                                   {/* WhatsApp Direct Test */}
@@ -1569,6 +1591,17 @@ export default function AdminDashboard() {
                   placeholder="e.g. Baybee Rampage Rechargeable Battery Operated Jeep for Kids"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#FB8500]"
                 />
+              </div>
+
+              {/* Realtime SEO URL Preview */}
+              <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl p-3 flex items-start gap-2.5">
+                <Globe className="w-4 h-4 text-[#FB8500] shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <div className="font-semibold text-gray-800">Permanent SEO Product URL Preview:</div>
+                  <div className="font-mono text-[#FB8500] font-medium break-all mt-0.5 text-[11px]">
+                    {`https://www.7daystoys.in/product/${slugify(formCategory || 'toys')}/${slugify(formName || 'product-title')}`}
+                  </div>
+                </div>
               </div>
 
               {/* Category & Badge Grid */}

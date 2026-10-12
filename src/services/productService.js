@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { products as staticCatalog } from '../data/products';
+import { slugify } from '../utils/productUrl';
 
 const LOCAL_STORAGE_KEY = '7days_custom_products_v1';
 const DELETED_IDS_KEY = '7days_deleted_product_ids_v1';
@@ -735,3 +736,52 @@ export async function deleteProduct(id, imageUrl = null) {
   saveLocalCustomProducts(filtered);
   return true;
 }
+
+/**
+ * Lookup product by category slug and product slug, or by ID (supports backwards compatibility)
+ */
+export async function getProductBySlugOrId(categoryOrId, slugParam) {
+  if (!categoryOrId && !slugParam) return null;
+
+  // Case 1: Only one parameter passed (e.g. /product/12 or legacy ID)
+  if (!slugParam) {
+    const rawParam = String(categoryOrId).trim();
+    // Try by ID first
+    const byId = await getProductById(rawParam);
+    if (byId) return byId;
+
+    // Try finding by name slug
+    const targetSlug = slugify(rawParam);
+    const all = await getProducts();
+    const bySlug = all.find(
+      (p) => slugify(p.name) === targetSlug || String(p.id) === rawParam
+    );
+    return bySlug || null;
+  }
+
+  // Case 2: Both category and slug passed (e.g. /product/baby/baybee-feeding-booster-seat-with-washable-food-tray)
+  const targetCategorySlug = slugify(categoryOrId);
+  const targetNameSlug = slugify(slugParam);
+
+  const all = await getProducts();
+
+  // 1. Exact match by both category slug and name slug
+  let match = all.find(
+    (p) => slugify(p.category) === targetCategorySlug && slugify(p.name) === targetNameSlug
+  );
+  if (match) return match;
+
+  // 2. Match by name slug alone
+  match = all.find((p) => slugify(p.name) === targetNameSlug);
+  if (match) return match;
+
+  // 3. Fallback: check if slugParam or categoryOrId is an ID
+  const directId = !isNaN(slugParam) ? slugParam : (!isNaN(categoryOrId) ? categoryOrId : null);
+  if (directId) {
+    match = all.find((p) => String(p.id) === String(directId));
+    if (match) return match;
+  }
+
+  return null;
+}
+

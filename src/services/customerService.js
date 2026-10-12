@@ -6,6 +6,7 @@
 
 import { SHOP_FULL_NAME, SHOP_PHONE_DISPLAY, SHOP_ADDRESS } from '../data/config';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { getProductUrl } from '../utils/productUrl';
 
 const STORAGE_KEY_CUSTOMERS = '7days_customers_directory_v1';
 const STORAGE_KEY_BROADCAST_HISTORY = '7days_broadcast_history_v1';
@@ -46,7 +47,7 @@ export function formatProductBroadcastMessage(product, customHeader = '') {
   if (!product) return '';
 
   const siteOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://www.7daystoys.in';
-  const productUrl = `${siteOrigin}/product/${product.id}`;
+  const productUrl = `${siteOrigin}${getProductUrl(product)}`;
 
   const title = product.name || 'New Arrival at 7Days Toys!';
   const price = product.price ? `₹${Number(product.price).toLocaleString('en-IN')}` : '';

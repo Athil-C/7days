@@ -2,4 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.7daystoys.in/sitemap.xml
+Sitemap: https://www.7daystoys.in/sitemap-main.xml
+Sitemap: https://www.7daystoys.in/sitemap-products.xml
 

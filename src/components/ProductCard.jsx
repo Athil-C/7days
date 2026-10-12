@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MessageCircle, Video } from 'lucide-react';
 import { getProductInquiryUrl } from '../data/config';
 import { isProductVideoEligible, generateWhatsAppProductInquiry } from '../utils/shoppingEngine';
+import { getProductUrl } from '../utils/productUrl';
 
 // Category color mappings matching the brand design system
 const CATEGORY_COLORS = {
@@ -27,13 +28,14 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
   const hasVideoOption = showVideoAction && isProductVideoEligible(id);
 
   const hasPrice = typeof price === 'number' && price !== null && !Number.isNaN(price);
+  const productPageUrl = getProductUrl(product);
 
   return (
     <div className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden card-shadow card-hover border border-black/5 flex flex-col justify-between transition-all duration-300">
       
       {/* Product Image Stage: Clicking navigates to detailed Product Page */}
       <Link
-        to={`/product/${id}`}
+        to={productPageUrl}
         className="relative aspect-square overflow-hidden bg-white p-5 sm:p-6 flex items-center justify-center border-b border-black/5 cursor-pointer block"
       >
         <img
@@ -87,7 +89,7 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
       {/* Product Details */}
       <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between bg-white">
         <div>
-          <Link to={`/product/${id}`}>
+          <Link to={productPageUrl}>
             <h3 className="text-sm sm:text-base font-bold text-[#263238] font-heading group-hover:text-[#FB8500] transition-colors leading-snug line-clamp-2 cursor-pointer">
               {name}
             </h3>

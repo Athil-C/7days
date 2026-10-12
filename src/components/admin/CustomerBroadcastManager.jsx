@@ -41,6 +41,7 @@ import {
   exportCustomersAsVcf
 } from '../../services/customerService';
 import { SHOP_FULL_NAME, SHOP_PHONE_DISPLAY } from '../../data/config';
+import { getProductUrl } from '../../utils/productUrl';
 
 export default function CustomerBroadcastManager({
   products = [],
@@ -261,7 +262,7 @@ export default function CustomerBroadcastManager({
         await navigator.share({
           title: `${SHOP_FULL_NAME} - ${activeProduct.name}`,
           text: formattedBroadcastMessage,
-          url: `${window.location.origin}/product/${activeProduct.id}`
+          url: `${window.location.origin}${getProductUrl(activeProduct)}`
         });
         showNotice?.('success', 'WhatsApp opened! Select your broadcast list or contacts to send in 1 click.');
       } else {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getProductById, getProducts } from '../services/productService';
+import { getProductById, getProductBySlugOrId, getProducts } from '../services/productService';
+import { getProductUrl } from '../utils/productUrl';
 import {
   SHOP_FULL_NAME,
   SHOP_PHONE_DISPLAY,
@@ -25,7 +26,7 @@ import {
 } from 'lucide-react';
 
 export default function ProductDetailPage() {
-  const { id } = useParams();
+  const { id, category, slug } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
@@ -46,7 +47,7 @@ export default function ProductDetailPage() {
       setLoading(true);
       try {
         const [prod, list] = await Promise.all([
-          getProductById(id),
+          category && slug ? getProductBySlugOrId(category, slug) : getProductBySlugOrId(id),
           getProducts(),
         ]);
         if (isMounted) {
@@ -56,6 +57,11 @@ export default function ProductDetailPage() {
             setActiveImage(prod.image);
             if (prod.colors && prod.colors.length > 0) {
               setSelectedColor(prod.colors[0]);
+            }
+            // If user visited via legacy /product/12 or fallback ID route, smoothly update URL to the canonical category/slug
+            const canonicalUrl = getProductUrl(prod);
+            if (window.location.pathname !== canonicalUrl && (!category || !slug)) {
+              navigate(canonicalUrl, { replace: true });
             }
           }
         }
@@ -70,13 +76,13 @@ export default function ProductDetailPage() {
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, category, slug, navigate]);
 
   // Dynamic SEO
   usePageSEO({
     title: product ? `${product.name} | ${SHOP_FULL_NAME}` : `Product Details | ${SHOP_FULL_NAME}`,
     description: product?.description || `Explore ${product?.name} at 7Days Toys & Babyshop, Mananthavady.`,
-    canonicalPath: `/product/${id}`,
+    canonicalPath: product ? getProductUrl(product) : (id ? `/product/${id}` : '/products'),
   });
 
   // Calculate discount percentage if price and MRP are available
