@@ -34,7 +34,15 @@
       "destination": "/sitemap.xml"
     },
     {
-      "source": "/((?!robots\\.txt|sitemap\\.xml|.*\\.[\\w]+$).*)",
+      "source": "/sitemap-products.xml",
+      "destination": "/sitemap-products.xml"
+    },
+    {
+      "source": "/sitemap-main.xml",
+      "destination": "/sitemap-main.xml"
+    },
+    {
+      "source": "/((?!robots\\.txt|sitemap.*\\.xml|.*\\.[\\w]+$).*)",
       "destination": "/index.html"
     }
   ],
@@ -53,7 +61,33 @@
       ]
     },
     {
-      "source": "/sitemap*.xml",
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=3600"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap-products.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=3600"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap-main.xml",
       "headers": [
         {
           "key": "Content-Type",
