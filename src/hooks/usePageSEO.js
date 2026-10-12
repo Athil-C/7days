@@ -16,6 +16,8 @@ export function usePageSEO({
     // 1. Update Title
     if (title) {
       document.title = title;
+      const metaTitle = document.querySelector('meta[name="title"]');
+      if (metaTitle) metaTitle.setAttribute('content', title);
     }
 
     // 2. Update Meta Description
@@ -49,6 +51,9 @@ export function usePageSEO({
 
     let ogUrl = document.querySelector('meta[property="og:url"]');
     if (ogUrl) ogUrl.setAttribute('content', fullCanonicalUrl);
+
+    let twUrl = document.querySelector('meta[property="twitter:url"]');
+    if (twUrl) twUrl.setAttribute('content', fullCanonicalUrl);
 
     // 4. Update Open Graph & Twitter Title
     if (title) {
