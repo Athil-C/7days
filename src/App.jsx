@@ -1,50 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import ScrollToTop from './components/ScrollToTop';
-import LoadingScreen from './components/LoadingScreen';
 
 import HomePage from './pages/HomePage';
-import UpdatesPage from './pages/UpdatesPage';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import CategoriesPage from './pages/CategoriesPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import NotFoundPage from './pages/NotFoundPage';
 
-// Server synchronizers
-import { syncDailySalesFromServer } from './services/dailySalesService';
-import { syncStaffFromServer, syncAttendanceFromServer } from './services/attendanceService';
-import { syncHomepageSectionsFromSupabase } from './services/homepageSectionsService';
+// Code-split all secondary routes so homepage bundle remains ultra-lightweight
+const UpdatesPage = lazy(() => import('./pages/UpdatesPage'));
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
+const CategoriesPage = lazy(() => import('./pages/CategoriesPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
-// Admin Portal
+// Admin Portal (Heavy PDF & Dashboard dependencies isolated from public bundle)
+const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/admin/ProtectedRoute';
-import AdminLoginPage from './pages/admin/AdminLoginPage';
-import AdminDashboard from './pages/admin/AdminDashboard';
+
+import { syncHomepageSectionsFromSupabase } from './services/homepageSectionsService';
 
 export default function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Proactively fetch latest authoritative state from Supabase on every reload across all pages
+  // Gated synchronization: Admin queries only execute when accessing the admin portal
   useEffect(() => {
-    syncDailySalesFromServer();
-    syncStaffFromServer();
-    syncAttendanceFromServer();
-    syncHomepageSectionsFromSupabase();
+    if (isAdminRoute) {
+      import('./services/dailySalesService').then((m) => m.syncDailySalesFromServer());
+      import('./services/attendanceService').then((m) => {
+        m.syncStaffFromServer();
+        m.syncAttendanceFromServer();
+      });
+    }
+  }, [isAdminRoute]);
+
+  // Public site settings sync runs gently in the background after initial render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      syncHomepageSectionsFromSupabase();
+    }, 2500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <AuthProvider>
-      {/* Creative 7Days Brand Loading Screen */}
-      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
-
       <div className="min-h-screen flex flex-col bg-[#FFF9F0] text-[#263238] font-body">
         <Analytics />
         <ScrollToTop />
@@ -54,30 +59,38 @@ export default function App() {
 
         {/* Main Routed Page Content */}
         <div className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/updates" element={<UpdatesPage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/product/:category/:slug" element={<ProductDetailPage />} />
-            <Route path="/product/:id" element={<ProductDetailPage />} />
-            <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
+          <Suspense
+            fallback={
+              <div className="min-h-[50vh] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-3 border-[#FF7A00] border-t-transparent animate-spin" />
+              </div>
+            }
+          >
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/updates" element={<UpdatesPage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/product/:category/:slug" element={<ProductDetailPage />} />
+              <Route path="/product/:id" element={<ProductDetailPage />} />
+              <Route path="/categories" element={<CategoriesPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
 
-            {/* Admin Portal Routes */}
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Admin Portal Routes */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Proper 404 Not Found Page */}
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+              {/* Proper 404 Not Found Page */}
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
         </div>
 
         {/* Floating Bottom-Right WhatsApp Button (Storefront only) */}

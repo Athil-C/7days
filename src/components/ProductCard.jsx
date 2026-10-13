@@ -66,14 +66,18 @@ export default function ProductCard({ product, showVideoAction = true, giftConte
           aria-hidden="true"
         >
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 p-0.5 shadow-xs border border-black/10 backdrop-blur-xs flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-            <img
-              src="/7days-logo.png"
-              alt="7Days"
-              className="w-full h-full object-contain rounded-full"
-              loading="lazy"
-              width="32"
-              height="32"
-            />
+            <picture>
+              <source srcSet="/7days-logo.webp" type="image/webp" />
+              <img
+                src="/7days-logo.png"
+                alt="7Days"
+                className="w-full h-full object-contain rounded-full"
+                loading="lazy"
+                decoding="async"
+                width="32"
+                height="32"
+              />
+            </picture>
           </div>
         </div>
 

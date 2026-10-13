@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getProducts } from '../services/productService';
+import { getProducts, getInitialProductsFast } from '../services/productService';
 
 export function useProducts() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(() => getInitialProductsFast());
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const refreshProducts = useCallback(async () => {

@@ -299,6 +299,19 @@ function saveLocalCustomProducts(list) {
   }
 }
 
+/**
+ * Fast synchronous initial slice of products for zero-delay initial SSR/hydration paint
+ */
+export function getInitialProductsFast() {
+  const custom = getLocalCustomProducts();
+  const deletedIds = new Set(getDeletedProductIds());
+  const customIds = new Set(custom.map((p) => String(p.id)));
+  const unedited = staticCatalog.filter(
+    (p) => !customIds.has(String(p.id)) && !deletedIds.has(String(p.id))
+  );
+  return [...custom, ...unedited].slice(0, 24).map(enrichProductWithDemoData);
+}
+
 // Convert and compress image File to optimized base64 Data URL
 // Prevents local storage quota exceeded errors and browser thread freezing on large phone camera photos
 export function fileToDataUrl(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {

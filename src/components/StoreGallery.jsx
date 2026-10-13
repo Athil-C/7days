@@ -6,25 +6,25 @@ import { SHOP_FULL_NAME, SHOP_ADDRESS } from '../data/config';
 export default function StoreGallery() {
   const photos = [
     {
-      src: '/store/store-toys-shelves.png',
+      src: '/store/store-toys-shelves.webp',
       alt: 'Toy shelves and board games display inside 7Days showroom',
       caption: 'Toy & Games Aisles',
       tag: 'Wide Selection'
     },
     {
-      src: '/store/store-front-cycles.png',
+      src: '/store/store-front-cycles.webp',
       alt: 'Kids bicycles, mountain bikes and trikes display at 7Days',
       caption: 'Bicycles & Ride-ons',
       tag: 'Cycles'
     },
     {
-      src: '/store/store-dolls-babycare.png',
+      src: '/store/store-dolls-babycare.webp',
       alt: 'Baby care essentials and doll collections at 7Days Toys & Babyshop',
       caption: 'Baby Care & Dolls',
       tag: 'Infant Essentials'
     },
     {
-      src: '/store/store-diecast-cars.png',
+      src: '/store/store-diecast-cars.webp',
       alt: 'Die-cast metal cars and RC vehicles shelf at 7Days',
       caption: 'Die-Cast & Action',
       tag: 'Vehicles'

@@ -29,13 +29,17 @@ export default function Footer() {
           <div className="lg:col-span-4">
             <Link to="/" className="inline-flex items-center gap-3 mb-4 group" aria-label="7Days Toys & Babyshop Home">
               <div className="w-12 h-12 flex-shrink-0 group-hover:scale-105 transition-transform duration-300 drop-shadow-md">
-                <img
-                  src="/7days-logo.png"
-                  alt="7Days Toys & Babyshop Logo"
-                  className="w-full h-full object-contain"
-                  width="48"
-                  height="48"
-                />
+                <picture>
+                  <source srcSet="/7days-logo.webp" type="image/webp" />
+                  <img
+                    src="/7days-logo.png"
+                    alt="7Days Toys & Babyshop Logo"
+                    className="w-full h-full object-contain"
+                    width="48"
+                    height="48"
+                    loading="lazy"
+                  />
+                </picture>
               </div>
               <div className="flex flex-col">
                 <span className="text-2xl font-extrabold tracking-tight font-heading leading-tight text-white group-hover:text-[#FFB703] transition-colors">

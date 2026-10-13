@@ -60,13 +60,17 @@ export default function Navbar() {
             aria-label="7Days Toys & Babyshop Home"
           >
             <div className="relative w-11 h-11 sm:w-12 sm:h-12 group-hover:scale-105 transition-transform duration-300 flex-shrink-0 drop-shadow-sm">
-              <img
-                src="/7days-logo.png"
-                alt="7Days Toys & Babyshop Logo"
-                className="w-full h-full object-contain"
-                width="48"
-                height="48"
-              />
+              <picture>
+                <source srcSet="/7days-logo.webp" type="image/webp" />
+                <img
+                  src="/7days-logo.png"
+                  alt="7Days Toys & Babyshop Logo"
+                  className="w-full h-full object-contain"
+                  width="48"
+                  height="48"
+                  fetchPriority="high"
+                />
+              </picture>
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#263238] font-heading leading-tight group-hover:text-[#FB8500] transition-colors">
