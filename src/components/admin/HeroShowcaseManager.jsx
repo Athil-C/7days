@@ -19,7 +19,10 @@ import {
   ArrowRight,
   Cpu,
   Bike,
-  BatteryCharging
+  BatteryCharging,
+  Eye,
+  Archive,
+  ChevronDown
 } from 'lucide-react';
 import { InstagramIcon } from '../Icons';
 import { useHeroShowcase } from '../../hooks/useHeroShowcase';
@@ -594,30 +597,74 @@ export default function HeroShowcaseManager({
   return (
     <div className="space-y-12 pb-24">
       {/* Top Banner Navigation */}
-      <div className="bg-white p-5 sm:p-6 rounded-2xl border border-gray-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FB8500] mb-1">
-            <Layers className="w-4 h-4" />
-            <span>Visual Homepage CMS</span>
+      <div className="bg-white p-5 sm:p-6 rounded-3xl border border-gray-200 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#FB8500] mb-1">
+              <Layers className="w-4 h-4" />
+              <span>Live Homepage CMS</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-[#263238] tracking-tight">
+              Homepage Sections &amp; Live Visual Editors
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 max-w-2xl">
+              Configured to match the streamlined fast-loading customer homepage. The 4 active dynamic sections are editable directly below. Inactive sections are archived at the bottom.
+            </p>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-[#263238] tracking-tight">
-            Homepage Sections &amp; Live Visual Editors
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1 max-w-2xl">
-            Edit all 7 sections of the customer homepage. Every section features a live preview on the left and interactive customization controls on the right.
-          </p>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-xs transition cursor-pointer"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
+              <span>View Public Site ↗</span>
+            </a>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <a
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 shadow-xs transition cursor-pointer"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
-            <span>View Public Site ↗</span>
-          </a>
+        {/* Homepage Sections Roadmap Strip */}
+        <div className="pt-4 border-t border-gray-100">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2.5 flex items-center gap-1.5">
+            <Eye className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Active Customer Homepage Flow (8 Streamlined Blocks):</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+            <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-amber-800">1. Hero</span>
+              <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full inline-block mt-0.5">Editor #01</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-gray-700">2. Trust Strip</span>
+              <span className="text-[9px] text-gray-500 block mt-0.5">Store Badges</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-gray-700">3. Categories</span>
+              <span className="text-[9px] text-gray-500 block mt-0.5">Catalog Slider</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-amber-800">4. Featured</span>
+              <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full inline-block mt-0.5">Editor #02</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-gray-700">5. Gallery</span>
+              <span className="text-[9px] text-gray-500 block mt-0.5">Showroom Tour</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-purple-50/70 border border-purple-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-purple-800">6. Instagram</span>
+              <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full inline-block mt-0.5">Editor #03</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-sky-50/70 border border-sky-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-sky-800">7. Location</span>
+              <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full inline-block mt-0.5">Editor #04</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-center shadow-2xs">
+              <span className="block text-[11px] font-bold text-emerald-800">8. WhatsApp</span>
+              <span className="text-[9px] text-emerald-600 block mt-0.5">Chat CTA</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -631,7 +678,7 @@ export default function HeroShowcaseManager({
               01
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 1</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Live on Homepage • Section 1</span>
               <h2 className="text-lg font-extrabold text-[#263238]">Hero Showcase (3 Photos)</h2>
             </div>
           </div>
@@ -936,16 +983,660 @@ export default function HeroShowcaseManager({
       </div>
 
       {/* ========================================================================= */}
+      {/* SECTION 3: FEATURED PRODUCTS COLLECTION                                   */}
+      {/* ========================================================================= */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
+              02
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Live on Homepage • Section 4</span>
+              <h2 className="text-lg font-extrabold text-[#263238]">Featured Products Strip</h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              {featuredProductsList.length} Items Live on Homepage
+            </span>
+          </div>
+        </div>
+
+        {/* 2-Column: Left = Preview | Right = Configurator */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* LEFT: Live Preview */}
+          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                  LIVE HOMEPAGE PREVIEW
+                </span>
+              </div>
+              <span className="text-[11px] text-gray-400">Featured carousel grid</span>
+            </div>
+
+            <div className="mb-3">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[#FB8500] bg-amber-50 px-2 py-0.5 rounded-full">
+                <Heart className="w-3 h-3 fill-[#FB8500]" />
+                Handpicked For You
+              </span>
+              <h3 className="text-base font-extrabold text-[#263238] mt-1">Featured Products</h3>
+            </div>
+
+            {featuredProductsList.length === 0 ? (
+              <div className="p-8 text-center text-xs text-gray-400 bg-white rounded-xl border border-gray-200">
+                No products are currently marked as Featured. Search and star products on the right to display them here!
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
+                {featuredProductsList.slice(0, 6).map((prod) => (
+                  <div
+                    key={prod.id}
+                    className="p-3 bg-white rounded-xl border border-black/10 shadow-2xs flex flex-col justify-between group"
+                  >
+                    <div className="aspect-square bg-gray-50 rounded-lg p-2 flex items-center justify-center overflow-hidden mb-2 relative">
+                      <img
+                        src={prod.image}
+                        alt={prod.name}
+                        className="w-full h-full object-contain"
+                      />
+                      <span className="absolute top-1 right-1 p-1 bg-amber-500 text-white rounded-full shadow-xs">
+                        <Sparkles className="w-2.5 h-2.5" />
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block truncate">
+                        {prod.category}
+                      </span>
+                      <h4 className="text-xs font-bold text-[#263238] line-clamp-1 mt-0.5">
+                        {prod.name}
+                      </h4>
+                      {prod.price && (
+                        <p className="text-xs font-extrabold text-[#FB8500] mt-1">
+                          ₹{Number(prod.price).toLocaleString('en-IN')}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-3 text-center text-xs text-gray-500">
+              Showing top items of <strong className="text-gray-900">{featuredProductsList.length} featured products</strong>
+            </div>
+          </div>
+
+          {/* RIGHT: Manager & Selector */}
+          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
+                MANAGE FEATURED PRODUCTS IN CATALOG:
+              </span>
+              <p className="text-xs text-gray-500 mb-3">
+                Click the star button on any product to toggle whether it appears on the homepage.
+              </p>
+
+              {/* Search Bar */}
+              <div className="relative mb-3">
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchFeatured}
+                  onChange={(e) => setSearchFeatured(e.target.value)}
+                  placeholder="Search products to feature..."
+                  className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-[#FB8500]"
+                />
+              </div>
+            </div>
+
+            {/* Product list with toggle */}
+            <div className="max-h-[320px] overflow-y-auto space-y-2 pr-1 divide-y divide-gray-100">
+              {filteredFeaturedSearch(products).slice(0, 20).map((prod) => {
+                const isFeatured = Boolean(prod.isFeatured);
+                const isToggling = togglingFeaturedId === prod.id;
+                return (
+                  <div
+                    key={prod.id}
+                    className="pt-2 flex items-center justify-between gap-3 text-xs"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-150 p-1 shrink-0 overflow-hidden">
+                        <img src={prod.image} alt="" className="w-full h-full object-contain" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-[#263238] truncate">{prod.name}</h4>
+                        <div className="flex items-center gap-2 text-[10px] text-gray-400">
+                          <span>{prod.category}</span>
+                          {prod.price && (
+                            <span className="text-gray-700 font-semibold">₹{prod.price}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={isToggling}
+                      onClick={() => handleToggleFeatured(prod)}
+                      className={`px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0 flex items-center gap-1 ${isFeatured
+                          ? 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
+                          : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700'
+                        }`}
+                    >
+                      {isToggling ? (
+                        <div className="w-3 h-3 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                      ) : isFeatured ? (
+                        <>
+                          <Sparkles className="w-3 h-3 fill-amber-500" />
+                          <span>Featured</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-3 h-3" />
+                          <span>Feature</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+              <span>Instant sync to database &amp; homepage.</span>
+              <button
+                type="button"
+                onClick={() => setActiveTab?.('products')}
+                className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
+              >
+                Open Full Catalog Tab →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* SECTION 6: INSTAGRAM COMMUNITY SHOWCASE                                   */}
+      {/* ========================================================================= */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs">
+              03
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Live on Homepage • Section 6</span>
+              <h2 className="text-lg font-extrabold text-[#263238]">Instagram Showcase ({instaFeed.handle})</h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleResetInstaFeed}
+              type="button"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
+              <span>Reset Default</span>
+            </button>
+            <button
+              onClick={handleSaveInstaFeed}
+              disabled={savingInsta}
+              type="button"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 shadow-sm disabled:opacity-50 transition cursor-pointer"
+            >
+              {savingInsta ? (
+                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Check className="w-4 h-4" />
+              )}
+              <span>Apply &amp; Save Instagram Feed</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2-Column: Left = Preview | Right = Configurator */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* LEFT: Live Preview */}
+          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                  LIVE HOMEPAGE PREVIEW
+                </span>
+              </div>
+              <span className="text-[11px] text-gray-400">Click any photo tile to edit</span>
+            </div>
+
+            {/* Header Mockup */}
+            <div className="text-center mb-4">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-50 text-pink-600 font-bold text-[10px] uppercase">
+                <InstagramIcon className="w-3 h-3" />
+                <span>{instaFeed.handle}</span>
+              </span>
+              <h3 className="text-sm font-extrabold text-[#263238] mt-1">{instaFeed.heading}</h3>
+              <p className="text-[11px] text-gray-500">{instaFeed.subtitle}</p>
+            </div>
+
+            {/* 6-Image Social Grid */}
+            <div className="grid grid-cols-3 gap-2">
+              {instaFeed.posts.map((post, idx) => {
+                const isSelected = selectedInstaSlot === idx;
+                return (
+                  <div
+                    key={post.id || idx}
+                    onClick={() => setSelectedInstaSlot(idx)}
+                    className={`aspect-square rounded-xl overflow-hidden bg-white border relative group transition-all cursor-pointer ${isSelected
+                        ? 'ring-3 ring-pink-500 border-pink-500 shadow-md'
+                        : 'border-black/10 hover:border-black/30'
+                      }`}
+                  >
+                    <img
+                      src={post.image}
+                      alt={post.caption}
+                      className="w-full h-full object-cover group-hover:scale-105 transition"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center p-1 text-center text-white text-[9px] font-semibold">
+                      Photo {idx + 1}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Button Mockup */}
+            <div className="text-center mt-4">
+              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-xs shadow-xs">
+                <InstagramIcon className="w-3.5 h-3.5" />
+                <span>Follow {instaFeed.handle}</span>
+              </span>
+            </div>
+
+            <div className="mt-3 text-center text-xs text-gray-500">
+              Active Selection: <strong className="text-gray-900">Photo Slot {selectedInstaSlot + 1}</strong>
+            </div>
+          </div>
+
+          {/* RIGHT: Configurator */}
+          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Instagram Handle
+                </label>
+                <input
+                  type="text"
+                  value={instaFeed.handle}
+                  onChange={(e) => handleUpdateInstaField('handle', e.target.value)}
+                  placeholder="@7days_toys"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Instagram Profile URL
+                </label>
+                <input
+                  type="text"
+                  value={instaFeed.url}
+                  onChange={(e) => handleUpdateInstaField('url', e.target.value)}
+                  placeholder="https://www.instagram.com/7days_toys/"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                Section Heading
+              </label>
+              <input
+                type="text"
+                value={instaFeed.heading}
+                onChange={(e) => handleUpdateInstaField('heading', e.target.value)}
+                placeholder="Follow 7Days Toys on Instagram"
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+              />
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
+                SELECT PHOTO SLOT TO CONFIGURE (1 - 6):
+              </span>
+              <div className="grid grid-cols-6 gap-1.5">
+                {instaFeed.posts.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedInstaSlot(idx)}
+                    className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${selectedInstaSlot === idx
+                        ? 'bg-pink-500 text-white shadow-xs'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                  >
+                    #{idx + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Photo Upload */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                Photo Slot {selectedInstaSlot + 1} Image *
+              </label>
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
+                  {activeInstaPost?.image ? (
+                    <img src={activeInstaPost.image} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="w-5 h-5 text-gray-300" />
+                  )}
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <input
+                    type="file"
+                    ref={instaFileInputRef}
+                    onChange={handleInstaFileUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => instaFileInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer"
+                  >
+                    <Upload className="w-3.5 h-3.5 text-gray-500" />
+                    <span>Upload Image File</span>
+                  </button>
+                  <input
+                    type="text"
+                    value={activeInstaPost?.image || ''}
+                    onChange={(e) => handleUpdateActiveInstaPost('image', e.target.value)}
+                    placeholder="or enter image URL..."
+                    className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-2 focus:ring-pink-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                Post Caption / Hover Text
+              </label>
+              <input
+                type="text"
+                value={activeInstaPost?.caption || ''}
+                onChange={(e) => handleUpdateActiveInstaPost('caption', e.target.value)}
+                placeholder="Short caption for this Instagram post..."
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
+              />
+            </div>
+
+            {/* Save Button */}
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+              <span className="text-[11px] text-gray-400">Updates homepage feed immediately.</span>
+              <button
+                type="button"
+                onClick={handleSaveInstaFeed}
+                disabled={savingInsta}
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 shadow-sm disabled:opacity-50 transition cursor-pointer"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Apply &amp; Save Instagram Feed</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* SECTION 7: STORE LOCATION, TIMINGS & DIRECTIONS                           */}
+      {/* ========================================================================= */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs">
+              04
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Live on Homepage • Section 7</span>
+              <h2 className="text-lg font-extrabold text-[#263238]">Physical Store Location &amp; Hours</h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleResetStoreLocation}
+              type="button"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
+              <span>Reset Default</span>
+            </button>
+            <button
+              onClick={handleSaveStoreLocation}
+              disabled={savingLocation}
+              type="button"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#0284C7] hover:bg-[#0369a1] shadow-sm disabled:opacity-50 transition cursor-pointer"
+            >
+              {savingLocation ? (
+                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Check className="w-4 h-4" />
+              )}
+              <span>Apply &amp; Save Store Info</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2-Column: Left = Preview | Right = Configurator */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* LEFT: Live Preview */}
+          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                  LIVE HOMEPAGE PREVIEW
+                </span>
+              </div>
+              <span className="text-[11px] text-gray-400">Location &amp; timings card</span>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-black/10 shadow-xs space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#6A994E] animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-wider text-[#6A994E]">
+                  {storeLocation.statusBadge}
+                </span>
+              </div>
+
+              <h3 className="text-lg font-extrabold text-[#263238] font-heading">
+                {storeLocation.storeName}
+              </h3>
+
+              <div className="p-3 rounded-xl bg-[#FFF9F0] border border-[#FFB703]/20 space-y-1">
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-[#FB8500] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-[10px] font-bold uppercase text-gray-400 block">Address</span>
+                    <p className="text-xs font-bold text-[#263238]">{storeLocation.addressFormatted}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-1 text-xs text-[#FB8500] font-bold">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{storeLocation.hours}</span>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 font-bold text-gray-700">
+                  <Phone className="w-3.5 h-3.5 text-[#FB8500]" />
+                  <span>{storeLocation.phoneDisplay}</span>
+                </div>
+                <a
+                  href={storeLocation.mapsSearchUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-bold text-[#0284C7] hover:underline flex items-center gap-1"
+                >
+                  <span>Google Maps</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-3 text-center text-xs text-gray-500">
+              Live Location: <strong className="text-gray-900">{storeLocation.addressFormatted}</strong>
+            </div>
+          </div>
+
+          {/* RIGHT: Configurator */}
+          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Store Display Name
+                </label>
+                <input
+                  type="text"
+                  value={storeLocation.storeName}
+                  onChange={(e) => handleUpdateStoreField('storeName', e.target.value)}
+                  placeholder="7Days Toys & Babyshop"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Status Badge
+                </label>
+                <input
+                  type="text"
+                  value={storeLocation.statusBadge}
+                  onChange={(e) => handleUpdateStoreField('statusBadge', e.target.value)}
+                  placeholder="Open for Walk-ins"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                Visiting &amp; Operating Hours
+              </label>
+              <input
+                type="text"
+                value={storeLocation.hours}
+                onChange={(e) => handleUpdateStoreField('hours', e.target.value)}
+                placeholder="e.g. 9:00 AM – 9:00 PM (All 7 Days)"
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                Formatted Address
+              </label>
+              <input
+                type="text"
+                value={storeLocation.addressFormatted}
+                onChange={(e) => handleUpdateStoreField('addressFormatted', e.target.value)}
+                placeholder="Payod, Mananthavady, Wayanad, Kerala, India"
+                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Primary Phone Display
+                </label>
+                <input
+                  type="text"
+                  value={storeLocation.phoneDisplay}
+                  onChange={(e) => handleUpdateStoreField('phoneDisplay', e.target.value)}
+                  placeholder="+91 95261 22471"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                  Google Maps URL
+                </label>
+                <input
+                  type="text"
+                  value={storeLocation.mapsSearchUrl}
+                  onChange={(e) => handleUpdateStoreField('mapsSearchUrl', e.target.value)}
+                  placeholder="https://www.google.com/maps/search/?api=1&query=Payod..."
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
+                />
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+              <span className="text-[11px] text-gray-400">Updates footer &amp; location card.</span>
+              <button
+                type="button"
+                onClick={handleSaveStoreLocation}
+                disabled={savingLocation}
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#0284C7] hover:bg-[#0369a1] shadow-sm disabled:opacity-50 transition cursor-pointer"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Apply &amp; Save Store Info</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* ARCHIVED / INACTIVE HOMEPAGE SECTIONS                                     */}
+      {/* ========================================================================= */}
+      <details className="group bg-gray-50/70 rounded-3xl border border-dashed border-gray-300 p-6 sm:p-8 space-y-6 transition-all">
+        <summary className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer list-none select-none">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gray-200/80 text-gray-600 flex items-center justify-center font-bold text-sm shrink-0">
+              <Archive className="w-5 h-5 text-gray-500" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">
+                  Archived / Inactive (3 Sections)
+                </span>
+                <span className="text-xs text-gray-400 hidden sm:inline">• Hidden on Customer Homepage</span>
+              </div>
+              <h2 className="text-base sm:text-lg font-extrabold text-[#263238] mt-0.5">
+                Archived Sections (Shop by Age, Store Updates, Care &amp; Service)
+              </h2>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-xs font-semibold text-gray-500 group-open:text-[#FB8500]">
+            <span>Click to reveal archived section editors</span>
+            <ChevronDown className="w-4 h-4 transition-transform group-open:rotate-180" />
+          </div>
+        </summary>
+
+        <p className="text-xs text-gray-500 pt-2 border-t border-gray-200/60">
+          These 3 sections were removed from the homepage during performance optimization to cut page length by 55% and achieve instant loading. All data &amp; editors are preserved below if you ever wish to re-enable them.
+        </p>
+
+        <div className="space-y-8 pt-4">
+{/* ========================================================================= */}
       {/* SECTION 2: SHOP BY AGE COLLECTIONS                                        */}
       {/* ========================================================================= */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center font-bold text-xs">
-              02
+            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
+              Off
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 2</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 2</span>
               <h2 className="text-lg font-extrabold text-[#263238]">Shop by Age Collections</h2>
             </div>
           </div>
@@ -1178,194 +1869,18 @@ export default function HeroShowcaseManager({
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* SECTION 3: FEATURED PRODUCTS COLLECTION                                   */}
-      {/* ========================================================================= */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
-              03
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 3</span>
-              <h2 className="text-lg font-extrabold text-[#263238]">Featured Products Strip</h2>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-              {featuredProductsList.length} Items Live on Homepage
-            </span>
-          </div>
-        </div>
-
-        {/* 2-Column: Left = Preview | Right = Configurator */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT: Live Preview */}
-          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
-                  LIVE HOMEPAGE PREVIEW
-                </span>
-              </div>
-              <span className="text-[11px] text-gray-400">Featured carousel grid</span>
-            </div>
-
-            <div className="mb-3">
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[#FB8500] bg-amber-50 px-2 py-0.5 rounded-full">
-                <Heart className="w-3 h-3 fill-[#FB8500]" />
-                Handpicked For You
-              </span>
-              <h3 className="text-base font-extrabold text-[#263238] mt-1">Featured Products</h3>
-            </div>
-
-            {featuredProductsList.length === 0 ? (
-              <div className="p-8 text-center text-xs text-gray-400 bg-white rounded-xl border border-gray-200">
-                No products are currently marked as Featured. Search and star products on the right to display them here!
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
-                {featuredProductsList.slice(0, 6).map((prod) => (
-                  <div
-                    key={prod.id}
-                    className="p-3 bg-white rounded-xl border border-black/10 shadow-2xs flex flex-col justify-between group"
-                  >
-                    <div className="aspect-square bg-gray-50 rounded-lg p-2 flex items-center justify-center overflow-hidden mb-2 relative">
-                      <img
-                        src={prod.image}
-                        alt={prod.name}
-                        className="w-full h-full object-contain"
-                      />
-                      <span className="absolute top-1 right-1 p-1 bg-amber-500 text-white rounded-full shadow-xs">
-                        <Sparkles className="w-2.5 h-2.5" />
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block truncate">
-                        {prod.category}
-                      </span>
-                      <h4 className="text-xs font-bold text-[#263238] line-clamp-1 mt-0.5">
-                        {prod.name}
-                      </h4>
-                      {prod.price && (
-                        <p className="text-xs font-extrabold text-[#FB8500] mt-1">
-                          ₹{Number(prod.price).toLocaleString('en-IN')}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-3 text-center text-xs text-gray-500">
-              Showing top items of <strong className="text-gray-900">{featuredProductsList.length} featured products</strong>
-            </div>
-          </div>
-
-          {/* RIGHT: Manager & Selector */}
-          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
-                MANAGE FEATURED PRODUCTS IN CATALOG:
-              </span>
-              <p className="text-xs text-gray-500 mb-3">
-                Click the star button on any product to toggle whether it appears on the homepage.
-              </p>
-
-              {/* Search Bar */}
-              <div className="relative mb-3">
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchFeatured}
-                  onChange={(e) => setSearchFeatured(e.target.value)}
-                  placeholder="Search products to feature..."
-                  className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-[#FB8500]"
-                />
-              </div>
-            </div>
-
-            {/* Product list with toggle */}
-            <div className="max-h-[320px] overflow-y-auto space-y-2 pr-1 divide-y divide-gray-100">
-              {filteredFeaturedSearch(products).slice(0, 20).map((prod) => {
-                const isFeatured = Boolean(prod.isFeatured);
-                const isToggling = togglingFeaturedId === prod.id;
-                return (
-                  <div
-                    key={prod.id}
-                    className="pt-2 flex items-center justify-between gap-3 text-xs"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-lg bg-gray-50 border border-gray-150 p-1 shrink-0 overflow-hidden">
-                        <img src={prod.image} alt="" className="w-full h-full object-contain" />
-                      </div>
-                      <div className="min-w-0">
-                        <h4 className="font-bold text-[#263238] truncate">{prod.name}</h4>
-                        <div className="flex items-center gap-2 text-[10px] text-gray-400">
-                          <span>{prod.category}</span>
-                          {prod.price && (
-                            <span className="text-gray-700 font-semibold">₹{prod.price}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      disabled={isToggling}
-                      onClick={() => handleToggleFeatured(prod)}
-                      className={`px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0 flex items-center gap-1 ${isFeatured
-                          ? 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
-                          : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700'
-                        }`}
-                    >
-                      {isToggling ? (
-                        <div className="w-3 h-3 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
-                      ) : isFeatured ? (
-                        <>
-                          <Sparkles className="w-3 h-3 fill-amber-500" />
-                          <span>Featured</span>
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-3 h-3" />
-                          <span>Feature</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-              <span>Instant sync to database &amp; homepage.</span>
-              <button
-                type="button"
-                onClick={() => setActiveTab?.('products')}
-                className="text-xs font-bold text-blue-600 hover:underline cursor-pointer"
-              >
-                Open Full Catalog Tab →
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
+      
+{/* ========================================================================= */}
       {/* SECTION 4: STORE UPDATES & ANNOUNCEMENTS                                  */}
       {/* ========================================================================= */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs">
-              04
+            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
+              Off
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 4</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 4 (Manage via Updates Tab)</span>
               <h2 className="text-lg font-extrabold text-[#263238]">Store Updates &amp; News</h2>
             </div>
           </div>
@@ -1632,17 +2147,18 @@ export default function HeroShowcaseManager({
         </div>
       </div>
 
-      {/* ========================================================================= */}
+      
+{/* ========================================================================= */}
       {/* SECTION 5: 7DAYS CARE & SERVICE HUB                                       */}
       {/* ========================================================================= */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
-              05
+            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
+              Off
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 5</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 5</span>
               <h2 className="text-lg font-extrabold text-[#263238]">7Days Care &amp; Service Hub</h2>
             </div>
           </div>
@@ -1827,440 +2343,9 @@ export default function HeroShowcaseManager({
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* SECTION 6: INSTAGRAM COMMUNITY SHOWCASE                                   */}
-      {/* ========================================================================= */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-xs">
-              06
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 6</span>
-              <h2 className="text-lg font-extrabold text-[#263238]">Instagram Showcase ({instaFeed.handle})</h2>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleResetInstaFeed}
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
-              <span>Reset Default</span>
-            </button>
-            <button
-              onClick={handleSaveInstaFeed}
-              disabled={savingInsta}
-              type="button"
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 shadow-sm disabled:opacity-50 transition cursor-pointer"
-            >
-              {savingInsta ? (
-                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              <span>Apply &amp; Save Instagram Feed</span>
-            </button>
-          </div>
+      
         </div>
-
-        {/* 2-Column: Left = Preview | Right = Configurator */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT: Live Preview */}
-          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
-                  LIVE HOMEPAGE PREVIEW
-                </span>
-              </div>
-              <span className="text-[11px] text-gray-400">Click any photo tile to edit</span>
-            </div>
-
-            {/* Header Mockup */}
-            <div className="text-center mb-4">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-50 text-pink-600 font-bold text-[10px] uppercase">
-                <InstagramIcon className="w-3 h-3" />
-                <span>{instaFeed.handle}</span>
-              </span>
-              <h3 className="text-sm font-extrabold text-[#263238] mt-1">{instaFeed.heading}</h3>
-              <p className="text-[11px] text-gray-500">{instaFeed.subtitle}</p>
-            </div>
-
-            {/* 6-Image Social Grid */}
-            <div className="grid grid-cols-3 gap-2">
-              {instaFeed.posts.map((post, idx) => {
-                const isSelected = selectedInstaSlot === idx;
-                return (
-                  <div
-                    key={post.id || idx}
-                    onClick={() => setSelectedInstaSlot(idx)}
-                    className={`aspect-square rounded-xl overflow-hidden bg-white border relative group transition-all cursor-pointer ${isSelected
-                        ? 'ring-3 ring-pink-500 border-pink-500 shadow-md'
-                        : 'border-black/10 hover:border-black/30'
-                      }`}
-                  >
-                    <img
-                      src={post.image}
-                      alt={post.caption}
-                      className="w-full h-full object-cover group-hover:scale-105 transition"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center p-1 text-center text-white text-[9px] font-semibold">
-                      Photo {idx + 1}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Button Mockup */}
-            <div className="text-center mt-4">
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-xs shadow-xs">
-                <InstagramIcon className="w-3.5 h-3.5" />
-                <span>Follow {instaFeed.handle}</span>
-              </span>
-            </div>
-
-            <div className="mt-3 text-center text-xs text-gray-500">
-              Active Selection: <strong className="text-gray-900">Photo Slot {selectedInstaSlot + 1}</strong>
-            </div>
-          </div>
-
-          {/* RIGHT: Configurator */}
-          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Instagram Handle
-                </label>
-                <input
-                  type="text"
-                  value={instaFeed.handle}
-                  onChange={(e) => handleUpdateInstaField('handle', e.target.value)}
-                  placeholder="@7days_toys"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Instagram Profile URL
-                </label>
-                <input
-                  type="text"
-                  value={instaFeed.url}
-                  onChange={(e) => handleUpdateInstaField('url', e.target.value)}
-                  placeholder="https://www.instagram.com/7days_toys/"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Section Heading
-              </label>
-              <input
-                type="text"
-                value={instaFeed.heading}
-                onChange={(e) => handleUpdateInstaField('heading', e.target.value)}
-                placeholder="Follow 7Days Toys on Instagram"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
-              />
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
-                SELECT PHOTO SLOT TO CONFIGURE (1 - 6):
-              </span>
-              <div className="grid grid-cols-6 gap-1.5">
-                {instaFeed.posts.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setSelectedInstaSlot(idx)}
-                    className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${selectedInstaSlot === idx
-                        ? 'bg-pink-500 text-white shadow-xs'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                  >
-                    #{idx + 1}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Photo Upload */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                Photo Slot {selectedInstaSlot + 1} Image *
-              </label>
-              <div className="flex items-center gap-3">
-                <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
-                  {activeInstaPost?.image ? (
-                    <img src={activeInstaPost.image} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <ImageIcon className="w-5 h-5 text-gray-300" />
-                  )}
-                </div>
-                <div className="flex-1 space-y-1.5">
-                  <input
-                    type="file"
-                    ref={instaFileInputRef}
-                    onChange={handleInstaFileUpload}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => instaFileInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5 text-gray-500" />
-                    <span>Upload Image File</span>
-                  </button>
-                  <input
-                    type="text"
-                    value={activeInstaPost?.image || ''}
-                    onChange={(e) => handleUpdateActiveInstaPost('image', e.target.value)}
-                    placeholder="or enter image URL..."
-                    className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-2 focus:ring-pink-500"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Post Caption / Hover Text
-              </label>
-              <input
-                type="text"
-                value={activeInstaPost?.caption || ''}
-                onChange={(e) => handleUpdateActiveInstaPost('caption', e.target.value)}
-                placeholder="Short caption for this Instagram post..."
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-pink-500"
-              />
-            </div>
-
-            {/* Save Button */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[11px] text-gray-400">Updates homepage feed immediately.</span>
-              <button
-                type="button"
-                onClick={handleSaveInstaFeed}
-                disabled={savingInsta}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 shadow-sm disabled:opacity-50 transition cursor-pointer"
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Apply &amp; Save Instagram Feed</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* SECTION 7: STORE LOCATION, TIMINGS & DIRECTIONS                           */}
-      {/* ========================================================================= */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs">
-              07
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Section 7</span>
-              <h2 className="text-lg font-extrabold text-[#263238]">Physical Store Location &amp; Hours</h2>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleResetStoreLocation}
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
-              <span>Reset Default</span>
-            </button>
-            <button
-              onClick={handleSaveStoreLocation}
-              disabled={savingLocation}
-              type="button"
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#0284C7] hover:bg-[#0369a1] shadow-sm disabled:opacity-50 transition cursor-pointer"
-            >
-              {savingLocation ? (
-                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              <span>Apply &amp; Save Store Info</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 2-Column: Left = Preview | Right = Configurator */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT: Live Preview */}
-          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
-                  LIVE HOMEPAGE PREVIEW
-                </span>
-              </div>
-              <span className="text-[11px] text-gray-400">Location &amp; timings card</span>
-            </div>
-
-            <div className="p-4 bg-white rounded-2xl border border-black/10 shadow-xs space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-[#6A994E]">
-                  {storeLocation.statusBadge}
-                </span>
-              </div>
-
-              <h3 className="text-lg font-extrabold text-[#263238] font-heading">
-                {storeLocation.storeName}
-              </h3>
-
-              <div className="p-3 rounded-xl bg-[#FFF9F0] border border-[#FFB703]/20 space-y-1">
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-[#FB8500] shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-gray-400 block">Address</span>
-                    <p className="text-xs font-bold text-[#263238]">{storeLocation.addressFormatted}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 pt-1 text-xs text-[#FB8500] font-bold">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{storeLocation.hours}</span>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 font-bold text-gray-700">
-                  <Phone className="w-3.5 h-3.5 text-[#FB8500]" />
-                  <span>{storeLocation.phoneDisplay}</span>
-                </div>
-                <a
-                  href={storeLocation.mapsSearchUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-bold text-[#0284C7] hover:underline flex items-center gap-1"
-                >
-                  <span>Google Maps</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </div>
-
-            <div className="mt-3 text-center text-xs text-gray-500">
-              Live Location: <strong className="text-gray-900">{storeLocation.addressFormatted}</strong>
-            </div>
-          </div>
-
-          {/* RIGHT: Configurator */}
-          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Store Display Name
-                </label>
-                <input
-                  type="text"
-                  value={storeLocation.storeName}
-                  onChange={(e) => handleUpdateStoreField('storeName', e.target.value)}
-                  placeholder="7Days Toys & Babyshop"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Status Badge
-                </label>
-                <input
-                  type="text"
-                  value={storeLocation.statusBadge}
-                  onChange={(e) => handleUpdateStoreField('statusBadge', e.target.value)}
-                  placeholder="Open for Walk-ins"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Visiting &amp; Operating Hours
-              </label>
-              <input
-                type="text"
-                value={storeLocation.hours}
-                onChange={(e) => handleUpdateStoreField('hours', e.target.value)}
-                placeholder="e.g. 9:00 AM – 9:00 PM (All 7 Days)"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Formatted Address
-              </label>
-              <input
-                type="text"
-                value={storeLocation.addressFormatted}
-                onChange={(e) => handleUpdateStoreField('addressFormatted', e.target.value)}
-                placeholder="Payod, Mananthavady, Wayanad, Kerala, India"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Primary Phone Display
-                </label>
-                <input
-                  type="text"
-                  value={storeLocation.phoneDisplay}
-                  onChange={(e) => handleUpdateStoreField('phoneDisplay', e.target.value)}
-                  placeholder="+91 95261 22471"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Google Maps URL
-                </label>
-                <input
-                  type="text"
-                  value={storeLocation.mapsSearchUrl}
-                  onChange={(e) => handleUpdateStoreField('mapsSearchUrl', e.target.value)}
-                  placeholder="https://www.google.com/maps/search/?api=1&query=Payod..."
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#0284C7]"
-                />
-              </div>
-            </div>
-
-            {/* Save Button */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[11px] text-gray-400">Updates footer &amp; location card.</span>
-              <button
-                type="button"
-                onClick={handleSaveStoreLocation}
-                disabled={savingLocation}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#0284C7] hover:bg-[#0369a1] shadow-sm disabled:opacity-50 transition cursor-pointer"
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Apply &amp; Save Store Info</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      </details>
 
       {/* ========================================================= */}
       {/* PRODUCT PICKER MODAL (FOR HERO SHOWCASE)                  */}
