@@ -1,10 +1,11 @@
-import React, { useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import ScrollToTop from './components/ScrollToTop';
+import LoadingScreen from './components/LoadingScreen';
 
 import HomePage from './pages/HomePage';
 
@@ -28,6 +29,7 @@ import { syncHomepageSectionsFromSupabase } from './services/homepageSectionsSer
 export default function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Gated synchronization: Admin queries only execute when accessing the admin portal
   useEffect(() => {
@@ -50,6 +52,11 @@ export default function App() {
 
   return (
     <AuthProvider>
+      {/* Creative 7Days Brand Loading Screen */}
+      {!isAdminRoute && isLoading && (
+        <LoadingScreen onComplete={() => setIsLoading(false)} />
+      )}
+
       <div className="min-h-screen flex flex-col bg-[#FFF9F0] text-[#263238] font-body">
         <Analytics />
         <ScrollToTop />
@@ -62,7 +69,7 @@ export default function App() {
           <Suspense
             fallback={
               <div className="min-h-[50vh] flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-3 border-[#FF7A00] border-t-transparent animate-spin" />
+                <div className="w-8 h-8 rounded-full border-[3px] border-[#FF7A00] border-t-transparent animate-spin" />
               </div>
             }
           >

@@ -66,7 +66,8 @@ export default function LoadingScreen({ onComplete }) {
         <div className="relative mb-3 sm:mb-4">
           <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden  border-2 border-white/60  flex items-center justify-center transform hover:scale-105 transition-transform duration-300">
             <img
-              src="/7days-logo.png"
+              src="/7days-logo.webp"
+              onError={(e) => { e.currentTarget.src = '/7days-logo.png'; }}
               alt="7Days Toys & Babyshop Logo"
               className="w-full h-full object-contain"
               width="128"
