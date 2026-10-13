@@ -4,6 +4,7 @@ import { ArrowRight, MessageCircle } from 'lucide-react';
 import { categoriesData } from '../data/categories';
 import { SHOP_FULL_NAME, createWhatsAppUrl } from '../data/config';
 import { usePageSEO } from '../hooks/usePageSEO';
+import GiftFinder from '../components/GiftFinder';
 
 export default function CategoriesPage() {
   usePageSEO({
@@ -15,7 +16,7 @@ export default function CategoriesPage() {
   return (
     <main className="py-10 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Page Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2.5">
@@ -49,7 +50,7 @@ export default function CategoriesPage() {
                   height="300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-                
+
                 {/* Count Badge */}
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-[#263238] text-xs font-bold px-3 py-1 rounded-full shadow-xs">
                   {category.count}
@@ -79,6 +80,9 @@ export default function CategoriesPage() {
             </Link>
           ))}
         </div>
+        <GiftFinder />
+
+
 
         {/* Catalog CTA Banner */}
         <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/70 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -111,6 +115,9 @@ export default function CategoriesPage() {
             </a>
           </div>
         </div>
+
+
+
 
       </div>
     </main>

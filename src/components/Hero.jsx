@@ -97,15 +97,24 @@ export default function Hero() {
                     to={slot1?.productId ? `/product/${slot1.productId}` : '/products'}
                     className="w-full h-full block relative"
                   >
-                    <img
-                      src={slot1?.image ? slot1.image.replace(/\.jpg$/, '.webp') : '/products/baybee/baybee-copster-electric-jeep.webp'}
-                      alt={slot1?.title || 'Featured Hero Product'}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                      loading="eager"
-                      fetchPriority="high"
-                      width="500"
-                      height="580"
-                    />
+                    <picture>
+                      {slot1?.image && slot1.image.endsWith('.jpg') && (
+                        <source srcSet={slot1.image.replace(/\.jpg$/, '.webp')} type="image/webp" />
+                      )}
+                      <img
+                        src={slot1?.image || '/products/baybee/baybee-copster-electric-jeep.jpg'}
+                        alt={slot1?.title || 'Featured Hero Product'}
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        loading="eager"
+                        fetchPriority="high"
+                        width="500"
+                        height="580"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/products/baybee/baybee-copster-electric-jeep.jpg';
+                        }}
+                      />
+                    </picture>
                     {/* Bottom Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
@@ -129,15 +138,24 @@ export default function Hero() {
                       to={slot2?.productId ? `/product/${slot2.productId}` : '/products'}
                       className="w-full h-full block relative"
                     >
-                      <img
-                        src={slot2?.image ? slot2.image.replace(/\.jpg$/, '.webp') : '/products/baybee/baybee-velzo-battery-bike.webp'}
-                        alt={slot2?.title || 'Hero product 2'}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                        loading="lazy"
-                        decoding="async"
-                        width="300"
-                        height="225"
-                      />
+                      <picture>
+                        {slot2?.image && slot2.image.endsWith('.jpg') && (
+                          <source srcSet={slot2.image.replace(/\.jpg$/, '.webp')} type="image/webp" />
+                        )}
+                        <img
+                          src={slot2?.image || '/products/baybee/baybee-velzo-battery-bike.jpg'}
+                          alt={slot2?.title || 'Hero product 2'}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                          loading="lazy"
+                          decoding="async"
+                          width="300"
+                          height="225"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/products/baybee/baybee-velzo-battery-bike.jpg';
+                          }}
+                        />
+                      </picture>
                       <div className="absolute bottom-2 left-2 z-10">
                         <span className="inline-block px-2 py-0.5 rounded-md text-[9px] font-black bg-[#FF7A00] text-white shadow-xs">
                           {slot2?.tag || 'Electric Bikes'}
@@ -152,15 +170,24 @@ export default function Hero() {
                       to={slot3?.productId ? `/product/${slot3.productId}` : '/products'}
                       className="w-full h-full block relative"
                     >
-                      <img
-                        src={slot3?.image ? slot3.image.replace(/\.jpg$/, '.webp') : '/products/baybee/baybee-magic-twister-swing-car.jpg'}
-                        alt={slot3?.title || 'Hero product 3'}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                        loading="lazy"
-                        decoding="async"
-                        width="300"
-                        height="225"
-                      />
+                      <picture>
+                        {slot3?.image && slot3.image.endsWith('.jpg') && (
+                          <source srcSet={slot3.image.replace(/\.jpg$/, '.webp')} type="image/webp" />
+                        )}
+                        <img
+                          src={slot3?.image || '/products/baybee/baybee-magic-twister-swing-car.jpg'}
+                          alt={slot3?.title || 'Hero product 3'}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                          loading="lazy"
+                          decoding="async"
+                          width="300"
+                          height="225"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/products/baybee/baybee-magic-twister-swing-car.jpg';
+                          }}
+                        />
+                      </picture>
                       <div className="absolute bottom-2 left-2 z-10">
                         <span className="inline-block px-2 py-0.5 rounded-md text-[9px] font-black bg-[#0284c7] text-white shadow-xs">
                           {slot3?.tag || 'Magic Swing Cars'}
