@@ -12,12 +12,12 @@ export default function FeaturedProducts() {
   return (
     <section className="py-14 sm:py-20 bg-white/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FB8500]/15 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
-              <Heart className="w-3.5 h-3.5 fill-[#FB8500]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1  bg-[#FB8500]/15 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
+
               <span>Handpicked For You</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#263238] font-heading tracking-tight">

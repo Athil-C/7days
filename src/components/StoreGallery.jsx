@@ -34,10 +34,10 @@ export default function StoreGallery() {
   return (
     <section id="store-gallery" className="py-14 sm:py-20 bg-white/60 border-t border-black/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A994E]/15 text-[#6A994E] text-xs font-bold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#6A994E]/15 text-[#6A994E] text-xs font-bold uppercase tracking-wider mb-2.5">
             <Camera className="w-3.5 h-3.5" />
             <span>Payod Showroom Tour</span>
           </div>
@@ -51,7 +51,7 @@ export default function StoreGallery() {
 
         {/* Gallery Grid: 1 large featured + 3 smaller grid items */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 mb-10">
-          
+
           {/* Main Large Featured Photo */}
           <div className="md:col-span-7 group relative rounded-3xl overflow-hidden card-shadow border border-black/5 bg-white min-h-[300px] sm:min-h-[420px]">
             <img
@@ -62,7 +62,7 @@ export default function StoreGallery() {
               decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-            
+
             <div className="absolute top-4 left-4">
               <span className="text-[11px] font-extrabold bg-[#FB8500] text-white px-3 py-1 rounded-full shadow-xs tracking-wide uppercase inline-flex items-center gap-1">
                 Featured Display
@@ -95,7 +95,7 @@ export default function StoreGallery() {
                   decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent"></div>
-                
+
                 <div className="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between">
                   <div>
                     <p className="text-sm font-bold font-heading">{photo.caption}</p>

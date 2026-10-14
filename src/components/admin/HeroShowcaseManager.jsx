@@ -736,8 +736,8 @@ export default function HeroShowcaseManager({
                 <div
                   onClick={() => setSelectedSlotIndex(0)}
                   className={`col-span-7 relative rounded-xl overflow-hidden bg-[#FAF8F5] border aspect-[4/5] flex flex-col justify-between p-2.5 transition-all cursor-pointer ${selectedSlotIndex === 0
-                      ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
-                      : 'border-black/10 hover:border-black/30'
+                    ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
+                    : 'border-black/10 hover:border-black/30'
                     }`}
                 >
                   <div className="flex items-center justify-between z-10">
@@ -785,8 +785,8 @@ export default function HeroShowcaseManager({
                   <div
                     onClick={() => setSelectedSlotIndex(1)}
                     className={`relative rounded-xl overflow-hidden bg-[#FAF8F5] border p-2 flex flex-col justify-between transition-all cursor-pointer ${selectedSlotIndex === 1
-                        ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
-                        : 'border-black/10 hover:border-black/30'
+                      ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
+                      : 'border-black/10 hover:border-black/30'
                       }`}
                   >
                     <div className="flex items-center justify-between text-[8px] font-bold uppercase mb-1">
@@ -811,8 +811,8 @@ export default function HeroShowcaseManager({
                   <div
                     onClick={() => setSelectedSlotIndex(2)}
                     className={`relative rounded-xl overflow-hidden bg-[#FAF8F5] border p-2 flex flex-col justify-between transition-all cursor-pointer ${selectedSlotIndex === 2
-                        ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
-                        : 'border-black/10 hover:border-black/30'
+                      ? 'ring-3 ring-[#FB8500] border-[#FB8500] shadow-md'
+                      : 'border-black/10 hover:border-black/30'
                       }`}
                   >
                     <div className="flex items-center justify-between text-[8px] font-bold uppercase mb-1">
@@ -854,8 +854,8 @@ export default function HeroShowcaseManager({
                     type="button"
                     onClick={() => setSelectedSlotIndex(idx)}
                     className={`p-2.5 rounded-xl text-left border transition cursor-pointer ${selectedSlotIndex === idx
-                        ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-sm'
-                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                      ? 'bg-[#FB8500] text-white border-[#FB8500] shadow-sm'
+                      : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
                       }`}
                   >
                     <span className="text-[9px] font-bold uppercase tracking-wider block opacity-80">
@@ -1019,7 +1019,7 @@ export default function HeroShowcaseManager({
 
             <div className="mb-3">
               <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[#FB8500] bg-amber-50 px-2 py-0.5 rounded-full">
-                <Heart className="w-3 h-3 fill-[#FB8500]" />
+
                 Handpicked For You
               </span>
               <h3 className="text-base font-extrabold text-[#263238] mt-1">Featured Products</h3>
@@ -1122,8 +1122,8 @@ export default function HeroShowcaseManager({
                       disabled={isToggling}
                       onClick={() => handleToggleFeatured(prod)}
                       className={`px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0 flex items-center gap-1 ${isFeatured
-                          ? 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
-                          : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
+                        : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-700'
                         }`}
                     >
                       {isToggling ? (
@@ -1231,8 +1231,8 @@ export default function HeroShowcaseManager({
                     key={post.id || idx}
                     onClick={() => setSelectedInstaSlot(idx)}
                     className={`aspect-square rounded-xl overflow-hidden bg-white border relative group transition-all cursor-pointer ${isSelected
-                        ? 'ring-3 ring-pink-500 border-pink-500 shadow-md'
-                        : 'border-black/10 hover:border-black/30'
+                      ? 'ring-3 ring-pink-500 border-pink-500 shadow-md'
+                      : 'border-black/10 hover:border-black/30'
                       }`}
                   >
                     <img
@@ -1314,8 +1314,8 @@ export default function HeroShowcaseManager({
                     type="button"
                     onClick={() => setSelectedInstaSlot(idx)}
                     className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${selectedInstaSlot === idx
-                        ? 'bg-pink-500 text-white shadow-xs'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-pink-500 text-white shadow-xs'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                   >
                     #{idx + 1}
@@ -1626,724 +1626,724 @@ export default function HeroShowcaseManager({
         </p>
 
         <div className="space-y-8 pt-4">
-{/* ========================================================================= */}
-      {/* SECTION 2: SHOP BY AGE COLLECTIONS                                        */}
-      {/* ========================================================================= */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
-              Off
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 2</span>
-              <h2 className="text-lg font-extrabold text-[#263238]">Shop by Age Collections</h2>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleResetAge}
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
-              <span>Reset Default</span>
-            </button>
-            <button
-              onClick={handleSaveAge}
-              disabled={savingAge}
-              type="button"
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#219EBC] hover:bg-[#1a859e] shadow-sm disabled:opacity-50 transition cursor-pointer"
-            >
-              {savingAge ? (
-                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              <span>Apply &amp; Save Age Stages</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 2-Column: Left = Preview | Right = Configurator */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT: Live Preview */}
-          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
-                  LIVE HOMEPAGE PREVIEW
-                </span>
+          {/* ========================================================================= */}
+          {/* SECTION 2: SHOP BY AGE COLLECTIONS                                        */}
+          {/* ========================================================================= */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
+                  Off
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 2</span>
+                  <h2 className="text-lg font-extrabold text-[#263238]">Shop by Age Collections</h2>
+                </div>
               </div>
-              <span className="text-[11px] text-gray-400">Click any stage to edit</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleResetAge}
+                  type="button"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
+                  <span>Reset Default</span>
+                </button>
+                <button
+                  onClick={handleSaveAge}
+                  disabled={savingAge}
+                  type="button"
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#219EBC] hover:bg-[#1a859e] shadow-sm disabled:opacity-50 transition cursor-pointer"
+                >
+                  {savingAge ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  <span>Apply &amp; Save Age Stages</span>
+                </button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {ageBrackets.map((bracket, idx) => {
-                const isSelected = selectedAgeIndex === idx;
-                return (
-                  <div
-                    key={bracket.id || idx}
-                    onClick={() => setSelectedAgeIndex(idx)}
-                    className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${isSelected
-                        ? 'ring-3 ring-[#219EBC] border-[#219EBC] shadow-md'
-                        : 'border-black/10 hover:border-black/30'
-                      }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        {bracket.icon ? <span className="text-2xl">{bracket.icon}</span> : <div />}
-                        <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-sky-50 text-[#219EBC]">
-                          {bracket.tag || 'Stage'}
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-                        {bracket.tagline}
-                      </span>
-                      <h4 className="text-sm font-extrabold text-[#263238] mt-0.5">
-                        {bracket.label}
-                      </h4>
-                      <p className="text-[11px] text-gray-500 mt-1 leading-snug line-clamp-2">
-                        {bracket.description}
-                      </p>
-                    </div>
+            {/* 2-Column: Left = Preview | Right = Configurator */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* LEFT: Live Preview */}
+              <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                      LIVE HOMEPAGE PREVIEW
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-gray-400">Click any stage to edit</span>
+                </div>
 
-                    <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] font-bold text-[#219EBC]">
-                      <span>{bracket.category || 'Toys'} Collection</span>
-                      <ArrowRight className="w-3 h-3" />
+                <div className="grid grid-cols-2 gap-3">
+                  {ageBrackets.map((bracket, idx) => {
+                    const isSelected = selectedAgeIndex === idx;
+                    return (
+                      <div
+                        key={bracket.id || idx}
+                        onClick={() => setSelectedAgeIndex(idx)}
+                        className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${isSelected
+                          ? 'ring-3 ring-[#219EBC] border-[#219EBC] shadow-md'
+                          : 'border-black/10 hover:border-black/30'
+                          }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            {bracket.icon ? <span className="text-2xl">{bracket.icon}</span> : <div />}
+                            <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-sky-50 text-[#219EBC]">
+                              {bracket.tag || 'Stage'}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                            {bracket.tagline}
+                          </span>
+                          <h4 className="text-sm font-extrabold text-[#263238] mt-0.5">
+                            {bracket.label}
+                          </h4>
+                          <p className="text-[11px] text-gray-500 mt-1 leading-snug line-clamp-2">
+                            {bracket.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] font-bold text-[#219EBC]">
+                          <span>{bracket.category || 'Toys'} Collection</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 text-center text-xs text-gray-500">
+                  Active Selection: <strong className="text-gray-900">{activeAge.label} ({activeAge.tagline})</strong>
+                </div>
+              </div>
+
+              {/* RIGHT: Configurator */}
+              <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
+                    SELECT AGE STAGE TO CONFIGURE:
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {ageBrackets.map((bracket, idx) => (
+                      <button
+                        key={bracket.id || idx}
+                        type="button"
+                        onClick={() => setSelectedAgeIndex(idx)}
+                        className={`p-2 rounded-xl text-center border transition cursor-pointer ${selectedAgeIndex === idx
+                          ? 'bg-[#219EBC] text-white border-[#219EBC] shadow-sm'
+                          : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                          }`}
+                      >
+                        {bracket.icon ? <span className="text-base block">{bracket.icon}</span> : null}
+                        <span className="text-[10px] font-bold truncate block mt-0.5">{bracket.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
+                        Emoji / Icon
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateActiveAge('icon', '')}
+                        className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer"
+                      >
+                        Clear / No Icon
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={activeAge.icon || ''}
+                      onChange={(e) => handleUpdateActiveAge('icon', e.target.value)}
+                      placeholder="Leave empty for no icon, or paste emoji"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
+                    />
+                    <div className="flex items-center gap-1.5 mt-1.5">
+                      <span className="text-[10px] text-gray-400">Presets:</span>
+                      {['🍼', '🧸', '🎨', '🚲', '🛴', '👶', '🧩'].map((em) => (
+                        <button
+                          key={em}
+                          type="button"
+                          onClick={() => handleUpdateActiveAge('icon', em)}
+                          className="w-6 h-6 rounded-lg bg-gray-50 hover:bg-[#219EBC]/15 border border-gray-200 text-xs flex items-center justify-center transition cursor-pointer"
+                          title={`Use ${em}`}
+                        >
+                          {em}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Stage Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={activeAge.tag || ''}
+                      onChange={(e) => handleUpdateActiveAge('tag', e.target.value)}
+                      placeholder="e.g. Infants, Toddlers"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
+                    />
+                  </div>
+                </div>
 
-            <div className="mt-4 text-center text-xs text-gray-500">
-              Active Selection: <strong className="text-gray-900">{activeAge.label} ({activeAge.tagline})</strong>
-            </div>
-          </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Stage Label
+                    </label>
+                    <input
+                      type="text"
+                      value={activeAge.label || ''}
+                      onChange={(e) => handleUpdateActiveAge('label', e.target.value)}
+                      placeholder="e.g. 0 – 12 Months"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Tagline / Focus
+                    </label>
+                    <input
+                      type="text"
+                      value={activeAge.tagline || ''}
+                      onChange={(e) => handleUpdateActiveAge('tagline', e.target.value)}
+                      placeholder="e.g. Infant & Sensory"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
+                    />
+                  </div>
+                </div>
 
-          {/* RIGHT: Configurator */}
-          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
-                SELECT AGE STAGE TO CONFIGURE:
-              </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {ageBrackets.map((bracket, idx) => (
-                  <button
-                    key={bracket.id || idx}
-                    type="button"
-                    onClick={() => setSelectedAgeIndex(idx)}
-                    className={`p-2 rounded-xl text-center border transition cursor-pointer ${selectedAgeIndex === idx
-                        ? 'bg-[#219EBC] text-white border-[#219EBC] shadow-sm'
-                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                      }`}
-                  >
-                    {bracket.icon ? <span className="text-base block">{bracket.icon}</span> : null}
-                    <span className="text-[10px] font-bold truncate block mt-0.5">{bracket.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700">
-                    Emoji / Icon
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Description
                   </label>
+                  <textarea
+                    rows={2}
+                    value={activeAge.description || ''}
+                    onChange={(e) => handleUpdateActiveAge('description', e.target.value)}
+                    placeholder="Brief summary of toys for this age group..."
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Target Category Link
+                  </label>
+                  <select
+                    value={activeAge.category || 'Toys'}
+                    onChange={(e) => handleUpdateActiveAge('category', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
+                  >
+                    <option value="Baby">Baby (Rattles, Cots, Walkers)</option>
+                    <option value="Toys">Toys (Ride-ons, Puzzles, Dolls)</option>
+                    <option value="Outdoors">Outdoors (Cycles, Skates, Sports)</option>
+                  </select>
+                </div>
+
+                {/* Save Button */}
+                <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-[11px] text-gray-400">Updates homepage tabs immediately.</span>
                   <button
                     type="button"
-                    onClick={() => handleUpdateActiveAge('icon', '')}
-                    className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer"
+                    onClick={handleSaveAge}
+                    disabled={savingAge}
+                    className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#219EBC] hover:bg-[#1a859e] shadow-sm disabled:opacity-50 transition cursor-pointer"
                   >
-                    Clear / No Icon
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Apply &amp; Save Age Stages</span>
                   </button>
                 </div>
-                <input
-                  type="text"
-                  value={activeAge.icon || ''}
-                  onChange={(e) => handleUpdateActiveAge('icon', e.target.value)}
-                  placeholder="Leave empty for no icon, or paste emoji"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
-                />
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <span className="text-[10px] text-gray-400">Presets:</span>
-                  {['🍼', '🧸', '🎨', '🚲', '🛴', '👶', '🧩'].map((em) => (
-                    <button
-                      key={em}
-                      type="button"
-                      onClick={() => handleUpdateActiveAge('icon', em)}
-                      className="w-6 h-6 rounded-lg bg-gray-50 hover:bg-[#219EBC]/15 border border-gray-200 text-xs flex items-center justify-center transition cursor-pointer"
-                      title={`Use ${em}`}
-                    >
-                      {em}
-                    </button>
-                  ))}
+              </div>
+            </div>
+          </div>
+
+
+          {/* ========================================================================= */}
+          {/* SECTION 4: STORE UPDATES & ANNOUNCEMENTS                                  */}
+          {/* ========================================================================= */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
+                  Off
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 4 (Manage via Updates Tab)</span>
+                  <h2 className="text-lg font-extrabold text-[#263238]">Store Updates &amp; News</h2>
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Stage Badge
-                </label>
-                <input
-                  type="text"
-                  value={activeAge.tag || ''}
-                  onChange={(e) => handleUpdateActiveAge('tag', e.target.value)}
-                  placeholder="e.g. Infants, Toddlers"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Stage Label
-                </label>
-                <input
-                  type="text"
-                  value={activeAge.label || ''}
-                  onChange={(e) => handleUpdateActiveAge('label', e.target.value)}
-                  placeholder="e.g. 0 – 12 Months"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Tagline / Focus
-                </label>
-                <input
-                  type="text"
-                  value={activeAge.tagline || ''}
-                  onChange={(e) => handleUpdateActiveAge('tagline', e.target.value)}
-                  placeholder="e.g. Infant & Sensory"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                rows={2}
-                value={activeAge.description || ''}
-                onChange={(e) => handleUpdateActiveAge('description', e.target.value)}
-                placeholder="Brief summary of toys for this age group..."
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Target Category Link
-              </label>
-              <select
-                value={activeAge.category || 'Toys'}
-                onChange={(e) => handleUpdateActiveAge('category', e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#219EBC]"
-              >
-                <option value="Baby">Baby (Rattles, Cots, Walkers)</option>
-                <option value="Toys">Toys (Ride-ons, Puzzles, Dolls)</option>
-                <option value="Outdoors">Outdoors (Cycles, Skates, Sports)</option>
-              </select>
-            </div>
-
-            {/* Save Button */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[11px] text-gray-400">Updates homepage tabs immediately.</span>
-              <button
-                type="button"
-                onClick={handleSaveAge}
-                disabled={savingAge}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#219EBC] hover:bg-[#1a859e] shadow-sm disabled:opacity-50 transition cursor-pointer"
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Apply &amp; Save Age Stages</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      
-{/* ========================================================================= */}
-      {/* SECTION 4: STORE UPDATES & ANNOUNCEMENTS                                  */}
-      {/* ========================================================================= */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
-              Off
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 4 (Manage via Updates Tab)</span>
-              <h2 className="text-lg font-extrabold text-[#263238]">Store Updates &amp; News</h2>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleNewUpdate}
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
-            >
-              <Plus className="w-3.5 h-3.5 text-gray-500" />
-              <span>New Notice</span>
-            </button>
-            <button
-              onClick={handleSaveAnnouncement}
-              disabled={savingUpdate}
-              type="button"
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-sm disabled:opacity-50 transition cursor-pointer"
-            >
-              {savingUpdate ? (
-                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              <span>Publish &amp; Save Update</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 2-Column: Left = Preview | Right = Configurator */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT: Live Preview */}
-          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
-                  LIVE HOMEPAGE PREVIEW
-                </span>
+                <button
+                  onClick={handleNewUpdate}
+                  type="button"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5 text-gray-500" />
+                  <span>New Notice</span>
+                </button>
+                <button
+                  onClick={handleSaveAnnouncement}
+                  disabled={savingUpdate}
+                  type="button"
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-sm disabled:opacity-50 transition cursor-pointer"
+                >
+                  {savingUpdate ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  <span>Publish &amp; Save Update</span>
+                </button>
               </div>
-              <span className="text-[11px] text-gray-400">Click below to select update</span>
             </div>
 
-            {/* Simulated Live Announcement Banner */}
-            <div className="p-4 rounded-2xl bg-white border border-black/10 shadow-xs">
-              <div className="aspect-[16/9] w-full rounded-xl bg-gray-100 overflow-hidden mb-3 relative">
-                {updateForm.bannerImage ? (
-                  <img
-                    src={updateForm.bannerImage}
-                    alt={updateForm.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                    No banner photo
+            {/* 2-Column: Left = Preview | Right = Configurator */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* LEFT: Live Preview */}
+              <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                      LIVE HOMEPAGE PREVIEW
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-gray-400">Click below to select update</span>
+                </div>
+
+                {/* Simulated Live Announcement Banner */}
+                <div className="p-4 rounded-2xl bg-white border border-black/10 shadow-xs">
+                  <div className="aspect-[16/9] w-full rounded-xl bg-gray-100 overflow-hidden mb-3 relative">
+                    {updateForm.bannerImage ? (
+                      <img
+                        src={updateForm.bannerImage}
+                        alt={updateForm.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                        No banner photo
+                      </div>
+                    )}
+                    <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-red-600 text-white font-extrabold text-[10px] uppercase shadow-xs">
+                      {updateForm.badge || 'Store Notice'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] text-gray-400 font-semibold">
+                      📅 {updateForm.date || 'Available Now'}
+                    </span>
+                    <h3 className="text-sm font-extrabold text-[#263238] mt-0.5">
+                      {updateForm.title || 'Announcement Title'}
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-1 leading-snug">
+                      {updateForm.description || 'Details regarding new arrivals, festive promotions, or service.'}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-[10px] text-emerald-600 font-bold">💬 WhatsApp Connected</span>
+                    <span className="text-xs font-bold text-red-600">Inquire Now →</span>
+                  </div>
+                </div>
+
+                {/* List of active updates to click */}
+                {localUpdates.length > 0 && (
+                  <div className="mt-4 space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
+                      Other Active Announcements ({localUpdates.length}):
+                    </span>
+                    <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                      {localUpdates.map((upd, idx) => (
+                        <div
+                          key={upd.id}
+                          className={`p-2 rounded-xl border text-left shrink-0 max-w-[210px] transition flex items-center justify-between gap-1.5 ${selectedUpdateIndex === idx && isEditingExistingUpdate
+                            ? 'bg-red-50 border-red-300 ring-2 ring-red-200'
+                            : 'bg-white border-gray-200 hover:bg-gray-50'
+                            }`}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => handleSelectUpdateForEdit(upd, idx)}
+                            className="min-w-0 flex-1 text-left cursor-pointer"
+                          >
+                            <span className="text-[9px] font-bold uppercase text-red-600 block truncate">
+                              {upd.badge || 'Notice'}
+                            </span>
+                            <span className="text-xs font-bold text-gray-900 block truncate">
+                              {upd.title}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteAnnouncement(upd.id);
+                            }}
+                            className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer shrink-0"
+                            title="Delete this notice"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
-                <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-red-600 text-white font-extrabold text-[10px] uppercase shadow-xs">
-                  {updateForm.badge || 'Store Notice'}
-                </span>
               </div>
 
-              <div>
-                <span className="text-[10px] text-gray-400 font-semibold">
-                  📅 {updateForm.date || 'Available Now'}
-                </span>
-                <h3 className="text-sm font-extrabold text-[#263238] mt-0.5">
-                  {updateForm.title || 'Announcement Title'}
-                </h3>
-                <p className="text-xs text-gray-500 mt-1 leading-snug">
-                  {updateForm.description || 'Details regarding new arrivals, festive promotions, or service.'}
-                </p>
-              </div>
-
-              <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between">
-                <span className="text-[10px] text-emerald-600 font-bold">💬 WhatsApp Connected</span>
-                <span className="text-xs font-bold text-red-600">Inquire Now →</span>
-              </div>
-            </div>
-
-            {/* List of active updates to click */}
-            {localUpdates.length > 0 && (
-              <div className="mt-4 space-y-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
-                  Other Active Announcements ({localUpdates.length}):
-                </span>
-                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                  {localUpdates.map((upd, idx) => (
-                    <div
-                      key={upd.id}
-                      className={`p-2 rounded-xl border text-left shrink-0 max-w-[210px] transition flex items-center justify-between gap-1.5 ${selectedUpdateIndex === idx && isEditingExistingUpdate
-                          ? 'bg-red-50 border-red-300 ring-2 ring-red-200'
-                          : 'bg-white border-gray-200 hover:bg-gray-50'
-                        }`}
+              {/* RIGHT: Configurator */}
+              <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
+                    {isEditingExistingUpdate ? 'EDIT SELECTED ANNOUNCEMENT' : 'CREATE NEW ANNOUNCEMENT'}
+                  </span>
+                  {isEditingExistingUpdate && updateForm.id && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteAnnouncement(updateForm.id)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 border border-red-200 transition cursor-pointer"
+                      title="Permanently delete this announcement"
                     >
-                      <button
-                        type="button"
-                        onClick={() => handleSelectUpdateForEdit(upd, idx)}
-                        className="min-w-0 flex-1 text-left cursor-pointer"
-                      >
-                        <span className="text-[9px] font-bold uppercase text-red-600 block truncate">
-                          {upd.badge || 'Notice'}
-                        </span>
-                        <span className="text-xs font-bold text-gray-900 block truncate">
-                          {upd.title}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteAnnouncement(upd.id);
-                        }}
-                        className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer shrink-0"
-                        title="Delete this notice"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* RIGHT: Configurator */}
-          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
-                {isEditingExistingUpdate ? 'EDIT SELECTED ANNOUNCEMENT' : 'CREATE NEW ANNOUNCEMENT'}
-              </span>
-              {isEditingExistingUpdate && updateForm.id && (
-                <button
-                  type="button"
-                  onClick={() => handleDeleteAnnouncement(updateForm.id)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 border border-red-200 transition cursor-pointer"
-                  title="Permanently delete this announcement"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete Announcement</span>
-                </button>
-              )}
-            </div>
-
-            {/* Banner Photo */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                Banner Photo *
-              </label>
-              <div className="flex items-center gap-3">
-                <div className="w-16 h-12 rounded-xl bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
-                  {updateForm.bannerImage ? (
-                    <img src={updateForm.bannerImage} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <ImageIcon className="w-5 h-5 text-gray-300" />
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Delete Announcement</span>
+                    </button>
                   )}
                 </div>
-                <div className="flex-1 space-y-1.5">
-                  <input
-                    type="file"
-                    ref={updateBannerFileRef}
-                    onChange={handleUpdateFileUpload}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => updateBannerFileRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5 text-gray-500" />
-                    <span>Upload Banner Image</span>
-                  </button>
+
+                {/* Banner Photo */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+                    Banner Photo *
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <div className="w-16 h-12 rounded-xl bg-gray-50 border border-gray-200 overflow-hidden flex items-center justify-center shrink-0">
+                      {updateForm.bannerImage ? (
+                        <img src={updateForm.bannerImage} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <ImageIcon className="w-5 h-5 text-gray-300" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-1.5">
+                      <input
+                        type="file"
+                        ref={updateBannerFileRef}
+                        onChange={handleUpdateFileUpload}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => updateBannerFileRef.current?.click()}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-gray-500" />
+                        <span>Upload Banner Image</span>
+                      </button>
+                      <input
+                        type="text"
+                        value={updateForm.bannerImage}
+                        onChange={(e) => setUpdateForm((prev) => ({ ...prev, bannerImage: e.target.value }))}
+                        placeholder="or enter image URL..."
+                        className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-2 focus:ring-red-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Notice Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={updateForm.badge}
+                      onChange={(e) => setUpdateForm((prev) => ({ ...prev, badge: e.target.value }))}
+                      placeholder="e.g. SPECIALIZED SERVICE"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Date / Status
+                    </label>
+                    <input
+                      type="text"
+                      value={updateForm.date}
+                      onChange={(e) => setUpdateForm((prev) => ({ ...prev, date: e.target.value }))}
+                      placeholder="e.g. Available Now"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Announcement Title *
+                  </label>
                   <input
                     type="text"
-                    value={updateForm.bannerImage}
-                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, bannerImage: e.target.value }))}
-                    placeholder="or enter image URL..."
-                    className="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:ring-2 focus:ring-red-500"
+                    value={updateForm.title}
+                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, title: e.target.value }))}
+                    placeholder="e.g. Electric Car, Bike &amp; Gear Cycle Service Available"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Description / Message
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={updateForm.description}
+                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, description: e.target.value }))}
+                    placeholder="Tell customers about the offer or store update..."
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    WhatsApp Inquiry Text (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={updateForm.whatsappMessage}
+                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, whatsappMessage: e.target.value }))}
+                    placeholder="Pre-filled greeting when customers click"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+
+                {/* Save Button */}
+                <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-[11px] text-gray-400">Published to homepage immediately.</span>
+                  <button
+                    type="button"
+                    onClick={handleSaveAnnouncement}
+                    disabled={savingUpdate}
+                    className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-sm disabled:opacity-50 transition cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Publish Announcement</span>
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Notice Badge
-                </label>
-                <input
-                  type="text"
-                  value={updateForm.badge}
-                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, badge: e.target.value }))}
-                  placeholder="e.g. SPECIALIZED SERVICE"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
-                />
+
+          {/* ========================================================================= */}
+          {/* SECTION 5: 7DAYS CARE & SERVICE HUB                                       */}
+          {/* ========================================================================= */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
+                  Off
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 5</span>
+                  <h2 className="text-lg font-extrabold text-[#263238]">7Days Care &amp; Service Hub</h2>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Date / Status
-                </label>
-                <input
-                  type="text"
-                  value={updateForm.date}
-                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, date: e.target.value }))}
-                  placeholder="e.g. Available Now"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Announcement Title *
-              </label>
-              <input
-                type="text"
-                value={updateForm.title}
-                onChange={(e) => setUpdateForm((prev) => ({ ...prev, title: e.target.value }))}
-                placeholder="e.g. Electric Car, Bike &amp; Gear Cycle Service Available"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Description / Message
-              </label>
-              <textarea
-                rows={2}
-                value={updateForm.description}
-                onChange={(e) => setUpdateForm((prev) => ({ ...prev, description: e.target.value }))}
-                placeholder="Tell customers about the offer or store update..."
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                WhatsApp Inquiry Text (Optional)
-              </label>
-              <input
-                type="text"
-                value={updateForm.whatsappMessage}
-                onChange={(e) => setUpdateForm((prev) => ({ ...prev, whatsappMessage: e.target.value }))}
-                placeholder="Pre-filled greeting when customers click"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-
-            {/* Save Button */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[11px] text-gray-400">Published to homepage immediately.</span>
-              <button
-                type="button"
-                onClick={handleSaveAnnouncement}
-                disabled={savingUpdate}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-sm disabled:opacity-50 transition cursor-pointer"
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Publish Announcement</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      
-{/* ========================================================================= */}
-      {/* SECTION 5: 7DAYS CARE & SERVICE HUB                                       */}
-      {/* ========================================================================= */}
-      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center font-bold text-[10px]">
-              Off
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">Archived • Formerly Section 5</span>
-              <h2 className="text-lg font-extrabold text-[#263238]">7Days Care &amp; Service Hub</h2>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleResetCareServices}
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
-              <span>Reset Default</span>
-            </button>
-            <button
-              onClick={handleSaveCareServices}
-              disabled={savingCare}
-              type="button"
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#6A994E] hover:bg-[#588040] shadow-sm disabled:opacity-50 transition cursor-pointer"
-            >
-              {savingCare ? (
-                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              <span>Apply &amp; Save Care Services</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 2-Column: Left = Preview | Right = Configurator */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT: Live Preview */}
-          <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
-                  LIVE HOMEPAGE PREVIEW
-                </span>
-              </div>
-              <span className="text-[11px] text-gray-400">Click any service to edit</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {careServices.map((svc, idx) => {
-                const IconComponent = (svc.iconKey && CARE_ICON_MAP[svc.iconKey]) || Wrench;
-                const isSelected = selectedCareIndex === idx;
-                return (
-                  <div
-                    key={svc.id || idx}
-                    onClick={() => setSelectedCareIndex(idx)}
-                    className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${isSelected
-                        ? 'ring-3 ring-[#6A994E] border-[#6A994E] shadow-md'
-                        : 'border-black/10 hover:border-black/30'
-                      }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className={`w-8 h-8 rounded-xl ${svc.bg || 'bg-emerald-50'} ${svc.accent || 'text-[#6A994E]'} flex items-center justify-center`}>
-                          <IconComponent className="w-4 h-4" />
-                        </div>
-                        <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
-                          {svc.tag}
-                        </span>
-                      </div>
-                      <h4 className="text-xs font-bold text-[#263238] line-clamp-1">
-                        {svc.title}
-                      </h4>
-                      <p className="text-[11px] text-gray-500 mt-1 leading-snug line-clamp-2">
-                        {svc.description}
-                      </p>
-                    </div>
-
-                    <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] font-semibold text-gray-400">
-                      <span>In-Store at Payod</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 text-center text-xs text-gray-500">
-              Active Selection: <strong className="text-gray-900">{activeCareService.title}</strong>
-            </div>
-          </div>
-
-          {/* RIGHT: Configurator */}
-          <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
-                SELECT SERVICE TO CONFIGURE:
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                {careServices.map((svc, idx) => (
-                  <button
-                    key={svc.id || idx}
-                    type="button"
-                    onClick={() => setSelectedCareIndex(idx)}
-                    className={`p-2 rounded-xl text-left border transition cursor-pointer ${selectedCareIndex === idx
-                        ? 'bg-[#6A994E] text-white border-[#6A994E] shadow-sm'
-                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                      }`}
-                  >
-                    <span className="text-[9px] font-bold uppercase tracking-wider block opacity-80">
-                      Service {idx + 1}
-                    </span>
-                    <span className="text-xs font-bold truncate block">{svc.title}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Service Title
-              </label>
-              <input
-                type="text"
-                value={activeCareService.title}
-                onChange={(e) => handleUpdateCareField('title', e.target.value)}
-                placeholder="e.g. Kids EV &amp; Ride-on Servicing"
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Tag / Badge
-                </label>
-                <input
-                  type="text"
-                  value={activeCareService.tag}
-                  onChange={(e) => handleUpdateCareField('tag', e.target.value)}
-                  placeholder="e.g. Electric Vehicles"
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                  Icon Theme
-                </label>
-                <select
-                  value={activeCareService.iconKey || 'Wrench'}
-                  onChange={(e) => handleUpdateCareField('iconKey', e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
+                <button
+                  onClick={handleResetCareServices}
+                  type="button"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition cursor-pointer"
                 >
-                  <option value="Cpu">⚡ Cpu / Electronics (EV)</option>
-                  <option value="Bike">🚲 Bike (Cycle tuning)</option>
-                  <option value="BatteryCharging">🔋 Battery / Charger Spares</option>
-                  <option value="Wrench">🔧 Wrench / Diagnostics</option>
-                </select>
+                  <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
+                  <span>Reset Default</span>
+                </button>
+                <button
+                  onClick={handleSaveCareServices}
+                  disabled={savingCare}
+                  type="button"
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#6A994E] hover:bg-[#588040] shadow-sm disabled:opacity-50 transition cursor-pointer"
+                >
+                  {savingCare ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  <span>Apply &amp; Save Care Services</span>
+                </button>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                rows={2}
-                value={activeCareService.description}
-                onChange={(e) => handleUpdateCareField('description', e.target.value)}
-                placeholder="Describe this service offered at Payod..."
-                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
-              />
-            </div>
+            {/* 2-Column: Left = Preview | Right = Configurator */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* LEFT: Live Preview */}
+              <div className="lg:col-span-6 bg-[#FAF8F5] p-5 rounded-2xl border border-black/5">
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-black/5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#6A994E] animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                      LIVE HOMEPAGE PREVIEW
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-gray-400">Click any service to edit</span>
+                </div>
 
-            {/* Save Button */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[11px] text-gray-400">Updates homepage immediately.</span>
-              <button
-                type="button"
-                onClick={handleSaveCareServices}
-                disabled={savingCare}
-                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#6A994E] hover:bg-[#588040] shadow-sm disabled:opacity-50 transition cursor-pointer"
-              >
-                <Check className="w-3.5 h-3.5" />
-                <span>Apply &amp; Save Care Services</span>
-              </button>
+                <div className="grid grid-cols-2 gap-3">
+                  {careServices.map((svc, idx) => {
+                    const IconComponent = (svc.iconKey && CARE_ICON_MAP[svc.iconKey]) || Wrench;
+                    const isSelected = selectedCareIndex === idx;
+                    return (
+                      <div
+                        key={svc.id || idx}
+                        onClick={() => setSelectedCareIndex(idx)}
+                        className={`p-3.5 rounded-2xl bg-white border flex flex-col justify-between transition-all cursor-pointer ${isSelected
+                          ? 'ring-3 ring-[#6A994E] border-[#6A994E] shadow-md'
+                          : 'border-black/10 hover:border-black/30'
+                          }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className={`w-8 h-8 rounded-xl ${svc.bg || 'bg-emerald-50'} ${svc.accent || 'text-[#6A994E]'} flex items-center justify-center`}>
+                              <IconComponent className="w-4 h-4" />
+                            </div>
+                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
+                              {svc.tag}
+                            </span>
+                          </div>
+                          <h4 className="text-xs font-bold text-[#263238] line-clamp-1">
+                            {svc.title}
+                          </h4>
+                          <p className="text-[11px] text-gray-500 mt-1 leading-snug line-clamp-2">
+                            {svc.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-3 pt-2 border-t border-gray-100 flex items-center justify-between text-[10px] font-semibold text-gray-400">
+                          <span>In-Store at Payod</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 text-center text-xs text-gray-500">
+                  Active Selection: <strong className="text-gray-900">{activeCareService.title}</strong>
+                </div>
+              </div>
+
+              {/* RIGHT: Configurator */}
+              <div className="lg:col-span-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-2">
+                    SELECT SERVICE TO CONFIGURE:
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {careServices.map((svc, idx) => (
+                      <button
+                        key={svc.id || idx}
+                        type="button"
+                        onClick={() => setSelectedCareIndex(idx)}
+                        className={`p-2 rounded-xl text-left border transition cursor-pointer ${selectedCareIndex === idx
+                          ? 'bg-[#6A994E] text-white border-[#6A994E] shadow-sm'
+                          : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                          }`}
+                      >
+                        <span className="text-[9px] font-bold uppercase tracking-wider block opacity-80">
+                          Service {idx + 1}
+                        </span>
+                        <span className="text-xs font-bold truncate block">{svc.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Service Title
+                  </label>
+                  <input
+                    type="text"
+                    value={activeCareService.title}
+                    onChange={(e) => handleUpdateCareField('title', e.target.value)}
+                    placeholder="e.g. Kids EV &amp; Ride-on Servicing"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Tag / Badge
+                    </label>
+                    <input
+                      type="text"
+                      value={activeCareService.tag}
+                      onChange={(e) => handleUpdateCareField('tag', e.target.value)}
+                      placeholder="e.g. Electric Vehicles"
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                      Icon Theme
+                    </label>
+                    <select
+                      value={activeCareService.iconKey || 'Wrench'}
+                      onChange={(e) => handleUpdateCareField('iconKey', e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
+                    >
+                      <option value="Cpu">⚡ Cpu / Electronics (EV)</option>
+                      <option value="Bike">🚲 Bike (Cycle tuning)</option>
+                      <option value="BatteryCharging">🔋 Battery / Charger Spares</option>
+                      <option value="Wrench">🔧 Wrench / Diagnostics</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={activeCareService.description}
+                    onChange={(e) => handleUpdateCareField('description', e.target.value)}
+                    placeholder="Describe this service offered at Payod..."
+                    className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-medium focus:ring-2 focus:ring-[#6A994E]"
+                  />
+                </div>
+
+                {/* Save Button */}
+                <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-[11px] text-gray-400">Updates homepage immediately.</span>
+                  <button
+                    type="button"
+                    onClick={handleSaveCareServices}
+                    disabled={savingCare}
+                    className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#6A994E] hover:bg-[#588040] shadow-sm disabled:opacity-50 transition cursor-pointer"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Apply &amp; Save Care Services</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      
+
         </div>
       </details>
 
@@ -2390,8 +2390,8 @@ export default function HeroShowcaseManager({
                     type="button"
                     onClick={() => setPickerCategory(cat)}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition cursor-pointer ${pickerCategory === cat
-                        ? 'bg-[#263238] text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-[#263238] text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                   >
                     {cat}

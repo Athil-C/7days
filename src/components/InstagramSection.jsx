@@ -24,10 +24,10 @@ export default function InstagramSection() {
   return (
     <section className="py-14 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E1306C]/10 text-[#E1306C] text-xs font-bold uppercase tracking-wider mb-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#E1306C]/10 text-[#E1306C] text-xs font-bold uppercase tracking-wider mb-2.5">
             <InstagramIcon className="w-3.5 h-3.5" />
             <span>{handle}</span>
           </div>

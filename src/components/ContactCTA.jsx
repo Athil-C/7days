@@ -6,15 +6,15 @@ export default function ContactCTA() {
   return (
     <section className="py-14 sm:py-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFB703] via-[#FB8500] to-[#FB8500] p-8 sm:p-12 text-white text-center shadow-xl">
-          
+
           {/* Decorative floating shapes */}
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-black/10 blur-2xl pointer-events-none"></div>
 
           <div className="relative z-10 max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-xs text-white text-xs font-bold uppercase tracking-wider mb-4">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-md bg-white/20 backdrop-blur-xs text-white text-xs font-bold uppercase tracking-wider mb-4">
               <span>We're Happy to Help</span>
             </div>
 

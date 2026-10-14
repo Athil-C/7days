@@ -12,9 +12,9 @@ import { SHOWCASE_CATEGORIES } from '../data/categories';
  * - Responsive touch drag & scroll
  * - Optional onSelectCategory callback for instant in-page filtering
  */
-export default function CategoryCarousel({ 
-  selectedId, 
-  onSelectCategory, 
+export default function CategoryCarousel({
+  selectedId,
+  onSelectCategory,
   title = "Shop by Category",
   subtitle = "Explore our handpicked collection of toys, cycles, baby essentials & gifts",
   showHeading = true,
@@ -104,7 +104,7 @@ export default function CategoryCarousel({
       {showHeading && (
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 px-4 sm:px-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FFB703]/20 text-[#FB8500] text-xs font-bold uppercase tracking-wider mb-2">
               <span>Explore by Category</span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse ml-1" title="Auto-scrolling active" />
             </div>
@@ -127,22 +127,21 @@ export default function CategoryCarousel({
       )}
 
       {/* Carousel Container with Floating Navigation Arrows */}
-      <div 
+      <div
         className="relative group"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => pauseAutoScrollTemporarily(3500)}
       >
-        
+
         {/* Left Scroll Arrow */}
         <button
           onClick={() => handleScroll('left')}
           disabled={!canScrollLeft}
           aria-label="Scroll categories left"
-          className={`absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-[#263238] shadow-md border border-black/5 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
-            canScrollLeft ? 'opacity-90 hover:opacity-100 hover:shadow-lg' : 'opacity-0 pointer-events-none'
-          }`}
+          className={`absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-[#263238] shadow-md border border-black/5 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${canScrollLeft ? 'opacity-90 hover:opacity-100 hover:shadow-lg' : 'opacity-0 pointer-events-none'
+            }`}
         >
           <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
         </button>
@@ -152,9 +151,8 @@ export default function CategoryCarousel({
           onClick={() => handleScroll('right')}
           disabled={!canScrollRight}
           aria-label="Scroll categories right"
-          className={`absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-[#263238] shadow-md border border-black/5 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
-            canScrollRight ? 'opacity-90 hover:opacity-100 hover:shadow-lg' : 'opacity-0 pointer-events-none'
-          }`}
+          className={`absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-[#263238] shadow-md border border-black/5 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${canScrollRight ? 'opacity-90 hover:opacity-100 hover:shadow-lg' : 'opacity-0 pointer-events-none'
+            }`}
         >
           <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
         </button>
@@ -168,8 +166,8 @@ export default function CategoryCarousel({
           aria-label="Category Carousel"
         >
           {SHOWCASE_CATEGORIES.map((category) => {
-            const isActive = selectedId 
-              ? selectedId === category.id 
+            const isActive = selectedId
+              ? selectedId === category.id
               : category.isDefaultActive;
 
             return (
@@ -177,18 +175,17 @@ export default function CategoryCarousel({
                 key={category.id}
                 onClick={() => onSelectCategory && onSelectCategory(category)}
                 type="button"
-                className={`flex-shrink-0 flex flex-col items-center justify-between rounded-[26px] sm:rounded-[30px] p-4 transition-all duration-300 cursor-pointer text-left select-none relative focus:outline-none ${
-                  isActive
+                className={`flex-shrink-0 flex flex-col items-center justify-between rounded-[26px] sm:rounded-[30px] p-4 transition-all duration-300 cursor-pointer text-left select-none relative focus:outline-none ${isActive
                     ? 'w-44 sm:w-56 h-[260px] sm:h-[310px] scale-102 sm:scale-105 shadow-lg ring-2 ring-black/10'
                     : 'w-40 sm:w-48 h-[240px] sm:h-[285px] hover:shadow-md hover:scale-101 opacity-90 hover:opacity-100'
-                }`}
+                  }`}
                 style={{
                   backgroundColor: isActive ? category.activeBg : category.bgColor
                 }}
               >
                 {/* Active Indicator Pip */}
                 {isActive && (
-                  <span 
+                  <span
                     className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full shadow-xs animate-pulse"
                     style={{ backgroundColor: category.accentColor }}
                     aria-hidden="true"
@@ -208,12 +205,11 @@ export default function CategoryCarousel({
 
                 {/* Category Title */}
                 <div className="w-full text-center pt-2 pb-1">
-                  <span 
-                    className={`block font-heading tracking-tight leading-snug transition-colors ${
-                      isActive 
-                        ? 'text-sm sm:text-base font-bold text-[#1E293B]' 
+                  <span
+                    className={`block font-heading tracking-tight leading-snug transition-colors ${isActive
+                        ? 'text-sm sm:text-base font-bold text-[#1E293B]'
                         : 'text-xs sm:text-sm font-semibold text-[#334155]'
-                    }`}
+                      }`}
                   >
                     {category.name}
                   </span>

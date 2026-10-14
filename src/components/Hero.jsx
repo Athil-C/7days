@@ -21,10 +21,10 @@ export default function Hero() {
           <div className="lg:col-span-6 flex flex-col items-start text-left">
 
             {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF3DF] border border-[#FFE2BA] text-xs font-bold text-[#FF8A00] mb-4 shadow-2xs">
+            {/* <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF3DF] border border-[#FFE2BA] text-xs font-bold text-[#FF8A00] mb-4 shadow-2xs">
               <span className="w-2 h-2 rounded-full bg-[#FF8A00]" />
               <span className="tracking-wide">YOUR HAPPY PLACE FOR KIDS</span>
-            </div>
+            </div> */}
 
             {/* Brand Title & Big Headline */}
             <div className="mb-4">
@@ -45,7 +45,7 @@ export default function Hero() {
             </p>
 
             {/* Location Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFF3DF] border border-[#FFE2BA] text-xs font-semibold text-[#263238] mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-[#FFF3DF] border border-[#FFE2BA] text-xs font-semibold text-[#263238] mb-6">
               <span className="text-xs font-bold text-[#475569]">Payod, Mananthavady, Wayanad</span>
             </div>
 

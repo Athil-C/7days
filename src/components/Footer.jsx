@@ -214,7 +214,7 @@ export default function Footer() {
 
           </p>
           <p className="flex items-center gap-1">
-            Made with <Heart className="w-3.5 h-3.5 text-[#FB8500] fill-[#FB8500]" /> for families in Wayanad
+            Made with  for families in Wayanad
           </p>
         </div>
 
